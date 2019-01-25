@@ -9,10 +9,7 @@ cd $(mktemp -d CaValidationLab.XXXXX)
 git clone https://github.com/devizer/NetCore.CaValidationLab
 cd NetCore.CaValidationLab/CaValidationLab
 dotnet run -c Release
-dotnet publish -c Release --self-contained -o out -r $rid
-cd out
-./CaValidationLab
-cd ..
+dotnet publish -c Release --self-contained -o out -r $rid && out/CaValidationLab
 rm -rf bin obj out
 popd
 
