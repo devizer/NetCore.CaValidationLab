@@ -5,7 +5,7 @@ if [[ $(uname -m) == aarch64 ]]; then rid=linux-arm64; fi;
 echo Self-Contained rid is \[$rid\]
 
 pushd /tmp
-cd $(mktemp -d)
+cd $(mktemp -d CaValidationLab.XXXXX)
 git clone https://github.com/devizer/NetCore.CaValidationLab
 cd NetCore.CaValidationLab/CaValidationLab
 dotnet run -c Release
