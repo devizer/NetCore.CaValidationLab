@@ -15,8 +15,10 @@ namespace CheckHttps
 
         static void Main()
         {
-            var sites = new[] {"google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov"};
+            var sites = new[] { "google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov" };
             ThreadPool.SetMinThreads(sites.Length + 4, 1000);
+            PreJit();
+
             ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
             StringBuilder report = new StringBuilder();
             Parallel.ForEach(sites, op, site =>
@@ -57,6 +59,39 @@ namespace CheckHttps
             });
 
             Log($"TOTAL SUMMARY:{Environment.NewLine}{report}", ConsoleColor.Yellow);
+
+        }
+
+        static void PreJit()
+        {
+            const string site = "mozilla.com";
+            string jitResult;
+            bool jitOk;
+            Stopwatch sw = Stopwatch.StartNew();
+            using (HttpClientHandler handler = new HttpClientHandler())
+            using (HttpClient httpClient = new HttpClient(handler))
+            {
+                handler.AllowAutoRedirect = true;
+                handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
+                {
+                    return true;
+                };
+
+                try
+                {
+                    HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://{site}");
+                    var response = httpClient.SendAsync(req).Result;
+                    jitResult = $"OK in {sw.ElapsedMilliseconds:n0} milliseconds";
+                    jitOk = true;
+                }
+                catch (Exception ex)
+                {
+                    jitResult = $"Fail in {sw.ElapsedMilliseconds:n0} milliseconds, {ex.GetType().Name} {ex.Message}";
+                    jitOk = false;
+                }
+
+                Log($"HttpClient jit status: {jitResult}", ConsoleColor.DarkGray);
+            }
 
         }
 
