@@ -66,7 +66,6 @@ namespace CheckHttps
         {
             const string site = "mozilla.com";
             string jitResult;
-            bool jitOk;
             Stopwatch sw = Stopwatch.StartNew();
             using (HttpClientHandler handler = new HttpClientHandler())
             using (HttpClient httpClient = new HttpClient(handler))
@@ -82,17 +81,14 @@ namespace CheckHttps
                     HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://{site}");
                     var response = httpClient.SendAsync(req).Result;
                     jitResult = $"OK in {sw.ElapsedMilliseconds:n0} milliseconds";
-                    jitOk = true;
                 }
                 catch (Exception ex)
                 {
                     jitResult = $"Fail in {sw.ElapsedMilliseconds:n0} milliseconds, {ex.GetType().Name} {ex.Message}";
-                    jitOk = false;
                 }
 
                 Log($"HttpClient jit status: {jitResult}", ConsoleColor.DarkGray);
             }
-
         }
 
         static void Log(string message, ConsoleColor fore)
