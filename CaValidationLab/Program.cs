@@ -15,7 +15,7 @@ namespace CheckHttps
 
         static void Main()
         {
-            var sites = new[] { "google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov" };
+            var sites = new[] { "google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov", "tls-v1-2.badssl.com:1012", "tls-v1-1.badssl.com:1011", "tls-v1-0.badssl.com:1010" };
             ThreadPool.SetMinThreads(sites.Length + 4, 1000);
             PreJit();
 
