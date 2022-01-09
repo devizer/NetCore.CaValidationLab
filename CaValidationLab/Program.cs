@@ -40,7 +40,7 @@ namespace CheckHttps
                 using (HttpClientHandler handler = new HttpClientHandler())
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    handler.SslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
+                    // handler.SslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
                     // handler.SslProtocols = SslProtocols.Tls12;
                     // handler.AllowAutoRedirect = true;
                     handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
