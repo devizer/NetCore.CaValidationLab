@@ -69,10 +69,14 @@ cat tests/*.sh > $Work/test-sources.sh; chmod +x $Work/test-sources.sh
 popd
 
 count=0;
-echo "$ARGS" | while IFS='|' read script image title; do
-  if [[ -n "${script:-}" ]]; then count=$((count+1)); fi
-  echo "$count, [$script]" > /dev/null
-done
+function get_image_count() {
+  echo "$ARGS" | while IFS='|' read script image title; do
+    if [[ -n "${script:-}" ]]; then count=$((count+1)); fi
+    echo "$count, [$script]" > /dev/null
+  done
+  echo $count;
+}
+count=$(get_image_count)
 Say "Count: $count"
 
 index=0;
