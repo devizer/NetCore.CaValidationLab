@@ -127,8 +127,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
     echo $netver > "$report_dir/net"
     docker cp $container:/tls-report-$netver/. "$report_dir"
     Say "OK: [$image_title]"
-    docker rm -f $container 2>/dev/null;
-
   done
 
+  docker rm -f $container 2>/dev/null;
 done
