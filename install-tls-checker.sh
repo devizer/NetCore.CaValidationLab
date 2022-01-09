@@ -4,7 +4,7 @@
 set -e
 set -u
 set -o pipefail
-TARGET_DIR="${TARGET_DIR:-$HOME/bin/check-tls}"
+CHECK_TLS_DIR="${CHECK_TLS_DIR:-$HOME/.local/bin/check-tls}"
 
 function install_tls_checker() {
     rid=linux-x64
@@ -21,8 +21,8 @@ function install_tls_checker() {
     dotnet restore
     # time dotnet run -c Release
     time dotnet publish -c Release --self-contained -o out -r $rid
-    mkdir -p $TARGET_DIR
-    cp -r -f out/* $TARGET_DIR
+    mkdir -p $CHECK_TLS_DIR
+    cp -r -f out/* $CHECK_TLS_DIR
     rm -rf bin obj out
     popd >/dev/null
     rm -rf $work
