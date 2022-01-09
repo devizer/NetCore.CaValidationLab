@@ -91,11 +91,6 @@ echo "$ARGS" | while IFS='|' read script image title; do
 
   net_vers=$NET_VERS; if [[ "$image" == "centos:6"* ]]; then net_vers=$NET_VERS_CENTOS_6; fi
   for netver in $net_vers; do
-    PREVPATH="${PREVPATH:-$PATH}"
-    DOTNET_CLI_HOME=$Work/dotnet-$netver
-    export DOTNET_VERSIONS="$netver" DOTNET_TARGET_DIR=$DOTNET_CLI_HOME SKIP_DOTNET_DEPENDENCIES=True
-    script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
-    export PATH="${DOTNET_CLI_HOME}:${PATH}"
 
     # Install TLS checker
     rid=linux-x64
@@ -105,6 +100,12 @@ echo "$ARGS" | while IFS='|' read script image title; do
     if [[ -d $CHECK_TLS_DIR ]]; then
       Say "Already built: TLS checker [$RID] on the HOST for .NET $netver for [$image_title]"
     else
+      PREVPATH="${PREVPATH:-$PATH}"
+      DOTNET_CLI_HOME=$Work/dotnet-$netver
+      export DOTNET_VERSIONS="$netver" DOTNET_TARGET_DIR=$DOTNET_CLI_HOME SKIP_DOTNET_DEPENDENCIES=True
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
+      export PATH="${DOTNET_CLI_HOME}:${PATH}"
+
       Say "Install TLS checker [$RID] on the HOST for .NET $netver for [$image_title]"
       url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash;
     fi
