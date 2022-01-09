@@ -15,6 +15,7 @@ namespace CheckHttps
     {
         static readonly Stopwatch StartAt = Stopwatch.StartNew();
         static readonly object SyncLog = new object();
+        static SslProtocols? TheSslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
 
         static int Main()
         {
@@ -27,8 +28,9 @@ namespace CheckHttps
             ThreadPool.SetMinThreads(sites.Length + 4, 1000);
             PreJit();
             Log($"Runtime: {RuntimeInformation.FrameworkDescription}", ConsoleColor.DarkGray);
+            Log($"SSL Protocols: {TheSslProtocols}", ConsoleColor.DarkGray);
 
-            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls13 ;
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls13 | SecurityProtocolType.Tls;
 
 
             ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
@@ -40,8 +42,8 @@ namespace CheckHttps
                 using (HttpClientHandler handler = new HttpClientHandler())
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    // handler.SslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
-                    // handler.SslProtocols = SslProtocols.Tls12;
+                    if (TheSslProtocols.HasValue) handler.SslProtocols = TheSslProtocols.Value;
+                    // handler.SslProtocols = SslProtocols.Tls12;.
                     // handler.AllowAutoRedirect = true;
                     handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
                     {
