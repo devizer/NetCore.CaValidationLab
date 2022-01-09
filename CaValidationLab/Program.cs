@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Security;
+using System.Security.Authentication;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,21 +15,32 @@ namespace CheckHttps
         static readonly Stopwatch StartAt = Stopwatch.StartNew();
         static readonly object SyncLog = new object();
 
-        static void Main()
+        static int Main()
         {
-            var sites = new[] { "google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov", "tls-v1-2.badssl.com:1012", "tls-v1-1.badssl.com:1011", "tls-v1-0.badssl.com:1010" };
+            var sites = new[]
+            {
+                "google.com", "youtube.com", "facebook.com", "wikipedia.org", "wikipedia.com", "mozilla.com", "usa.gov",
+                "tls-v1-2.badssl.com:1012", "tls-v1-1.badssl.com:1011", "tls-v1-0.badssl.com:1010", 
+                // "tls13.1d.pw" - does not work
+            };
             ThreadPool.SetMinThreads(sites.Length + 4, 1000);
             PreJit();
 
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls13 ;
+
+
             ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
             StringBuilder report = new StringBuilder();
+            int errorsCount = 0;
             Parallel.ForEach(sites, op, site =>
             {
                 SslPolicyErrors sslError = SslPolicyErrors.None;
                 using (HttpClientHandler handler = new HttpClientHandler())
                 using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    handler.AllowAutoRedirect = true;
+                    handler.SslProtocols = SslProtocols.Tls | SslProtocols.Tls11 | SslProtocols.Tls12 | SslProtocols.Tls13;
+                    // handler.SslProtocols = SslProtocols.Tls12;
+                    // handler.AllowAutoRedirect = true;
                     handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
                     {
                         if (error != SslPolicyErrors.None)
@@ -43,23 +56,25 @@ namespace CheckHttps
                     {
                         HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, $"https://{site}");
                         var response = httpClient.SendAsync(req).Result;
-                        if (site == "wikipedia.com") Debugger.Break();
+                        if (site == "wikipedia.com" && Debugger.IsAttached) Debugger.Break();
                         string status = sslError == SslPolicyErrors.None ? "" : $", {sslError}";
-                        var reportLine = $"HTTP Status for {site}: {(int) response.StatusCode} ({response.StatusCode}){status}";
+                        var reportLine =
+                            $"HTTP Status for {site}: {(int) response.StatusCode} ({response.StatusCode}){status}";
                         Log(reportLine, ConsoleColor.White);
                         report.AppendLine(reportLine);
                     }
                     catch (Exception ex)
                     {
-                        var reportLine = $"Error for {site}: {ex.GetType().Name} {ex.Message}";
+                        var reportLine = $"Error for {site}: {ex.GetType().Name} {ex.Message}"; // {Environment.NewLine}{ex}
                         Log(reportLine, ConsoleColor.DarkRed);
                         report.AppendLine(reportLine);
+                        Interlocked.Increment(ref errorsCount);
                     }
                 }
             });
 
             Log($"TOTAL SUMMARY:{Environment.NewLine}{report}", ConsoleColor.Yellow);
-
+            return errorsCount;
         }
 
         static void PreJit()
