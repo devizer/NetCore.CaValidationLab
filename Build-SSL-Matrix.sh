@@ -97,11 +97,18 @@ echo "$ARGS" | while IFS='|' read script image title; do
     script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
     export PATH="${DOTNET_CLI_HOME}:${PATH}"
 
-    Say "Install TLS checker on the HOST for .NET $netver for [$image_title]"
-    rid=
+    # Install TLS checker
+    rid=linux-x64
     if [[ "$image" == "alpine"* ]]; then rid=linux-musl-x64; fi
     if [[ "$image" == "centos:6"* ]]; then rid=rhel.6-x64; fi
-    export RID=${rid:-} CHECK_TLS_DIR=$Work/check-tls-$netver; url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash;
+    export RID=${rid:-} CHECK_TLS_DIR=$Work/check-tls-$netver-$rid; 
+    if [[ -d $CHECK_TLS_DIR ]]; then
+      Say "Already built: TLS checker [$RID] on the HOST for .NET $netver for [$image_title]"
+    else
+      Say "Install TLS checker [$RID] on the HOST for .NET $netver for [$image_title]"
+      url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash;
+    fi
+
 
     Say "Check TLS on the [$image_title] container for .NET $netver"
     docker cp $CHECK_TLS_DIR w3top:/check-tls-$netver
