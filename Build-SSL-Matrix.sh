@@ -107,7 +107,8 @@ echo "$ARGS" | while IFS='|' read script image title; do
       export PATH="${DOTNET_CLI_HOME}:${PATH}"
 
       Say "Install TLS checker [$RID] on the HOST for .NET $netver for [$image_title]"
-      url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash;
+      url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; 
+      try-and-retry bash -c "(wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash"
     fi
 
 
