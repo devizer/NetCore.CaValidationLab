@@ -62,7 +62,7 @@ while IFS='|' read script image title; do
   image_title="$image $index/22"
   if [[ -z "${script:-}" ]]; then continue; fi
   echo "[$script] [$image] [$title]"
-  Say "Start image $image"
+  Say "Start container for image $image_title"
   docker rm -f w3top 2>/dev/null; docker rm -f w3top 2>/dev/null
   docker run --privileged -t --rm -d --hostname w3top-container --name w3top "$image" sh -c "while true; do sleep 42; done"
   if [[ "$image" == alpine* ]]; then docker exec -t w3top sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
