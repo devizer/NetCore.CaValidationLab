@@ -73,17 +73,18 @@ echo "$ARGS" | while IFS='|' read script image title; do
   image_title="$image $index/24"
   echo "[$script] [$image] [$title]"
   Say "Start container for image $image_title"
-  docker rm -f w3top 2>/dev/null; docker rm -f w3top 2>/dev/null
-  docker run --privileged -t --rm -d --hostname w3top-container --name w3top "$image" sh -c "while true; do sleep 42; done"
-  if [[ "$image" == alpine* ]]; then docker exec -t w3top sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
-  docker cp $Work/test-sources.sh w3top:/test-sources.sh
+  container="tls-$index";
+  docker rm -f $container 2>/dev/null; docker rm -f $container 2>/dev/null
+  docker run --privileged -t --rm -d --hostname $container --name $container "$image" sh -c "while true; do sleep 42; done"
+  if [[ "$image" == alpine* ]]; then docker exec -t $container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
+  docker cp $Work/test-sources.sh $container:/test-sources.sh
   for cmd in Say try-and-retry; do
-    docker cp /usr/local/bin/$cmd w3top:/usr/local/bin/$cmd
+    docker cp /usr/local/bin/$cmd $container:/usr/local/bin/$cmd
   done
 
   Say "Install sudo, tar, curl|wget, etc into the container [$image_title]"
   echo "Script: [$script]"
-  docker exec -t w3top bash -c "
+  docker exec -t $container bash -c "
       echo HOME: \$HOME; 
       source /test-sources.sh;
       $script
@@ -113,8 +114,8 @@ echo "$ARGS" | while IFS='|' read script image title; do
 
 
     Say "Check TLS on the [$image_title] container for .NET $netver"
-    docker cp $CHECK_TLS_DIR w3top:/check-tls-$netver
-    docker exec -t w3top bash -c "
+    docker cp $CHECK_TLS_DIR $container:/check-tls-$netver
+    docker exec -t $container bash -c "
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 TLS_REPORT_DIR=/tls-report-$netver;
       /check-tls-$netver/check-tls-core; true" | tee $Work/tls-report-$title-$netver.txt
 
@@ -124,9 +125,9 @@ echo "$ARGS" | while IFS='|' read script image title; do
     rm -rf "$report_dir/*"
     echo $title > "$report_dir/os"
     echo $netver > "$report_dir/net"
-    docker cp w3top:/tls-report-$netver/. "$report_dir"
-    Say "OK"
-    df -h -T
+    docker cp $container:/tls-report-$netver/. "$report_dir"
+    Say "OK: [$image_title]"
+    docker rm -f $container 2>/dev/null;
 
   done
 
