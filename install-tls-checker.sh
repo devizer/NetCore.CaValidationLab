@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # one liner
-# export CHECK_TLS_DIR=$HOME/.local/bin/check-tls url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash; $HOME/.local/bin/check-tls/check-tls-core
+# export CHECK_TLS_DIR=$HOME/.local/bin/check-tls; url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash; $HOME/.local/bin/check-tls/check-tls-core
 set -e
 set -u
 set -o pipefail
