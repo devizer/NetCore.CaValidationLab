@@ -17,6 +17,7 @@ steps:
     bash Build-SSL-Matrix.sh; error=$?
     cp -r -f /transient-builds/ssl-matrix/TLS-Reports $(REPORT)
     exit $error
+  displayName: 'SSL Matrix'
 
 - task: PublishBuildArtifacts@1
   condition: succeededOrFailed()
