@@ -19,7 +19,7 @@ git pull
 cat tests/*.sh > $Work/test-sources.sh; chmod +x $Work/test-sources.sh
 popd
 
-
+index=0;
 echo '
 
 fedora_prepare | fedora:24 | Fedora-24
@@ -58,6 +58,8 @@ while IFS='|' read script image title; do
   script="$(trim $script)"
   image="$(trim $image)"
   title="$(trim $title)"
+  count=$((count+1))
+  image_title="$image $(count)/22"
   if [[ -z "${script:-}" ]]; then continue; fi
   echo "[$script] [$image] [$title]"
   Say "Start image $image"
@@ -69,7 +71,7 @@ while IFS='|' read script image title; do
     docker cp /usr/local/bin/$cmd w3top:/usr/local/bin/$cmd
   done
 
-  Say "Install sudo, tar, curl|wget, etc into the container [$title]"
+  Say "Install sudo, tar, curl|wget, etc into the container [$image_title]"
   echo "Script: [$script]"
   docker exec -t w3top bash -c "
       echo HOME: \$HOME; 
@@ -85,25 +87,27 @@ while IFS='|' read script image title; do
     script=https://raw.githubusercontent.com/devizer/test-and-build/master/lab/install-DOTNET.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash; 
     export PATH="${DOTNET_CLI_HOME}:${PATH}"
 
-    Say "Install TLS checker on the HOST for .NET $netver"
+    Say "Install TLS checker on the HOST for .NET $netver for [$image_title]"
     rid=
     if [[ "$image" == "alpine"* ]]; then rid=linux-musl-x64; fi
     if [[ "$image" == "centos:6"* ]]; then rid=rhel.6-x64; fi
     export RID=${rid:-} CHECK_TLS_DIR=$Work/check-tls-$netver; url=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/install-tls-checker.sh; (wget -q -nv --no-check-certificate -O - $url 2>/dev/null || curl -ksSL $url) | bash;
 
-    Say "Check TLS on the $image container for .NET $netver"
+    Say "Check TLS on the [$image_title] container for .NET $netver"
     docker cp $CHECK_TLS_DIR w3top:/check-tls-$netver
     docker exec -t w3top bash -c "
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 TLS_REPORT_DIR=/tls-report-$netver;
       /check-tls-$netver/check-tls-core; true" | tee $Work/tls-report-$title-$netver.txt
 
-    Say "Grab TLS REPORT"
+    Say "Grab TLS REPORT from [$image_title]"
     report_dir="$Work/TLS-Reports/Net Core $netver on $title"
     mkdir -p "$report_dir"
     rm -rf "$report_dir/*"
     echo $title > "$report_dir/os"
     echo $netver > "$report_dir/net"
     docker cp w3top:/tls-report-$netver/. "$report_dir"
+    Say "OK"
+    df -h -T
 
   done
 

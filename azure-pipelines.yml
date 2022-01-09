@@ -14,10 +14,21 @@ steps:
 - script: | 
     script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
     Say --Reset-Stopwatch
-    bash Build-SSL-Matrix.sh 
+    bash Build-SSL-Matrix.sh; error=$?
+    cp -r -f /transient-builds/ssl-matrix/TLS-Reports $(REPORT)
+    exit $error
 
 - task: PublishBuildArtifacts@1
   condition: succeededOrFailed()
   inputs:
-    pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+    pathtoPublish: '$(REPORT)'
     artifactName: 'SSL-Matrix'
+
+- script: |
+    rm -rf /tmp/*
+    Say "free space"
+    df -h -T
+    Say "System Stat"
+    Show-System-Stat || true
+  condition: succeededOrFailed()
+  displayName: 'System Stat'
