@@ -6,8 +6,20 @@ set -o pipefail
 NET_VERS="3.1 5.0 6.0"
 NET_VERS_CENTOS_6="3.1.120"
 ARGS='
+
+pacman -Syu --noconfirm haveged; pacman -Sy --noconfirm sudo tar | manjarolinux/base | Manjaro
+
 fedora_prepare | fedora:24 | Fedora-24
+fedora_prepare | fedora:25 | Fedora-25
 fedora_prepare | fedora:26 | Fedora-26
+fedora_prepare | fedora:27 | Fedora-27
+fedora_prepare | fedora:28 | Fedora-28
+fedora_prepare | fedora:29 | Fedora-29
+fedora_prepare | fedora:30 | Fedora-30
+fedora_prepare | fedora:31 | Fedora-31
+fedora_prepare | fedora:32 | Fedora-32
+fedora_prepare | fedora:33 | Fedora-33
+fedora_prepare | fedora:34 | Fedora-34
 fedora_prepare | fedora:35 | Fedora-35
 
 pacman -Sy --noconfirm sudo tar | archlinux:base | Arch
@@ -19,6 +31,7 @@ prepare_centos | centos:6.10            | CentOS-6
 prepare_centos | centos:8               | CentOS-8
 
 alpine_prepare | alpine:3.12            | Alpine-3.12
+alpine_prepare | alpine:3.13            | Alpine-3.13
 alpine_prepare | alpine:3.14            | Alpine-3.14
                                          
 debian_prepare | debian:8               | Debian-8   
@@ -70,7 +83,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
   title="$(trim $title)"
   if [[ -z "${script:-}" ]]; then continue; fi
   index=$((index+1))
-  image_title="$image $index/24"
+  image_title="$image $index/33"
   echo "[$script] [$image] [$title]"
   Say "Start container for image $image_title"
   container="tls-$index";
