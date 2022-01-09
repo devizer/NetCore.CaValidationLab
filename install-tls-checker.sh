@@ -9,6 +9,7 @@ CHECK_TLS_DIR="${CHECK_TLS_DIR:-$HOME/.local/bin/check-tls}"
 function install_tls_checker() {
     rid=linux-x64
     if [[ $(uname -m) == armv7* ]]; then rid=linux-arm; elif [[ $(uname -m) == aarch64 ]]; then rid=linux-arm64; elif [[ $(uname -m) == x86_64 ]]; then rid=linux-x64; fi; if [[ $(uname -s) == Darwin ]]; then rid=osx-x64; fi;
+    if [[ -n "${RID:-}" ]] rid=$RID;
     echo Self-Contained rid is \[$rid\]
 
     work=/tmp/check-tls-core
