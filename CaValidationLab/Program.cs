@@ -130,6 +130,11 @@ namespace CheckHttps
 
             lock (SyncLog)
             {
+                ConsoleColor back = ConsoleColor.DarkGray;
+                tryAndForget(() => back = Console.BackgroundColor);
+                if (back == ConsoleColor.DarkGray && fore == ConsoleColor.DarkGray)
+                    fore = ConsoleColor.Gray;
+
                 ConsoleColor prev = ConsoleColor.White;
                 tryAndForget(() => prev = Console.ForegroundColor);
                 tryAndForget(() => Console.ForegroundColor = ConsoleColor.DarkGray);
