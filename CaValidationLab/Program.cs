@@ -46,8 +46,10 @@ namespace CheckHttps
                         if (error != SslPolicyErrors.None)
                             sslError = error;
 
-                        Log($"SSL Error Status for {site} ({message.RequestUri}): {error}",
+                        if (error != SslPolicyErrors.None)
+                            Log($"SSL Error Status for {site} ({message.RequestUri}): {error}",
                             error == SslPolicyErrors.None ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed);
+
                         return true;
                     };
 
