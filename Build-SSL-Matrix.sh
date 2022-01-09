@@ -2,26 +2,10 @@
 set -e
 set -u
 set -o pipefail
-function trim() {
-  # echo -e "$1" | tr -d '[:space:]'
-  echo -e "${*:-}" | sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'
-}
 
-Say --Reset-Stopwatch
-
-Work=/transient-builds/ssl-matrix
-Say "git clone tests: [$Work/test-sources.sh]"
-sudo mkdir -p $Work; sudo chown -R $(whoami) $Work
-pushd $Work
-test ! -d w3top-bin && git clone https://github.com/devizer/w3top-bin
-cd w3top-bin
-git pull
-cat tests/*.sh > $Work/test-sources.sh; chmod +x $Work/test-sources.sh
-popd
-
-index=0;
-echo '
-
+NET_VERS="3.1 5.0 6.0"
+NET_VERS_CENTOS_6="3.1.120"
+ARGS='
 fedora_prepare | fedora:24 | Fedora-24
 fedora_prepare | fedora:26 | Fedora-26
 fedora_prepare | fedora:35 | Fedora-35
@@ -51,16 +35,42 @@ debian_prepare | ubuntu:14.04           | Ubuntu-14.04
 opensuse_prepare | opensuse/leap:42    | SUSE-42
 opensuse_prepare | opensuse/leap:15    | SUSE-15
 opensuse_prepare | opensuse/tumbleweed | SUSE-Tumbleweed
+'
 
-' |
-while IFS='|' read script image title; do
+
+function trim() {
+  # echo -e "$1" | tr -d '[:space:]'
+  echo -e "${*:-}" | sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'
+}
+
+Say --Reset-Stopwatch
+
+Work=/transient-builds/ssl-matrix
+Say "git clone tests: [$Work/test-sources.sh]"
+sudo mkdir -p $Work; sudo chown -R $(whoami) $Work
+pushd $Work
+test ! -d w3top-bin && git clone https://github.com/devizer/w3top-bin
+cd w3top-bin
+git pull
+cat tests/*.sh > $Work/test-sources.sh; chmod +x $Work/test-sources.sh
+popd
+
+count=0;
+echo "$ARGS" | while IFS='|' read script image title; do
+  if [[ -n "${script:-}" ]]; then count=$((count+1)); fi
+  echo "$count, [$script]" > /dev/null
+done
+Say "Count: $count"
+
+index=0;
+echo "$ARGS" | while IFS='|' read script image title; do
   # echo "A. [$script] [$image] [$title]"
   script="$(trim $script)"
   image="$(trim $image)"
   title="$(trim $title)"
-  index=$((index+1))
-  image_title="$image $index/22"
   if [[ -z "${script:-}" ]]; then continue; fi
+  index=$((index+1))
+  image_title="$image $index/24"
   echo "[$script] [$image] [$title]"
   Say "Start container for image $image_title"
   docker rm -f w3top 2>/dev/null; docker rm -f w3top 2>/dev/null
@@ -79,7 +89,7 @@ while IFS='|' read script image title; do
       $script
   "
 
-  net_vers="3.1 5.0 6.0"; if [[ "$image" == "centos:6"* ]]; then net_vers="3.1.120"; fi
+  net_vers=$NET_VERS; if [[ "$image" == "centos:6"* ]]; then net_vers=$NET_VERS_CENTOS_6; fi
   for netver in $net_vers; do
     PREVPATH="${PREVPATH:-$PATH}"
     DOTNET_CLI_HOME=$Work/dotnet-$netver
