@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
+using System.Runtime.InteropServices;
 using System.Security.Authentication;
 using System.Text;
 using System.Threading;
@@ -25,6 +26,7 @@ namespace CheckHttps
             };
             ThreadPool.SetMinThreads(sites.Length + 4, 1000);
             PreJit();
+            Log($"Runtime: {RuntimeInformation.FrameworkDescription}", ConsoleColor.DarkGray);
 
             System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls13 ;
 
