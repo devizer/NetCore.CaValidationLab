@@ -1,0 +1,23 @@
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
+variables:
+  REPORT: $(Build.ArtifactStagingDirectory)
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+
+steps:
+- script: | 
+    script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+    Say --Reset-Stopwatch
+    bash Build-SSL-Matrix.sh 
+
+- task: PublishBuildArtifacts@1
+  condition: succeededOrFailed()
+  inputs:
+    pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+    artifactName: 'SSL-Matrix'
