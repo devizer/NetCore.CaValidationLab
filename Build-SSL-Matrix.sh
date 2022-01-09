@@ -11,7 +11,7 @@ Say --Reset-Stopwatch
 
 Work=/transient-builds/ssl-matrix
 Say "git clone tests: [$Work/test-sources.sh]"
-sudo mkdir -p $Work; sudo chown -R $Work $(whoami)
+sudo mkdir -p $Work; sudo chown -R $(whoami) $Work
 pushd $Work
 test ! -d w3top-bin && git clone https://github.com/devizer/w3top-bin
 cd w3top-bin
