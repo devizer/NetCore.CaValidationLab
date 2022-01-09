@@ -50,13 +50,14 @@ namespace CheckHttps
                                                               SecurityProtocolType.Tls13 | SecurityProtocolType.Tls;
 
 
-            ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
+            // JIT
             _report = new StringBuilder();
             _errorsCount = 0;
             _muteLog = true;
             Stopwatch sw = Stopwatch.StartNew();
             TrySite("mozilla.com");
             sw.Stop();
+            // Perform
             _errorsCount = 0;
             _report.Clear();
             StartAt.Restart();
@@ -64,6 +65,7 @@ namespace CheckHttps
             Log($"Runtime: {RuntimeInformation.FrameworkDescription}", ConsoleColor.DarkGray);
             Log($"SSL Protocols: {TheSslProtocols}", ConsoleColor.DarkGray);
             Log($"JIT for http client completed in {sw.ElapsedMilliseconds:n0} msec", ConsoleColor.DarkGray);
+            ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
             Parallel.ForEach(sites, op, TrySite);
 
             Log($"TOTAL SUMMARY:{Environment.NewLine}{_report}", ConsoleColor.Yellow);
