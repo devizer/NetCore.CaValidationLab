@@ -58,7 +58,7 @@ while IFS='|' read script image title; do
   script="$(trim $script)"
   image="$(trim $image)"
   title="$(trim $title)"
-  index=$((count+1))
+  index=$((index+1))
   image_title="$image $index/22"
   if [[ -z "${script:-}" ]]; then continue; fi
   echo "[$script] [$image] [$title]"
