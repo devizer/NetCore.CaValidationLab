@@ -22,7 +22,7 @@ function install_tls_checker() {
     # time dotnet run -c Release
     time dotnet publish -c Release --self-contained -o out -r $rid
     mkdir -p $TARGET_DIR
-    cp -r -f out/ $TARGET_DIR
+    cp -r -f out/* $TARGET_DIR
     rm -rf bin obj out
     popd >/dev/null
     rm -rf $work
