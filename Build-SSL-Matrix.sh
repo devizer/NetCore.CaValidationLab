@@ -144,6 +144,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
       /check-tls-$netver/check-tls-core; err=$?;
       if [ "$err" -ne 0 ]; then
         rm -rf $TLS_REPORT_DIR/*
+        Say "Retry (2 of 2) TLS Check for NET $netver for $image_title"
         /check-tls-$netver/check-tls-core
       fi
       true" | tee $Work/tls-report-$title-$netver.txt
