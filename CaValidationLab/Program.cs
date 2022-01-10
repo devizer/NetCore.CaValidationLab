@@ -132,10 +132,16 @@ namespace CheckHttps
             }
         }
 
+
+        static string GetStorageDir(string idSite)
+        {
+            return Path.Combine(ReportDir, $"TLS-Report-{idSite}");
+        }
+
         static void StoreReportField(string idSite, string name, string value)
         {
             if (string.IsNullOrWhiteSpace(ReportDir)) return;
-            var fullName = Path.Combine(ReportDir, $"TLS-Report-{idSite}", $"Field-{name}.storage");
+            var fullName = Path.Combine(GetStorageDir(idSite), $"Field-{name}.storage");
             try
             {
                 Directory.CreateDirectory(new FileInfo(fullName).Directory.FullName);
