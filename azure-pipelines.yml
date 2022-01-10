@@ -28,7 +28,9 @@ steps:
     sudo sysctl -p --system
 
     bash Build-SSL-Matrix.sh; error=$?
-    tar czf $(REPORT)/TLS_REPORT.tar.gz /transient-builds/ssl-matrix/TLS-Reports
+    pushd /transient-builds/ssl-matrix/TLS-Reports
+      tar czf $(REPORT)/TLS_REPORTS.tar.gz *
+    popd
     # cp -r -f /transient-builds/ssl-matrix/TLS-Reports $(REPORT)
     exit $error
   displayName: 'SSL Matrix'
