@@ -104,9 +104,11 @@ echo "$ARGS" | while IFS='|' read script image title; do
   Say "Install sudo, tar, curl|wget, etc into the container [$image_title]"
   echo "Script: [$script]"
   docker exec -t $container bash -c "
+      set -e
       echo HOME: \$HOME; 
       source /test-sources.sh;
       $script
+      downgrade_open_ssl_3
   "
 
   net_vers=$NET_VERS; if [[ "$image" == "centos:6"* ]]; then net_vers=$NET_VERS_CENTOS_6; fi
@@ -136,6 +138,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
     docker cp $CHECK_TLS_DIR $container:/check-tls-$netver
     docker exec -t $container bash -c "
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 TLS_REPORT_DIR=/tls-report-$netver;
+      if [[ -d /opt/openssl/lib ]]; then export LD_LIBRARY_PATH=/opt/openssl/lib; fi
       /check-tls-$netver/check-tls-core; true" | tee $Work/tls-report-$title-$netver.txt
 
     Say "Grab TLS REPORT from [$image_title]"
