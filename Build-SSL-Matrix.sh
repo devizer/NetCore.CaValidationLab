@@ -141,9 +141,9 @@ echo "$ARGS" | while IFS='|' read script image title; do
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
       export TLS_REPORT_DIR=/tls-report-$netver;
       if [[ -d /opt/openssl/lib ]]; then export LD_LIBRARY_PATH=/opt/openssl/lib; fi
-      /check-tls-$netver/check-tls-core; err=$?;
-      if [ "$err" -ne 0 ]; then
-        rm -rf $TLS_REPORT_DIR/*
+      /check-tls-$netver/check-tls-core; err=\$?;
+      if [ \"\$err\" -ne 0 ]; then
+        rm -rf \$TLS_REPORT_DIR/*
         Say \"Retry (2 of 2) TLS Check for NET $netver for $image_title\"
         /check-tls-$netver/check-tls-core
       fi
