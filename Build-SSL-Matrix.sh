@@ -140,7 +140,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
     docker exec -t $container bash -c "
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1 TLS_REPORT_DIR=/tls-report-$netver;
       if [[ -d /opt/openssl/lib ]]; then export LD_LIBRARY_PATH=/opt/openssl/lib; fi
-      /check-tls-$netver/check-tls-core; true" | tee $Work/tls-report-$title-$netver.txt
+      /check-tls-$netver/check-tls-core || /check-tls-$netver/check-tls-core; true" | tee $Work/tls-report-$title-$netver.txt
 
     Say "Grab TLS REPORT from [$image_title]"
     report_dir="$Work/TLS-Reports/Net Core $netver on $title"
