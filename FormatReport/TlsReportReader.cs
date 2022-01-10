@@ -14,6 +14,21 @@ namespace FormatReport
         public string Exception { get; set; }
         public string ExceptionMessages { get; set; }
 
+        public string GetNet()
+        {
+            return new Version(NetVersion).ToString(2);
+        }
+
+        // Site: facebook.com,google.com,mozilla.com,raw.githubusercontent.com,tls13.1d.pw,tls-v1-0.badssl.com:1010,tls-v1-1.badssl.com:1011,tls-v1-2.badssl.com:1012,usa.gov,wikipedia.com,wikipedia.org,youtube.com
+        public string GetTls()
+        {
+            if (Site.StartsWith("tls13.1d.pw")) return "1.3";
+            if (Site.StartsWith("tls-v1-2.badssl.com")) return "1.2";
+            if (Site.StartsWith("tls-v1-1.badssl.com")) return "1.1";
+            if (Site.StartsWith("tls-v1-0.badssl.com")) return "1.0";
+            return null;
+        }
+
         public override string ToString()
         {
             if (Exception == null)

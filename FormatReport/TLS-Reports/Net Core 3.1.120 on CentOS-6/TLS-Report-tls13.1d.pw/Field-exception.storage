@@ -14,7 +14,6 @@ System.AggregateException: One or more errors occurred. (The SSL connection coul
    at System.Net.Security.SslStream.StartReadFrame(Byte[] buffer, Int32 readBytes, AsyncProtocolRequest asyncRequest)
    at System.Net.Security.SslStream.PartialFrameCallback(AsyncProtocolRequest asyncRequest)
 --- End of stack trace from previous location where exception was thrown ---
-   at System.Net.Security.SslStream.ThrowIfExceptional()
    at System.Net.Security.SslStream.InternalEndProcessAuthentication(LazyAsyncResult lazyResult)
    at System.Net.Security.SslStream.EndProcessAuthentication(IAsyncResult result)
    at System.Net.Security.SslStream.EndAuthenticateAsClient(IAsyncResult asyncResult)
