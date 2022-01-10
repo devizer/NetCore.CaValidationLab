@@ -14,6 +14,19 @@ steps:
 - script: | 
     script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
     Say --Reset-Stopwatch
+
+    Say "Reconfigure NET"
+    echo '
+    net.ipv4.ip_forward = 1
+    vm.swappiness = 20
+    fs.inotify.max_user_watches = 524288
+    net.ipv6.conf.all.disable_ipv6 = 1
+    net.ipv6.conf.default.disable_ipv6 = 1
+    net.ipv6.conf.lo.disable_ipv6 = 1
+    ' | sudo tee -a /etc/sysctl.conf
+    sudo sysctl -p
+    sudo sysctl -p --system
+
     bash Build-SSL-Matrix.sh; error=$?
     cp -r -f /transient-builds/ssl-matrix/TLS-Reports $(REPORT)
     exit $error
