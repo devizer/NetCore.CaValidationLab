@@ -6,6 +6,8 @@ set -o pipefail
 NET_VERS="3.1 5.0 6.0"
 NET_VERS_CENTOS_6="3.1.120"
 ARGS='
+fedora_prepare | fedora:36 | Fedora-36
+
 echo gentoo is ready already | gentoo/stage3-amd64-nomultilib | Gentoo
 
 pacman -Syu --noconfirm haveged; pacman -Sy --noconfirm sudo tar | manjarolinux/base | Manjaro
