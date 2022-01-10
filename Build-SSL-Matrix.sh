@@ -6,8 +6,6 @@ set -o pipefail
 NET_VERS="3.1 5.0 6.0"
 NET_VERS_CENTOS_6="3.1.120"
 ARGS='
-fedora_prepare | fedora:36 | Fedora-36
-debian_prepare | ubuntu:22.04           | Ubuntu-22.04
 
 echo gentoo is ready already | gentoo/stage3-amd64-nomultilib | Gentoo
 
@@ -25,6 +23,7 @@ fedora_prepare | fedora:32 | Fedora-32
 fedora_prepare | fedora:33 | Fedora-33
 fedora_prepare | fedora:34 | Fedora-34
 fedora_prepare | fedora:35 | Fedora-35
+fedora_prepare | fedora:36 | Fedora-36
 
 pacman -Sy --noconfirm sudo tar | archlinux:base | Arch
 
@@ -42,8 +41,9 @@ debian_prepare | debian:9               | Debian-9
 debian_prepare | debian:10              | Debian-10
 debian_prepare | debian:11              | Debian-11
                                          
-debian_prepare | ubuntu:20.04           | Ubuntu-20.04
+debian_prepare | ubuntu:22.04           | Ubuntu-22.04
 debian_prepare | ubuntu:21.10           | Ubuntu-21.10
+debian_prepare | ubuntu:20.04           | Ubuntu-20.04
 debian_prepare | ubuntu:18.04           | Ubuntu-18.04
 debian_prepare | ubuntu:16.04           | Ubuntu-16.04
 debian_prepare | ubuntu:14.04           | Ubuntu-14.04
@@ -137,17 +137,17 @@ echo "$ARGS" | while IFS='|' read script image title; do
 
     Say "Check TLS on the [$image_title] container for .NET $netver"
     docker cp $CHECK_TLS_DIR $container:/check-tls-$netver
-    docker exec -t $container bash -c "
+    docker exec -t $container bash -c '
       export DOTNET_SYSTEM_NET_HTTP_USESOCKETSHTTPHANDLER=1 DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
-      export TLS_REPORT_DIR=/tls-report-$netver;
+      export TLS_REPORT_DIR=/tls-report-'$netver';
       if [[ -d /opt/openssl/lib ]]; then export LD_LIBRARY_PATH=/opt/openssl/lib; fi
-      /check-tls-$netver/check-tls-core; err=\$?;
-      if [ \"\$err\" -ne 0 ]; then
-        rm -rf \$TLS_REPORT_DIR/*
-        Say \"Retry (2 of 2) TLS Check for NET $netver for $image_title\"
-        /check-tls-$netver/check-tls-core
+      /check-tls-'$netver'/check-tls-core; err=$?;
+      if [ "$err" -ne 0 ]; then
+        rm -rf $TLS_REPORT_DIR/*
+        Say "Retry (2 of 2) TLS Check for NET '$netver' for '$image_title'"
+        /check-tls-'$netver'/check-tls-core
       fi
-      true" | tee $Work/tls-report-$title-$netver.txt
+      true' | tee $Work/tls-report-$title-$netver.txt
 
     Say "Grab TLS REPORT from [$image_title]"
     report_dir="$Work/TLS-Reports/Net Core $netver on $title"
