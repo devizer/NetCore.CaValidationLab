@@ -75,51 +75,59 @@ namespace CheckHttps
         private static void TrySite(string site)
         {
             var requestUri = $"https://{site}";
-            var idSite = new Uri(requestUri).Host;
-            StoreReportField(idSite, "site", site);
-            SslPolicyErrors sslError = SslPolicyErrors.None;
-            using (HttpClientHandler handler = new HttpClientHandler())
-            using (HttpClient httpClient = new HttpClient(handler))
+            var MaxRetryCount = 3;
+            for (int indexTry = 1; indexTry <= MaxRetryCount; indexTry++)
             {
-                if (TheSslProtocols.HasValue) handler.SslProtocols = TheSslProtocols.Value;
-                // handler.SslProtocols = SslProtocols.Tls12;.
-                // handler.AllowAutoRedirect = true;
-                handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
+                var idSite = new Uri(requestUri).Host;
+                StoreReportField(idSite, "site", site);
+                SslPolicyErrors sslError = SslPolicyErrors.None;
+                using (HttpClientHandler handler = new HttpClientHandler())
+                using (HttpClient httpClient = new HttpClient(handler))
                 {
-                    if (error != SslPolicyErrors.None)
-                        sslError = error;
+                    string infoPrefix = indexTry == 1 ? "" : $"(try {indexTry} of {MaxRetryCount}) ";
+                    if (TheSslProtocols.HasValue) handler.SslProtocols = TheSslProtocols.Value;
+                    // handler.SslProtocols = SslProtocols.Tls12;.
+                    // handler.AllowAutoRedirect = true;
+                    handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
+                    {
+                        if (error != SslPolicyErrors.None)
+                            sslError = error;
 
-                    if (true || error != SslPolicyErrors.None)
-                        Log($"SSL Error Status for {site} ({message.RequestUri}): {error}",
-                            error == SslPolicyErrors.None ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed);
+                        if (true || error != SslPolicyErrors.None)
+                            Log($"{infoPrefix}SSL Error Status for {site} ({message.RequestUri}): {error}",
+                                error == SslPolicyErrors.None ? ConsoleColor.DarkGreen : ConsoleColor.DarkRed);
 
-                    return true;
-                };
+                        return true;
+                    };
 
-                Log($"Starting {site} ...", ConsoleColor.DarkGray);
-                try
-                {
-                    HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, requestUri);
-                    var response = httpClient.SendAsync(req).Result;
-                    if (site == "wikipedia.com" && Debugger.IsAttached) Debugger.Break();
-                    string status = sslError == SslPolicyErrors.None ? "" : $", {sslError}";
-                    var reportLine =
-                        $"HTTP Status for {site}: {(int) response.StatusCode} ({response.StatusCode}){status}";
-                    Log(reportLine, ConsoleColor.White);
-                    _report.AppendLine(reportLine);
-                    StoreReportField(idSite, "http-status", ((int)response.StatusCode).ToString());
-                    StoreReportField(idSite, "ssl-error", sslError.ToString());
-                }
-                catch (Exception ex)
-                {
-                    var reportLine =
-                        $"Error for {site}: {ex.GetType().Name} {ex.Message}"; // {Environment.NewLine}{ex}
-                    Log(reportLine, ConsoleColor.DarkRed);
-                    _report.AppendLine(reportLine);
-                    Interlocked.Increment(ref _errorsCount);
-                    StoreReportField(idSite, "exception", ex.ToString());
-                    StoreReportField(idSite, "exception-messages", GetExceptionDigest(ex));
-
+                    Log($"{infoPrefix}Starting {site} ...", ConsoleColor.DarkGray);
+                    try
+                    {
+                        HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, requestUri);
+                        var response = httpClient.SendAsync(req).Result;
+                        if (site == "wikipedia.com" && Debugger.IsAttached) Debugger.Break();
+                        string status = sslError == SslPolicyErrors.None ? "" : $", {sslError}";
+                        var reportLine =
+                            $"HTTP Status for {site}: {(int) response.StatusCode} ({response.StatusCode}){status}";
+                        Log($"{infoPrefix}{reportLine}", ConsoleColor.White);
+                        _report.AppendLine(reportLine);
+                        StoreReportField(idSite, "http-status", ((int) response.StatusCode).ToString());
+                        StoreReportField(idSite, "ssl-error", sslError.ToString());
+                        return;
+                    }
+                    catch (Exception ex)
+                    {
+                        var reportLine =
+                            $"Exception for {site}: {ex.GetType().Name} {ex.Message}"; // {Environment.NewLine}{ex}
+                        Log($"{infoPrefix}{reportLine}", ConsoleColor.DarkRed);
+                        if (indexTry == MaxRetryCount)
+                        {
+                            _report.AppendLine(reportLine);
+                            Interlocked.Increment(ref _errorsCount);
+                            StoreReportField(idSite, "exception", ex.ToString());
+                            StoreReportField(idSite, "exception-messages", GetExceptionDigest(ex));
+                        }
+                    }
                 }
             }
         }
