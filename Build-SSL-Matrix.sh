@@ -7,6 +7,7 @@ NET_VERS="3.1 5.0 6.0"
 NET_VERS_CENTOS_6="3.1.120"
 ARGS='
 fedora_prepare | fedora:36 | Fedora-36
+debian_prepare | ubuntu:22.04           | Ubuntu-22.04
 
 echo gentoo is ready already | gentoo/stage3-amd64-nomultilib | Gentoo
 
