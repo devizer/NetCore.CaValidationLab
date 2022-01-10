@@ -74,7 +74,7 @@ popd
 count=0;
 function get_image_count() {
   echo "$ARGS" | while IFS='|' read script image title; do
-    if [[ -n "${script:-}" ]]; then count=$((count+1)); fi
+    if [[ -n "${script:-}" ]]; then count="$((count+1))"; fi
     echo "$count, [$script]" > /dev/null
   done
   echo $count;
@@ -90,7 +90,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
   title="$(trim $title)"
   if [[ -z "${script:-}" ]]; then continue; fi
   index=$((index+1))
-  image_title="$image $index/33"
+  image_title="$image $index/35"
   echo "[$script] [$image] [$title]"
   Say "Start container for image $image_title"
   container="tls-$index";
