@@ -19,5 +19,4 @@ System.AggregateException: One or more errors occurred. (The SSL connection coul
    at System.Net.Http.HttpClient.SendAsyncCore(HttpRequestMessage request, HttpCompletionOption completionOption, Boolean async, Boolean emitTelemetryStartStop, CancellationToken cancellationToken)
    --- End of inner exception stack trace ---
    at System.Threading.Tasks.Task`1.GetResultCore(Boolean waitCompletionNotification)
-   at System.Threading.Tasks.Task`1.get_Result()
-   at CheckHttps.Program.TrySite(String site) in /tmp/check-tls-core/Program.cs:line 103
+   at CheckHttps.Program.TrySite(String site)

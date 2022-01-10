@@ -15,13 +15,15 @@ namespace FormatReport
         {
             TlsReportReader rdr = new TlsReportReader();
             var rawReport = rdr.ReadRaw("TLS-Reports");
+            foreach (var reportPoint in rawReport)
+                reportPoint.OsAndVersion = FormatOsName(reportPoint.OsAndVersion);
 
             var osList = rawReport.Select(x => x.OsAndVersion).Distinct().OrderBy(x => x).ToList();
+            osList = OsSorting.Sort(osList);
             Console.WriteLine($"OS: {string.Join(",",osList)}");
 
             var netList = rawReport.Select(x => x.GetNet()).Distinct().OrderBy(x => x).ToList();
             Console.WriteLine($".NET: {string.Join(",", netList)}");
-
 
             var siteList = rawReport.Select(x => x.Site).Distinct().OrderBy(x => x).ToList();
             Console.WriteLine($"Site: {string.Join(",", siteList)}");
@@ -42,7 +44,7 @@ namespace FormatReport
                 foreach (var tls in tlsList)
                 {
                     var cellTlsHeader = sheet.Cells[1, 2 + iTls * netList.Count, 1, (iTls + 1) * netList.Count+1];
-                    cellTlsHeader.Value = $"TSL {tls}";
+                    cellTlsHeader.Value = $"TLS {tls}";
                     cellTlsHeader.Merge = true;
                     cellTlsHeader.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
@@ -63,6 +65,8 @@ namespace FormatReport
                             if (x == 0)
                             {
                                 sheet.Cells[y + 3, 1].Value = FormatOsName(os);
+                                sheet.Cells[y + 3, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                sheet.Cells[y + 3, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                                 var row = sheet.Rows[y + 3];
                                 row.Height = 24;
                                 row.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -74,6 +78,8 @@ namespace FormatReport
                             );
                             var cellPoint = sheet.Cells[y + 3, x + 2];
                             cellPoint.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            if (iNet+1 == netList.Count)
+                                cellPoint.Style.Border.Right.Style = ExcelBorderStyle.Thin;
 
                             bool isException = point?.Exception?.Length > 0;
                             bool isOk = point?.HttpStatus?.Length > 0;
