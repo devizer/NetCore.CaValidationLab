@@ -158,6 +158,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
       fi
 
       # get open ssl version
+      export LD_LIBRARY_PATH=
       source /test-sources.sh
       openssl_ver=\$(openssl version | awk '{print \$2}')
       if [ -z \"\$openssl_ver\" ]; then
