@@ -5,6 +5,7 @@ set -o pipefail
 
 NET_VERS="3.1 5.0 6.0"
 NET_VERS_CENTOS_6="3.1.120"
+
 ARGS='
 
 echo gentoo is ready already | gentoo/stage3-amd64-nomultilib | Gentoo
@@ -51,6 +52,12 @@ debian_prepare | ubuntu:14.04           | Ubuntu-14.04
 opensuse_prepare | opensuse/leap:42    | SUSE-42
 opensuse_prepare | opensuse/leap:15    | SUSE-15
 opensuse_prepare | opensuse/tumbleweed | SUSE-Tumbleweed
+'
+ARGS='
+alpine_prepare | alpine:3.12            | Alpine-3.12
+fedora_prepare | fedora:30              | Fedora-30
+debian_prepare | debian:10              | Debian-10
+debian_prepare | ubuntu:20.04           | Ubuntu-20.04
 '
 
 
@@ -148,6 +155,7 @@ echo "$ARGS" | while IFS='|' read script image title; do
         Say \"Retry (2 of 2) TLS Check for NET $netver for $image_title\";
         /check-tls-$netver/check-tls-core;
       fi
+      openssl version | awk '{print \$2}' > \$TLS_REPORT_DIR/openssl
       exit 0;" | tee $Work/tls-report-$title-$netver.txt
 
     Say "Grab TLS REPORT from [$image_title]"
