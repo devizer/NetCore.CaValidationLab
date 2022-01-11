@@ -53,7 +53,8 @@ opensuse_prepare | opensuse/leap:42    | SUSE-42
 opensuse_prepare | opensuse/leap:15    | SUSE-15
 opensuse_prepare | opensuse/tumbleweed | SUSE-Tumbleweed
 '
-ARGS='
+
+ARGS_SHORT='
 alpine_prepare | alpine:3.12            | Alpine-3.12
 fedora_prepare | fedora:30              | Fedora-30
 debian_prepare | debian:10              | Debian-10
