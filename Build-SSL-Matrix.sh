@@ -156,7 +156,14 @@ echo "$ARGS" | while IFS='|' read script image title; do
         Say \"Retry (2 of 2) TLS Check for NET $netver for $image_title\";
         /check-tls-$netver/check-tls-core;
       fi
-      openssl version | awk '{print \$2}' > \$TLS_REPORT_DIR/openssl
+
+      # get open ssl version
+      source /test-sources.sh
+      openssl_ver=\$(openssl version | awk '{print \$2}')
+      if [ -z \"\$openssl_ver\" ]; then
+        openssl_ver=\$(get_openssl_system_version)
+      fi
+      echo \$openssl_ver > \$TLS_REPORT_DIR/openssl
       exit 0;" | tee $Work/tls-report-$title-$netver.txt
 
     Say "Grab TLS REPORT from [$image_title]"

@@ -16,7 +16,13 @@ namespace FormatReport
             TlsReportReader rdr = new TlsReportReader();
             var rawReport = rdr.ReadRaw("TLS-Reports");
             foreach (var reportPoint in rawReport)
-                reportPoint.OsAndVersion = FormatOsName(reportPoint.OsAndVersion);
+            {
+                var osAndVersion = FormatOsName(reportPoint.OsAndVersion);
+                if (!string.IsNullOrEmpty(reportPoint.SystemOpenSslVersion))
+                    osAndVersion += $", {reportPoint.SystemOpenSslVersion}";
+
+                reportPoint.OsAndVersion = osAndVersion;
+            }
 
             var osList = rawReport.Select(x => x.OsAndVersion).Distinct().OrderBy(x => x).ToList();
             osList = OsSorting.Sort(osList);

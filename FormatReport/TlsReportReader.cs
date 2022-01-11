@@ -13,6 +13,7 @@ namespace FormatReport
         public string SslError { get; set; }
         public string Exception { get; set; }
         public string ExceptionMessages { get; set; }
+        public string SystemOpenSslVersion { get; set; }
 
         public string GetNet()
         {
@@ -56,6 +57,7 @@ namespace FormatReport
             {
                 var osAndVersion = Read1File(Path.Combine(dirLaunch.FullName, "os")).Trim('\r', '\n');
                 var netVersion = Read1File(Path.Combine(dirLaunch.FullName, "net")).Trim('\r', '\n');
+                var systemOpenSslVersion = Read1File(Path.Combine(dirLaunch.FullName, "openssl")).Trim('\r', '\n');
                 var dirSites = dirLaunch.GetDirectories();
                 foreach (var dirSite in dirSites)
                 {
@@ -79,6 +81,7 @@ namespace FormatReport
                         OsAndVersion = osAndVersion,
                         Site = site,
                         SslError = sslError,
+                        SystemOpenSslVersion = systemOpenSslVersion,
                     };
                     ret.Add(reportPoint);
 
