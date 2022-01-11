@@ -15,6 +15,7 @@ namespace FormatReport
 
         static Color HeaderColor = Color.Black;
         static Color DataColor = Color.FromArgb(255, 170, 170, 170);
+        private static readonly string SheetName = "TLS Report";
 
         static void Main(string[] args)
         {
@@ -50,9 +51,7 @@ namespace FormatReport
             Console.WriteLine(file.FullName);
             using (var package = new ExcelPackage(file))
             {
-                var sheet = package.Workbook.Worksheets.FirstOrDefault(x => x.Name == "TLS Report");
-                if (sheet == null)
-                    sheet = package.Workbook.Worksheets.Add("TLS Report");
+                ExcelWorksheet sheet = package.Workbook.Worksheets.GetOrAddByName(SheetName);
 
                 int iTls = 0;
                 foreach (var tls in tlsList)
@@ -68,7 +67,7 @@ namespace FormatReport
                         var cellNetHeader = sheet.Cells[2, 3 + iTls * netList.Count + iNet];
                         var ignoreErrors = sheet.IgnoredErrors.Add(cellNetHeader);
                         ignoreErrors.NumberStoredAsText = true;
-                        cellNetHeader.Value = $"{net}";
+                        cellNetHeader.Value = $"v{net}";
                         cellNetHeader.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
 
                         int iOs = 0;
@@ -78,24 +77,27 @@ namespace FormatReport
                             int y = iOs;
                             if (x == 0)
                             {
-                                var systemOpenSslVersion = rawReport.FirstOrDefault(x =>
-                                        x.OsAndVersion == os && !string.IsNullOrEmpty(x.SystemOpenSslVersion))
+                                var systemOpenSslVersion = rawReport
+                                    .FirstOrDefault(x => x.OsAndVersion == os && !string.IsNullOrEmpty(x.SystemOpenSslVersion))
                                     ?.SystemOpenSslVersion;
 
-                                sheet.Cells[y + 3, 2].Value = systemOpenSslVersion;
-                                sheet.Cells[y + 3, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                sheet.Cells[y + 3, 2].Style.Border.Right.Color.SetColor(DataColor); 
-                                sheet.Cells[y + 3, 1].Value = os;
-                                sheet.Cells[y + 3, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                sheet.Cells[y + 3, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                sheet.Cells[y + 3, 1].Style.Border.Right.Color.SetColor(DataColor);
-                                sheet.Cells[y + 3, 1].Style.Border.Left.Color.SetColor(DataColor);
-                                sheet.Cells[y + 3, 1].Style.Indent = 1;
+                                // OpenSSL Version
+                                var cellOpenSslVer = sheet.Cells[y + 3, 2];
+                                cellOpenSslVer.Value = systemOpenSslVersion;
+                                cellOpenSslVer.Style.Border.Right.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
+
+                                // OS
+                                var cellOs = sheet.Cells[y + 3, 1];
+                                cellOs.Value = os;
+                                cellOs.Style.Border.Right.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
+                                cellOs.Style.Border.Left.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
+                                cellOs.Style.Indent = 1;
+
+                                // Entire row
                                 var row = sheet.Rows[y + 3];
                                 row.Height = 24;
                                 row.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                                row.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                row.Style.Border.Bottom.Color.SetColor(DataColor);
+                                row.Style.Border.Bottom.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
                             }
 
                             var point = rawReport.FirstOrDefault(
@@ -105,10 +107,7 @@ namespace FormatReport
                             var cellPoint = sheet.Cells[y + 3, x + 3];
                             cellPoint.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
                             if (iNet + 1 == netList.Count)
-                            {
-                                cellPoint.Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                cellPoint.Style.Border.Right.Color.SetColor(DataColor);
-                            }
+                                cellPoint.Style.Border.Right.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
 
                             bool isException = point?.Exception?.Length > 0;
                             bool isOk = point?.HttpStatus?.Length > 0;
@@ -135,42 +134,30 @@ namespace FormatReport
                 }
 
                 sheet.Columns[1].AutoFit(25);
-                sheet.Columns[2].AutoFit(8);
+                sheet.Columns[2].AutoFit(5);
 
-                //create a range for the table
                 ExcelRange tableHeader = sheet.Cells[1, 1, 2, 2 + netList.Count * tlsList.Count];
-                // tableHeader.Style.Border.(ExcelBorderStyle.Thin);
-                var border1 = tableHeader.Style.Border.Top.Style =
-                    tableHeader.Style.Border.Left.Style =
-                        tableHeader.Style.Border.Right.Style =
-                            tableHeader.Style.Border.Bottom.Style =
-                                ExcelBorderStyle.Thin;
-
-                tableHeader.Style.Border.Right.Color.SetColor(HeaderColor);
-                tableHeader.Style.Border.Left.Color.SetColor(HeaderColor);
-                tableHeader.Style.Border.Top.Color.SetColor(HeaderColor);
-                tableHeader.Style.Border.Bottom.Color.SetColor(HeaderColor);
-
+                tableHeader.SetAllBorders(ExcelBorderStyle.Thin, HeaderColor);
                 tableHeader.Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                // tableHeader.Style.Font.Size = 12;
+                tableHeader.Style.Font.Bold = true;
+
 
                 var rowsHeader = sheet.Rows[1, 2];
                 rowsHeader.Height = 26;
                 rowsHeader.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
-                {
-                    ExcelRange topLeftCell = sheet.Cells[1, 1, 2, 1];
-                    topLeftCell.Merge = true;
-                    topLeftCell.Value = ".NET Core on Linux";
-                    topLeftCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                }
-                {
-                    ExcelRange sslVerCell = sheet.Cells[1, 2, 2, 2];
-                    sslVerCell.Merge = true;
-                    sslVerCell.Value = "System OpenSSL";
-                    sslVerCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                    sslVerCell.Style.WrapText = true;
-                }
+                ExcelRange topLeftCell = sheet.Cells[1, 1, 2, 1];
+                topLeftCell.Value = ".NET Core on Linux";
+                topLeftCell.Merge = true;
+                topLeftCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
 
+                ExcelRange sslVerCell = sheet.Cells[1, 2, 2, 2];
+                sslVerCell.Value = $"System{Environment.NewLine}OpenSSL";
+                sslVerCell.Merge = true;
+                sslVerCell.Style.WrapText = true;
+                sslVerCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                sslVerCell.Style.WrapText = true;
 
                 sheet.PrinterSettings.Orientation = eOrientation.Portrait;
                 sheet.PrinterSettings.PaperSize = ePaperSize.A3;
@@ -179,9 +166,7 @@ namespace FormatReport
                 var dataColumns = sheet.Columns[3, 2 + netList.Count * tlsList.Count];
                 dataColumns.Width = 5.9;
 
-
                 sheet.View.FreezePanes(3, 2);
-
 
                 package.Save();
             }

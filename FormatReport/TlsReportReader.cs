@@ -55,9 +55,9 @@ namespace FormatReport
             var dirs = new DirectoryInfo(rootPath).GetDirectories();
             foreach (var dirLaunch in dirs)
             {
-                var osAndVersion = Read1File(Path.Combine(dirLaunch.FullName, "os")).Trim('\r', '\n');
-                var netVersion = Read1File(Path.Combine(dirLaunch.FullName, "net")).Trim('\r', '\n');
-                var systemOpenSslVersion = Read1File(Path.Combine(dirLaunch.FullName, "openssl")).Trim('\r', '\n');
+                var osAndVersion = Read1File(Path.Combine(dirLaunch.FullName, "os"))?.Trim('\r', '\n');
+                var netVersion = Read1File(Path.Combine(dirLaunch.FullName, "net"))?.Trim('\r', '\n');
+                var systemOpenSslVersion = Read1File(Path.Combine(dirLaunch.FullName, "openssl"))?.Trim('\r', '\n');
                 var dirSites = dirLaunch.GetDirectories();
                 foreach (var dirSite in dirSites)
                 {
