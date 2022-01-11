@@ -23,7 +23,9 @@ namespace CheckHttps
 
         private static int _errorsCount;
         private static StringBuilder _report;
+        private static List<string> _errors;
         private static bool _muteLog = true;
+        private static readonly object SyncReport = new object();
 
         static string ReportDir
         {
@@ -52,6 +54,7 @@ namespace CheckHttps
 
             // JIT
             _report = new StringBuilder();
+            _errors = new List<string>();
             _errorsCount = 0;
             _muteLog = true;
             Stopwatch sw = Stopwatch.StartNew();
@@ -59,6 +62,7 @@ namespace CheckHttps
             sw.Stop();
             // Perform
             _errorsCount = 0;
+            _errors.Clear();
             _report.Clear();
             StartAt.Restart();
             _muteLog = false;
@@ -68,7 +72,12 @@ namespace CheckHttps
             ParallelOptions op = new ParallelOptions() {MaxDegreeOfParallelism = sites.Length};
             Parallel.ForEach(sites, op, TrySite);
 
-            Log($"TOTAL SUMMARY:{Environment.NewLine}{_report}", ConsoleColor.Yellow);
+            Log($"TOTAL SUMMARY:{Environment.NewLine}{_report}".TrimEnd('\n', '\r'), ConsoleColor.Green);
+            if (_errors.Count > 0)
+            {
+                Log($"TOTAL {_errors.Count} errors:{Environment.NewLine}{string.Join(Environment.NewLine, _errors)}", ConsoleColor.DarkRed);
+
+            }
             return _errorsCount;
         }
 
@@ -86,6 +95,7 @@ namespace CheckHttps
                 {
                     string infoPrefix = indexTry == 1 ? "" : $"(try {indexTry} of {MaxRetryCount}) ";
                     if (TheSslProtocols.HasValue) handler.SslProtocols = TheSslProtocols.Value;
+                    handler.AllowAutoRedirect = false;
                     // handler.SslProtocols = SslProtocols.Tls12;.
                     // handler.AllowAutoRedirect = true;
                     handler.ServerCertificateCustomValidationCallback += (message, certificate2, chain, error) =>
@@ -108,9 +118,9 @@ namespace CheckHttps
                         if (site == "wikipedia.com" && Debugger.IsAttached) Debugger.Break();
                         string status = sslError == SslPolicyErrors.None ? "" : $", {sslError}";
                         var reportLine =
-                            $"HTTP Status for {site}: {(int) response.StatusCode} ({response.StatusCode}){status}";
+                            $"{site} OK. HTTP Status {(int)response.StatusCode} ({response.StatusCode}){status}";
                         Log($"{infoPrefix}{reportLine}", ConsoleColor.White);
-                        _report.AppendLine(reportLine);
+                        lock (SyncReport) _report.AppendLine(reportLine);
                         StoreReportField(idSite, "http-status", ((int) response.StatusCode).ToString());
                         StoreReportField(idSite, "ssl-error", sslError.ToString());
                         return;
@@ -118,14 +128,16 @@ namespace CheckHttps
                     catch (Exception ex)
                     {
                         var reportLine =
-                            $"Exception for {site}: {ex.GetType().Name} {ex.Message}"; // {Environment.NewLine}{ex}
+                            $"{site}: {GetExceptionDigest(ex)}"; // {Environment.NewLine}{ex}
                         Log($"{infoPrefix}{reportLine}", ConsoleColor.DarkRed);
                         if (indexTry == MaxRetryCount)
                         {
-                            _report.AppendLine(reportLine);
+                            // _report.AppendLine(reportLine);
+                            lock(SyncReport) _errors.Add(reportLine);
                             Interlocked.Increment(ref _errorsCount);
                             StoreReportField(idSite, "exception", ex.ToString());
                             StoreReportField(idSite, "exception-messages", GetExceptionDigest(ex));
+                            StoreReportField(idSite, "exception-inner-message", GetInnerMessage(ex));
                         }
                     }
                 }
@@ -184,6 +196,18 @@ namespace CheckHttps
                 Console.WriteLine($" {message}");
                 tryAndForget(() => Console.ForegroundColor = prev);
             }
+        }
+
+        public static string GetInnerMessage(Exception ex)
+        {
+            Exception ret = null;
+            while (ex != null)
+            {
+                ret = ex;
+                ex = ex.InnerException;
+            }
+
+            return "[" + ret.GetType().Name + "] " + ret.Message;
         }
 
         public static string GetExceptionDigest(Exception ex)

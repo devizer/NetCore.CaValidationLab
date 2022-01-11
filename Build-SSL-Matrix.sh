@@ -109,7 +109,8 @@ echo "$ARGS" | while IFS='|' read script image title; do
       echo HOME: \$HOME; 
       source /test-sources.sh;
       $script
-      downgrade_open_ssl_3
+      Say 'Optionally downgrade openssl from 3.0 to 1.1'
+      downgrade_open_ssl_3 > /dev/null
   "
 
   net_vers=$NET_VERS; if [[ "$image" == "centos:6"* ]]; then net_vers=$NET_VERS_CENTOS_6; fi

@@ -9,7 +9,7 @@ using OfficeOpenXml.Table;
 
 namespace FormatReport
 {
-    class Program
+    class ReportFormatterProgram
     {
         static void Main(string[] args)
         {
@@ -64,9 +64,10 @@ namespace FormatReport
                             int y = iOs;
                             if (x == 0)
                             {
-                                sheet.Cells[y + 3, 1].Value = FormatOsName(os);
+                                sheet.Cells[y + 3, 1].Value = os;
                                 sheet.Cells[y + 3, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                                 sheet.Cells[y + 3, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                sheet.Cells[y + 3, 1].Style.Indent = 1;
                                 var row = sheet.Rows[y + 3];
                                 row.Height = 24;
                                 row.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
@@ -86,11 +87,12 @@ namespace FormatReport
                             if (isOk)
                             {
                                 cellPoint.Value = " ✔️"; // ☑ ✅
-                                cellPoint.Style.Font.Color.SetColor(Color.DarkGreen);
+                                bool isValidated = point?.SslError == "None";
+                                cellPoint.Style.Font.Color.SetColor(isValidated ? Color.DarkGreen : Color.OrangeRed);
                             }
                             else if (isException)
                             {
-                                cellPoint.Value = "⚠";
+                                cellPoint.Value = "❎"; // ⚠ ❗ 🤕 no way 💩 🤬😡🥵🤕👺👹💔❗
                                 cellPoint.Style.Font.Color.SetColor(Color.DarkRed);
                                 cellPoint.Style.Font.Bold = true;
                             }
@@ -119,30 +121,29 @@ namespace FormatReport
 
                 ExcelRange topLeftCell = sheet.Cells[1, 1, 2, 1];
                 topLeftCell.Merge = true;
-                topLeftCell.Value = ".NET Core SSL";
+                topLeftCell.Value = ".NET Core on Linux";
                 topLeftCell.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                 sheet.PrinterSettings.Orientation = eOrientation.Portrait;
                 sheet.PrinterSettings.PaperSize = ePaperSize.A3;
 
                 var dataColumns = sheet.Columns[2, 1 + netList.Count * tlsList.Count];
-                dataColumns.Width = 5.7;
+                dataColumns.Width = 5.9;
 
 
+                sheet.View.FreezePanes(3, 2);
 
-                // ExcelTable table = sheet.Tables.Add(range, "Table1");
-                // table.TableStyle = TableStyles.Medium2;
+
                 package.Save();
-            }
-
-            foreach (var reportPoint in rawReport)
-            {
-                // Console.WriteLine(reportPoint);
             }
         }
 
         static string FormatOsName(string os)
         {
-            return os.Replace("SUSE", "Open SUSE").Replace("-", " ");
+            return os
+                .Replace("SUSE", "Open SUSE")
+                .Replace("-", " ")
+                .Replace("Fedora 36", "Fedora 36 (preview)")
+                .Replace("Ubuntu 22.04", "Ubuntu 22.04 (preview)");
         }
 
     }
