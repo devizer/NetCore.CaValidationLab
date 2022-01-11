@@ -14,7 +14,7 @@ namespace FormatReport
     {
 
         static Color HeaderColor = Color.Black;
-        static Color DataColor = Color.FromArgb(255, 200, 200, 200);
+        static Color DataColor = Color.FromArgb(255, 170, 170, 170);
 
         static void Main(string[] args)
         {
@@ -174,6 +174,7 @@ namespace FormatReport
 
                 sheet.PrinterSettings.Orientation = eOrientation.Portrait;
                 sheet.PrinterSettings.PaperSize = ePaperSize.A3;
+                sheet.PrinterSettings.LeftMargin = sheet.PrinterSettings.RightMargin = 0.2m;
 
                 var dataColumns = sheet.Columns[3, 2 + netList.Count * tlsList.Count];
                 dataColumns.Width = 5.9;
