@@ -3,10 +3,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
-using OfficeOpenXml.Table;
 
 namespace FormatReport
 {
@@ -92,9 +90,10 @@ namespace FormatReport
                                 cellOs.Style.Border.Right.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
                                 cellOs.Style.Border.Left.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
                                 cellOs.Style.Indent = 1;
+                                cellOs.Style.Font.Bold = true;
 
-                                // Entire row
-                                var row = sheet.Rows[y + 3];
+                               // Entire row
+                               var row = sheet.Rows[y + 3];
                                 row.Height = 24;
                                 row.Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                                 row.Style.Border.Bottom.SetStyleAndColor(ExcelBorderStyle.Thin, DataColor);
