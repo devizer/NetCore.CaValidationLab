@@ -12,15 +12,17 @@ namespace FormatReport
     {
         public static ExcelWorksheet GetOrAddByName(this ExcelWorksheets worksheets, string sheetName)
         {
-            return worksheets.FirstOrDefault(x => x.Name == sheetName) ?? worksheets.Add(sheetName);
+            return
+                worksheets.FirstOrDefault(x => x.Name == sheetName)
+                ?? worksheets.Add(sheetName);
         }
 
         public static void SetStyleAndColor(
             this ExcelBorderItem border, 
             ExcelBorderStyle borderStyle,
-            Color? color = null
-            )
+            Color? color = null)
         {
+            if (border == null) throw new ArgumentNullException(nameof(border));
             border.Style = borderStyle;
             if (borderStyle != ExcelBorderStyle.None)
             {
@@ -34,6 +36,7 @@ namespace FormatReport
 
         public static ExcelRange SetAllBorders(this ExcelRange cells, ExcelBorderStyle borderStyle, Color? color)
         {
+            if (cells == null) throw new ArgumentNullException(nameof(cells));
             Border brd = cells.Style.Border;
             foreach (ExcelBorderItem borderSide in new[] { brd.Right, brd.Left, brd.Top, brd.Bottom })
             {
