@@ -29,7 +29,7 @@ fedora_prepare | fedora:36 | Fedora-36
 pacman -Sy --noconfirm sudo tar | archlinux:base | Arch
 
 
-prepare_centos | centos:7.0.1406        | CentOS-7
+prepare_centos | centos:7               | CentOS-7
 prepare_centos | centos:6.10            | CentOS-6
 prepare_centos | centos:8               | CentOS-8
 
