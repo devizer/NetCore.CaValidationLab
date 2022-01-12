@@ -2,19 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using OfficeOpenXml;
-using OfficeOpenXml.Style;
 
 namespace FormatReport
 {
     class ReportFormatterProgram
     {
-
-        static Color HeaderColor = Color.Black;
-        static Color DataColor = Color.FromArgb(255, 170, 170, 170);
-        private static readonly string SheetName = "TLS Report";
 
         static void Main(string[] args)
         {
