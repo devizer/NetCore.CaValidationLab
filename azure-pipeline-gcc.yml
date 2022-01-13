@@ -53,7 +53,8 @@ jobs:
       pushd ~/gcc-binaries
         dirsize="$(du -d 0 -h . | awk '{print $1}')"
         Say "Uncopressed size of [/usr/local] is [$dirsize]"
-        tar czf $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz .
+        tar cf - . | gzip -9 > $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz
+        tar cf - . | xz -z -9 -e > $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.xz
       popd
 
     condition: succeededOrFailed()
