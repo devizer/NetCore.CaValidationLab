@@ -73,7 +73,6 @@ jobs:
 
 
   - script: |
-      Say "Grab Binaries"
       function build_sums() {
         local file="$1"
         for alg in md5 sha1 sha224 sha256 sha384 sha512; do
@@ -85,16 +84,27 @@ jobs:
           fi
         done
       }
+
+      Say "Grab Logs"
+      docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
+      ls -la $SYSTEM_ARTIFACTSDIRECTORY
+
+
+
+      Say "Grab Binaries"
       mkdir -p ~/gcc-binaries
       docker cp gcc-container:/usr/local/. ~/gcc-binaries
-      docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
       pushd ~/gcc-binaries
-        dirsize="$(du -d 0 -h . | awk '{print $1}')"
-        Say "Uncopressed size of [/usr/local] is [$dirsize]"
-        tar cf - . | gzip -9 > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
-        build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
-        tar cf - . | xz -z -9 -e > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
-        build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
+        dirsize="$(du -d 0 . | awk '{print $1}')"
+        Say "Uncopressed size of [/usr/local] is [$dirsize KB]"
+        if [[ "$dirsize" le 5000 ]]; then
+          Say "ERROR. Missed gcc in /usr/local"
+        else
+          tar cf - . | gzip -9 > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
+          build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
+          tar cf - . | xz -z -9 -e > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
+          build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
+        fi
       popd
       Say "env"
       printenv | sort |& tee $SYSTEM_ARTIFACTSDIRECTORY/env.log
