@@ -1,4 +1,5 @@
-﻿set -e
+#!/usr/bin/env bash
+set -e
 set -u
 export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}"
 Say "GCC: [$GCCURL]"
