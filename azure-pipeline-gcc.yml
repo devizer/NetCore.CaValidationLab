@@ -2,8 +2,8 @@
 
 # trigger:
 # - master
-environment:
-- FLAGS: "-O0"
+variables:
+  FLAGS: "-O0"
 
 jobs:
 - job: GCC
