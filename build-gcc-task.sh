@@ -45,7 +45,7 @@ wget --no-check-certificate -O _gcc.tar.xz $GCCURL
 pv _gcc.tar.xz | tar xJf -
 rm -f _gcc.tar.gz
 cd gcc*
-export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
+# export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 contrib/download_prerequisites
 args=""; 
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
