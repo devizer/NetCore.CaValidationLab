@@ -2,6 +2,8 @@
 
 # trigger:
 # - master
+environment:
+- FLAGS: "-O0"
 
 jobs:
 - job: GCC
@@ -10,6 +12,9 @@ jobs:
     matrix:
       '8.5-Wheezy':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
+        IMAGE: "debian:7"
+      '9.4-Wheezy':
+        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
         IMAGE: "debian:7"
       '10.2-Wheezy':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
@@ -33,7 +38,7 @@ jobs:
       docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
       Say "Build"
       docker exec -t gcc-container bash -c "
-        export GCCURL=$(GCCURL)
+        export GCCURL=$(GCCURL) FLAGS=$(FLAGS)
         bash -e /build-gcc-task.sh
       "
 

@@ -3,6 +3,7 @@ set -e
 set -u
 export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}"
 Say "GCC: [$GCCURL]"
+Say "Flags: [${FLAGS:-}]"
 
 echo '
 Acquire::Check-Valid-Until "0";
@@ -40,7 +41,7 @@ wget --no-check-certificate -O _gcc.tar.xz $GCCURL
 pv _gcc.tar.xz | tar xJf -
 rm -f _gcc.tar.gz
 cd gcc*
-export CFLAGS="-O1" CPPFLAGS="-O1" CXXFLAGS="-O1"
+export CFLAGS="{FLAGS:-}" CPPFLAGS="{FLAGS:-}" CXXFLAGS="{FLAGS:-}"
 contrib/download_prerequisites
 args=""; 
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
