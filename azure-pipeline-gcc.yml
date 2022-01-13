@@ -1,16 +1,57 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# https://mattvsts.github.io/2020/01/07/create-a-build-matrix-with-azure-pipelines/
 
-pool:
-  vmImage: ubuntu-18.04
+# trigger:
+# - master
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+- job: GCC
+  timeoutInMinutes: 360
+  strategy:
+    matrix:
+      '8.5-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
+        IMAGE: "debian:7"
+      '10.2-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
+        IMAGE: "debian:7"
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  pool:
+    vmImage: 'ubuntu-20.04'
+
+  steps:
+
+  - script: |
+      set -e
+      set -u
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say "Start image $(IMAGE)"
+      docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
+      for cmd in Say try-and-retry; do
+        docker cp /usr/local/bin/$cmd w3top:/usr/local/bin/$cmd
+      done
+      if [[ "$IMAGE" == alpine* ]]; then docker exec -t w3top sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
+      docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
+      Say "Build"
+      docker exec -t gcc-container bash -c "
+        export GCCURL=$(GCCURL)
+        bash -e /build-gcc-task.sh
+      "
+
+      Say "Grab Binaries"
+      mkdir -p ~/gcc-binaries
+      docker cp gcc-container:/usr/local/. ~/gcc-binaries
+      pushd ~/gcc-binaries
+      dirsize="$(du -d 0 -h . | awk '{print $1}')"
+      Say "Uncopressed size of [/usr/local] is [$dirsize]"
+      tar czf $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz .
+      popd
+
+    displayName: 'Build GCC'
+
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
+
