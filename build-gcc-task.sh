@@ -38,6 +38,7 @@ Say "Completed prerequisites"
 work=/transient-builds/gcc-src
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$work-articacts}"
 Say "SYSTEM_ARTIFACTSDIRECTORY: [$SYSTEM_ARTIFACTSDIRECTORY]"
+mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 mkdir -p $work
 cd $work
 wget --no-check-certificate -O _gcc.tar.xz $GCCURL
@@ -48,10 +49,10 @@ export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 contrib/download_prerequisites
 args=""; 
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
-./configure --prefix=/usr/local $args |& tee $SYSTEM_ARTIFACTSDIRECTORY/configure.log
+./configure --prefix=/usr/local $args |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
 cpus=$(nproc)
 # cpus=$((cpus+1))
 # if [[ "$(uname -m)" == "armv7"* ]]; then cpus=3; fi
-time make -j${cpus} |& tee $SYSTEM_ARTIFACTSDIRECTORY/make.log; 
-time make install-strip |& tee $SYSTEM_ARTIFACTSDIRECTORY/make-install-strip.log; 
-bash -c "gcc --version" |& tee $SYSTEM_ARTIFACTSDIRECTORY/gcc-version.log; 
+time make -j${cpus} |& tee "$SYSTEM_ARTIFACTSDIRECTORY/make.log"
+time make install-strip |& tee "$SYSTEM_ARTIFACTSDIRECTORY/make-install-strip.log"
+bash -c "gcc --version" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/gcc-version.log"
