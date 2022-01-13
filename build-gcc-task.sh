@@ -5,6 +5,7 @@ export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}
 Say "GCC: [$GCCURL]"
 Say "Flags: [${FLAGS:-}]"
 
+
 echo '
 Acquire::Check-Valid-Until "0";
 APT::Get::Assume-Yes "true";
@@ -17,7 +18,7 @@ APT::Compressor::gzip::CompressArg:: "-1";
 APT::Compressor::xz::CompressArg:: "-1";
 APT::Compressor::bzip2::CompressArg:: "-1";
 APT::Compressor::lzma::CompressArg:: "-1";
-' | tee /etc/apt/apt.conf.d/99Z_Custom
+' > tee /etc/apt/apt.conf.d/99Z_Custom
 
 echo '
 deb http://archive.debian.org/debian/ wheezy main non-free contrib
@@ -35,6 +36,7 @@ try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
 try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
 Say "Completed prerequisites"
 work=/transient-builds/gcc-src
+SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$work-articacts}"
 mkdir -p $work
 cd $work
 wget --no-check-certificate -O _gcc.tar.xz $GCCURL
@@ -45,10 +47,10 @@ export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 contrib/download_prerequisites
 args=""; 
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
-./configure --prefix=/usr/local $args
+./configure --prefix=/usr/local $args |& tee $SYSTEM_ARTIFACTSDIRECTORY/configure.log
 cpus=$(nproc)
 # cpus=$((cpus+1))
 # if [[ "$(uname -m)" == "armv7"* ]]; then cpus=3; fi
-time make -j${cpus} | tee make-all.log; 
-time make install-strip
-bash -c "gcc --version"
+time make -j${cpus} |& tee $SYSTEM_ARTIFACTSDIRECTORY/make.log; 
+time make install-strip |& tee $SYSTEM_ARTIFACTSDIRECTORY/make-install-strip.log; 
+bash -c "gcc --version" |& tee $SYSTEM_ARTIFACTSDIRECTORY/gcc-version.log; 
