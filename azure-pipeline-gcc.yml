@@ -53,18 +53,6 @@ jobs:
       set -u
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
 
-      sudo apt-get install sshpass rsync -y
-      mkdir -p ~/.ssh;
-      printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
-      
-      mkdir try-rsync; pushd try-rsync
-      echo 42 > ping-42.txt
-      Say "rsync"
-      sshpass -p "$MY_FS_PASSWORD" rsync -v --stats --progress -r ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled || true
-      Say "scp"
-      sshpass -p "$MY_FS_PASSWORD" scp ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled/ping-42-scp-$(hostname).txt
-      popd
-
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
       for cmd in Say try-and-retry; do
@@ -91,7 +79,7 @@ jobs:
             local sum=$(eval ${alg}sum $1 | awk '{print $1}')
             printf "$sum" > "$1.${alg}"
           else
-            echo "warning! hehe42sum missing"
+            echo "warning! ${alg}sum missing"
           fi
         done
       }
@@ -100,21 +88,23 @@ jobs:
       docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
       ls -la $SYSTEM_ARTIFACTSDIRECTORY
 
-
-
       Say "Grab Binaries"
       mkdir -p ~/gcc-binaries
       docker cp gcc-container:/usr/local/. ~/gcc-binaries
-      pushd ~/gcc-binaries
+      pushd ~/gcc-binaries # need for path in archive
         dirsize="$(du -d 0 . | awk '{print $1}')"
         Say "Uncopressed size of [/usr/local] is [$dirsize KB]"
         if [ "$dirsize" -le 5000 ]; then
+          # TODO: check for specific files
           Say "ERROR. Missed gcc in /usr/local"
         else
-          tar cf - . | gzip -9 > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
-          build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
-          tar cf - . | xz -z -9 -e > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
-          build_sums $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.xz
+          export DEPLOY_DIR=~/gcc-deploy
+          mkdir -p "$DEPLOY_DIR"
+          echo "##vso[task.setvariable variable=DEPLOY_DIR]$DEPLOY_DIR"
+          tar cf - . | gzip -9 > $DEPLOY_DIR/$ARTIFACT.tar.gz
+          build_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
+          tar cf - . | xz -z -9 -e > $DEPLOY_DIR/$ARTIFACT.tar.xz
+          build_sums $DEPLOY_DIR/$ARTIFACT.tar.xz
         fi
       popd
       Say "env"
@@ -125,7 +115,14 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
+    displayName: 'ALL @ Publish'
     inputs:
       pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
       artifactName: '$(Agent.JobName)'
 
+  - task: PublishBuildArtifacts@1
+    condition: and(succeededOrFailed(), ne(variables.DEPLOY_DIR,'')
+    displayName: 'GCC @ Publish'
+    inputs:
+      pathtoPublish: '$(DEPLOY_DIR)'
+      artifactName: 'GCC-BINARIES-$(Agent.JobName)'
