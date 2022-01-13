@@ -59,7 +59,9 @@ jobs:
       
       mkdir try-rsync; pushd try-rsync
       echo 42 > ping-42.txt
-      sshpass -p "$MY_FS_PASSWORD" rsync -v --stats --progress -r ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled
+      Say "rsync"
+      sshpass -p "$MY_FS_PASSWORD" rsync -v --stats --progress -r ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled || true
+      Say "scp"
       sshpass -p "$MY_FS_PASSWORD" scp ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled/ping-42-scp-$(hostname).txt
       popd
 
