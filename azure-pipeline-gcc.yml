@@ -97,7 +97,7 @@ jobs:
       pushd ~/gcc-binaries
         dirsize="$(du -d 0 . | awk '{print $1}')"
         Say "Uncopressed size of [/usr/local] is [$dirsize KB]"
-        if [[ "$dirsize" le 5000 ]]; then
+        if [ "$dirsize" -le 5000 ]; then
           Say "ERROR. Missed gcc in /usr/local"
         else
           tar cf - . | gzip -9 > $SYSTEM_ARTIFACTSDIRECTORY/$ARTIFACT.tar.gz
