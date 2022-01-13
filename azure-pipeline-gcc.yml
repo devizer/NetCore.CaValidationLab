@@ -121,7 +121,7 @@ jobs:
       artifactName: '$(Agent.JobName)'
 
   - task: PublishBuildArtifacts@1
-    condition: and(succeededOrFailed(), ne(variables.DEPLOY_DIR,'')
+    condition: and(succeededOrFailed(), ne(variables.DEPLOY_DIR,''))
     displayName: 'GCC @ Publish'
     inputs:
       pathtoPublish: '$(DEPLOY_DIR)'
