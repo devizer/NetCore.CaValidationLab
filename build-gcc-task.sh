@@ -18,7 +18,7 @@ APT::Compressor::gzip::CompressArg:: "-1";
 APT::Compressor::xz::CompressArg:: "-1";
 APT::Compressor::bzip2::CompressArg:: "-1";
 APT::Compressor::lzma::CompressArg:: "-1";
-' > tee /etc/apt/apt.conf.d/99Z_Custom
+' > /etc/apt/apt.conf.d/99Z_Custom
 
 echo '
 deb http://archive.debian.org/debian/ wheezy main non-free contrib
@@ -37,6 +37,7 @@ try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
 Say "Completed prerequisites"
 work=/transient-builds/gcc-src
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$work-articacts}"
+Say "SYSTEM_ARTIFACTSDIRECTORY: [$SYSTEM_ARTIFACTSDIRECTORY]"
 mkdir -p $work
 cd $work
 wget --no-check-certificate -O _gcc.tar.xz $GCCURL

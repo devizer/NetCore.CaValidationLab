@@ -34,10 +34,10 @@ jobs:
       for cmd in Say try-and-retry; do
         docker cp /usr/local/bin/$cmd gcc-container:/usr/local/bin/$cmd
       done
-      if [[ "$IMAGE" == alpine* ]]; then docker exec -t w3top sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
+      if [[ "$IMAGE" == alpine* ]]; then docker exec -t gcc-container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
       docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
       Say "Build"
-      docker exec -t -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
+      docker exec -t -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
         bash -e /build-gcc-task.sh
       "
@@ -45,6 +45,7 @@ jobs:
       Say "Grab Binaries"
       mkdir -p ~/gcc-binaries
       docker cp gcc-container:/usr/local/. ~/gcc-binaries
+      docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
       pushd ~/gcc-binaries
       dirsize="$(du -d 0 -h . | awk '{print $1}')"
       Say "Uncopressed size of [/usr/local] is [$dirsize]"
