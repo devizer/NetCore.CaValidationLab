@@ -42,18 +42,22 @@ jobs:
         bash -e /build-gcc-task.sh
       "
 
+    displayName: 'Build GCC'
+
+
+  - script: |
       Say "Grab Binaries"
       mkdir -p ~/gcc-binaries
       docker cp gcc-container:/usr/local/. ~/gcc-binaries
       docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
       pushd ~/gcc-binaries
-      dirsize="$(du -d 0 -h . | awk '{print $1}')"
-      Say "Uncopressed size of [/usr/local] is [$dirsize]"
-      tar czf $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz .
+        dirsize="$(du -d 0 -h . | awk '{print $1}')"
+        Say "Uncopressed size of [/usr/local] is [$dirsize]"
+        tar czf $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz .
       popd
 
-    displayName: 'Build GCC'
-
+    condition: succeededOrFailed()
+    displayName: 'Grab Artifacts'
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
