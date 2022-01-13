@@ -32,7 +32,7 @@ jobs:
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
       for cmd in Say try-and-retry; do
-        docker cp /usr/local/bin/$cmd gcc-container:/usr/local/bin/$cmd
+        docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
       done
       if [[ "$IMAGE" == alpine* ]]; then docker exec -t gcc-container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
       docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
