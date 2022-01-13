@@ -37,9 +37,8 @@ jobs:
       if [[ "$IMAGE" == alpine* ]]; then docker exec -t w3top sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
       docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
       Say "Build"
-      docker exec -t gcc-container bash -c "
+      docker exec -t -e GCCURL="$(GCCURL)" FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
-        export GCCURL=$(GCCURL) FLAGS=$(FLAGS)
         bash -e /build-gcc-task.sh
       "
 
