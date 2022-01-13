@@ -3,7 +3,7 @@
 # trigger:
 # - master
 variables:
-  FLAGS: "-O0"
+  FLAGS: "-O2"
 
 jobs:
 - job: GCC
