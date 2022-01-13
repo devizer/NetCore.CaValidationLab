@@ -56,7 +56,7 @@ jobs:
       mkdir -p ~/.ssh;
       printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null\n" > ~/.ssh/config
       echo 42 > ping-42.txt
-      apt-get install sshpass rsync -y
+      sudo apt-get install sshpass rsync -y
       sshpass -p "$MY_FS_PASSWORD" rsync -r ping-42.txt archivarius@frs.sourceforge.net:/home/frs/p/gcc-precompiled
 
       Say "Start image $(IMAGE)"
