@@ -38,6 +38,7 @@ jobs:
       docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
       Say "Build"
       docker exec -t gcc-container bash -c "
+        Say --Reset-Stopwatch
         export GCCURL=$(GCCURL) FLAGS=$(FLAGS)
         bash -e /build-gcc-task.sh
       "
