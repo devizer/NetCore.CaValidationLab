@@ -26,12 +26,13 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 # deb http://download.mono-project.com/repo/debian stable-wheezy/snapshots/5.10 main
 # deb http://download.mono-project.com/repo/debian wheezy main
 ' > /etc/apt/sources.list
-try-and-retry apt-get update
+try-and-retry apt-get update -qq
 
 export DEBIAN_FRONTEND=noninteractive
-try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y
-try-and-retry apt-get install libc6-dev* -y
-try-and-retry apt-get install gcc-multilib -y
+try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
+try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
+try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
+Say "Completed prerequisites"
 work=/transient-builds/gcc-src
 mkdir -p $work
 cd $work
