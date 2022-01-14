@@ -2,7 +2,7 @@
 set -e
 set -u
 export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}"
-Say "GCC: [$GCCURL]"
+Say "TARGET GCC: [$GCCURL], Using GCC: [${USEGCC:-}]"
 Say "Flags: [${FLAGS:-}]"
 
 
@@ -34,7 +34,14 @@ export DEBIAN_FRONTEND=noninteractive
 try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
 try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
 try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
-Say "Completed prerequisites"
+Say "Completed system prerequisites"
+
+if [[ "${USEGCC:-}" != "" ]]; then
+  Say "Installing "
+  export GCC_INSTALL_VER="${USEGCC}" GCC_INSTALL_DIR=/usr/local; script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+  Say "GCC VERSION: [$(gcc --version | head -1)]"
+fi
+
 work=/transient-builds/gcc-src
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$work-articacts}"
 Say "SYSTEM_ARTIFACTSDIRECTORY: [$SYSTEM_ARTIFACTSDIRECTORY]"
