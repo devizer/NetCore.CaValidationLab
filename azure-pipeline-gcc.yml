@@ -102,7 +102,7 @@ jobs:
           tar cf - . | gzip -9 > $DEPLOY_DIR/$ARTIFACT.tar.gz
           build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
           tar cf - . | xz -z -9 -e > $DEPLOY_DIR/$ARTIFACT.tar.xz
-          build_sums $DEPLOY_DIR/$ARTIFACT.tar.xz
+          build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.xz
         fi
       popd
       Say "env"
