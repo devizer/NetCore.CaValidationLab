@@ -89,12 +89,16 @@ jobs:
         dirsize="$(du -d 0 . | awk '{print $1}')"
         Say "Uncopressed size of [/usr/local] is [$dirsize KB]"
         if [ "$dirsize" -le 5000 ]; then
-          # TODO: check for specific files
+          # TODO: check for specific files instead dir size?
           Say "ERROR. Missed gcc in /usr/local"
         else
           export DEPLOY_DIR=~/gcc-deploy
           mkdir -p "$DEPLOY_DIR"
           echo "##vso[task.setvariable variable=DEPLOY_DIR]$DEPLOY_DIR"
+          # Generate the 'uninstall this gcc' script for the artifact
+          tar cf - . | gzip -1 > /tmp/gcc.tar.gz
+          generate_uninstall_this_gcc /tmp/gcc.tar.gz ./uninstall-this-gcc.sh
+          # Pack articact including uninstall-this-gcc.sh
           tar cf - . | gzip -9 > $DEPLOY_DIR/$ARTIFACT.tar.gz
           build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
           tar cf - . | xz -z -9 -e > $DEPLOY_DIR/$ARTIFACT.tar.xz
