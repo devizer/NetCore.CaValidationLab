@@ -74,19 +74,8 @@ jobs:
 
 
   - script: |
-      function build_sums() {
-        local file="$1"
-        for alg in md5 sha1 sha224 sha256 sha384 sha512; do
-          if [[ "$(command -v ${alg}sum)" != "" ]]; then
-            local sum=$(eval ${alg}sum $1 | awk '{print $1}')
-            printf "$sum" > "$1.${alg}"
-          else
-            echo "warning! ${alg}sum missing"
-          fi
-        done
-      }
-
       set -e
+      source build-gcc-utilities.sh
 
       Say "Grab Logs"
       docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
@@ -107,7 +96,7 @@ jobs:
           mkdir -p "$DEPLOY_DIR"
           echo "##vso[task.setvariable variable=DEPLOY_DIR]$DEPLOY_DIR"
           tar cf - . | gzip -9 > $DEPLOY_DIR/$ARTIFACT.tar.gz
-          build_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
+          build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
           tar cf - . | xz -z -9 -e > $DEPLOY_DIR/$ARTIFACT.tar.xz
           build_sums $DEPLOY_DIR/$ARTIFACT.tar.xz
         fi
