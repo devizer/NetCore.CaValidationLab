@@ -63,5 +63,9 @@ cpus=$(nproc)
 # cpus=$((cpus+1))
 # if [[ "$(uname -m)" == "armv7"* ]]; then cpus=3; fi
 time make -j${cpus} |& tee "$SYSTEM_ARTIFACTSDIRECTORY/make.log"
+if [[ -f /usr/local/uninstall-this-gcc.sh ]]; then
+    Say "Uninstalling prev gcc"
+    /usr/local/uninstall-this-gcc.sh --verbose
+fi
 time make install-strip |& tee "$SYSTEM_ARTIFACTSDIRECTORY/make-install-strip.log"
 bash -c "gcc --version" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/gcc-version.log"
