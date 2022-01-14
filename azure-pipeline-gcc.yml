@@ -52,8 +52,14 @@ jobs:
 
   - script: |
       set -e
+      cd 4gcc
+    displayName: 'check default folder'
+
+  - script: |
+      set -e
       set -u
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      cd 4gcc
 
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
@@ -72,9 +78,9 @@ jobs:
     env:
         MY_FS_PASSWORD: $(FS_PASSWORD)
 
-
   - script: |
       set -e
+      cd 4gcc
       source build-gcc-utilities.sh
 
       Say "Grab Logs"
@@ -94,7 +100,7 @@ jobs:
           export DEPLOY_DIR=~/gcc-deploy
           mkdir -p "$DEPLOY_DIR"
           echo "##vso[task.setvariable variable=DEPLOY_DIR]$DEPLOY_DIR"
-          # Generate the 'uninstall this gcc' script for the artifact
+          # Generate the 'uninstall this gcc' script for the artifact, it needs gz-archive
           tar cf - . | gzip -1 > /tmp/gcc.tar.gz
           generate_uninstall_this_gcc /tmp/gcc.tar.gz ./uninstall-this-gcc.sh
           # Pack articact including uninstall-this-gcc.sh
@@ -103,6 +109,7 @@ jobs:
           build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.gz
           tar cf - . | xz -z -9 -e > $DEPLOY_DIR/$ARTIFACT.tar.xz
           build_all_known_hash_sums $DEPLOY_DIR/$ARTIFACT.tar.xz
+          cp -f $DEPLOY_DIR/$ARTIFACT.tar.xz $SYSTEM_ARTIFACTSDIRECTORY/gcc.tar.xz
         fi
       popd
       Say "env"
