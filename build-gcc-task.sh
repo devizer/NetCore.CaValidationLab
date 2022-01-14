@@ -37,8 +37,10 @@ try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
 Say "Completed system prerequisites"
 
 if [[ "${USEGCC:-}" != "" ]]; then
-  Say "Installing "
-  export GCC_INSTALL_VER="${USEGCC}" GCC_INSTALL_DIR=/usr/local; script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+  
+  export GCC_INSTALL_VER="${USEGCC}" GCC_INSTALL_DIR=/usr/local; 
+  Say "Installing GCC ${USEGCC} into $GCC_INSTALL_DIR"
+  script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
   Say "GCC VERSION: [$(gcc --version | head -1)]"
 fi
 
