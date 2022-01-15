@@ -69,6 +69,7 @@ jobs:
       is_platinum="$(cat /proc/cpuinfo | grep Platinum)"
       if [[ "${is_platinum:-}" != "" ]]; then
         Say "ERROR! XEON Platinum is not supported"
+        exit 234
       fi
 
       Say "Start image $(IMAGE)"
