@@ -1,6 +1,15 @@
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+    - releases/*
+  paths:
+    include:
+    - '*'
+    exclude:
+    - 'azure-pipeline-gcc.yml'
+    - '4gcc/*'
 
 pool:
   vmImage: 'ubuntu-20.04'
