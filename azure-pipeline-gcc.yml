@@ -176,7 +176,7 @@ jobs:
         docker cp $sh gcc-container:/$sh
       done
 
-      Say "Build"
+      Say "Test GCC $GCC"
       docker exec -t -e GCC="$(GCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" gcc-container bash -c "
         set -e; set -u; Say --Reset-Stopwatch
         Say "Test GCC ver $GCC"
@@ -185,4 +185,4 @@ jobs:
         bash -e /build-gcc-task.sh
       "
 
-    displayName: 'Test'
+    displayName: 'Test GCC'
