@@ -6,7 +6,6 @@ set -o pipefail
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$HOME/build-agent-artifacts}"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
-
 function download_file() {
   local url="$1"
   local file="$2";
@@ -64,7 +63,7 @@ function build_fio() {
   download_file "$url" _fio-3.27.tar.gz
   tar xzf _fio-3.27.tar.gz
   cd fio* || true
-  echo "CURRENT DIRECTORY: [$(pwd)]. Building fio"
+  Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
   make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
   make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
@@ -105,9 +104,9 @@ function build_open_ssl() {
   echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.result
 }
 
-Say "gcc version $(gcc --version | head -1)"
+Say "gcc version [$(gcc --version | head -1)]"
 
-build_open_ssl
+# build_open_ssl
 
 build_libaio
 build_fio_twice
