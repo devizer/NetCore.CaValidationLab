@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# OK. 10.3, 9.4, 11.1, 11.2, 
+
 set -e
 set -u
 set -o pipefail
