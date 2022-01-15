@@ -66,7 +66,8 @@ jobs:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       cd 4gcc
 
-      is_platinum="$(cat /proc/cpuinfo | grep Platinum)"
+      Say "Check CPU"
+      is_platinum="$(cat /proc/cpuinfo | grep Platinum | head -1)"
       if [[ "${is_platinum:-}" != "" ]]; then
         Say "ERROR! XEON Platinum is not supported"
         exit 234
