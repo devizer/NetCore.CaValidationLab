@@ -52,8 +52,10 @@ function build_libaio() {
   popd
 }
 
+
 function build_fio() {
-  local url="https://brick.kernel.dk/snaps/fio-3.27.tar.gz"
+  FIO_VER="${FIO_VER:-3.27}"
+  local url="https://brick.kernel.dk/snaps/fio-${FIO_VER}.tar.gz"
   echo "BUILDING FIO: $url"
   local work=/transient-builds/fio-dev
   mkdir -p "$work"
@@ -73,20 +75,24 @@ function build_fio() {
 
 function build_fio_twice() {
   local err
+  for FIO_VER in 3.26 3.27 3.28 3.29; do
+    rm -f /usr/local/bin/fio
+    Say "Static fio build $FIO_VER"
+    export FIO_CONFIGURE_OPTIONS="--build-static" FIO_NAME="static-$FIO_VER"
+    build_fio || true
+    err=$?;
+    echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME
 
-  Say "Static fio build"
-  export FIO_CONFIGURE_OPTIONS="--build-static" FIO_NAME=static
-  build_fio || true
-  err=$?;
-  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
-  rm -f /usr/local/bin/fio
-
-  Say "Shared fio build"
-  export FIO_CONFIGURE_OPTIONS="" FIO_NAME=shared
-  build_fio || true
-  err=$?;
-  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
-  rm -f /usr/local/bin/fio
+    rm -f /usr/local/bin/fio
+    Say "Shared fio build $FIO_VER"
+    export FIO_CONFIGURE_OPTIONS="" FIO_NAME="shared-$FIO_VER"
+    build_fio || true
+    err=$?;
+    echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME
+    rm -f /usr/local/bin/fio
+  done
 }
 
 function build_open_ssl() {
