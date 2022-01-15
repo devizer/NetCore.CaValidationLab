@@ -42,6 +42,10 @@ jobs:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       cd 4gcc
 
+      sudo apt-get install util-linux hwinfo -y -qq
+      lscpu |& tee SYSTEM_ARTIFACTSDIRECTORY/lscpu-on-the-host.log
+      hwinfo |& tee SYSTEM_ARTIFACTSDIRECTORY/hwinfo-on-the-host.log
+
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
       for cmd in Say try-and-retry; do
