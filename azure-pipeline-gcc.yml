@@ -72,7 +72,10 @@ jobs:
       Say "Build"
       docker exec -t -e USEGCC="$(USEGCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
-        bash -e /build-gcc-task.sh
+        cd /
+        source build-gcc-utilities.sh
+        prepare_os
+        bash -e build-gcc-task.sh
       "
 
     displayName: 'Build GCC'
@@ -180,9 +183,10 @@ jobs:
       docker exec -t -e GCC="$(GCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" gcc-container bash -c "
         set -e; set -u; set -o pipefail; Say --Reset-Stopwatch
         Say 'Testing GCC ver $(GCC)'
+        cd /
         source build-gcc-utilities.sh
-        bash test-gcc.sh 
-        bash -e /build-gcc-task.sh
+        prepare_os
+        bash test-gcc.sh
       "
 
     displayName: 'Test GCC'
