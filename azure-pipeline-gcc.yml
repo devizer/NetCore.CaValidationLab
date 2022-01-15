@@ -11,6 +11,7 @@ jobs:
     vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
   dependsOn: 'TEST'
+  condition: succeededOrFailed()
   strategy:
     matrix:
       '11.1-Wheezy':
