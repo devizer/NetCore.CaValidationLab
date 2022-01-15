@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 function prepare_os() {
+Say "Provisioning container..."
 echo '
 Acquire::Check-Valid-Until "0";
 APT::Get::Assume-Yes "true";
