@@ -7,7 +7,10 @@ variables:
 
 jobs:
 - job: GCC
+  pool:
+    vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
+  dependsOn: 'TEST'
   strategy:
     matrix:
       '11.1-Wheezy':
@@ -44,11 +47,7 @@ jobs:
         VERS: 'x86_64-10 x86_64-10.3 x86_64-10.3.0'
 
 
-  pool:
-    vmImage: 'ubuntu-20.04'
-
   steps:
-
 
   - script: |
       set -e
@@ -67,7 +66,9 @@ jobs:
         docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
       done
       if [[ "$IMAGE" == alpine* ]]; then docker exec -t gcc-container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
-      docker cp build-gcc-task.sh gcc-container:/build-gcc-task.sh
+      for sh in *.sh; do
+        docker cp $sh gcc-container:/$sh
+      done
       Say "Build"
       docker exec -t -e USEGCC="$(USEGCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
@@ -131,3 +132,57 @@ jobs:
     inputs:
       pathtoPublish: '$(DEPLOY_DIR)'
       artifactName: 'GCC-BINARIES-$(Agent.JobName)'
+
+- job: TEST
+  pool:
+    vmImage: 'ubuntu-20.04'
+  timeoutInMinutes: 360
+  strategy:
+    matrix:
+      '11.1-Wheezy':
+        GCC: "11.1"
+        IMAGE: "debian:7"
+      '11.2-Wheezy':
+        GCC: "11.2"
+        IMAGE: "debian:7"
+      '10.2-Wheezy':
+        GCC: "10.2"
+        IMAGE: "debian:7"
+      '10.3-Wheezy':
+        GCC: "10.3"
+        IMAGE: "debian:7"
+      '9.4-Wheezy':
+        GCC: "9.4"
+        IMAGE: "debian:7"
+      '8.5-Wheezy':
+        GCC: "8.5"
+        IMAGE: "debian:7"
+
+  steps:
+
+  - script: |
+      set -e
+      set -u
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      cd 4gcc
+
+      Say "Start image $(IMAGE)"
+      docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
+      for cmd in Say try-and-retry; do
+        docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
+      done
+      if [[ "$IMAGE" == alpine* ]]; then docker exec -t gcc-container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
+      for sh in *.sh; do
+        docker cp $sh gcc-container:/$sh
+      done
+
+      Say "Build"
+      docker exec -t -e GCC="$(GCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" gcc-container bash -c "
+        set -e; set -u; Say --Reset-Stopwatch
+        Say "Test GCC ver $GCC"
+        source build-gcc-utilities.sh
+        bash test-gcc.sh 
+        bash -e /build-gcc-task.sh
+      "
+
+    displayName: 'Test'

@@ -6,6 +6,7 @@ set -o pipefail
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$HOME/build-agent-artifacts}"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
+
 function download_file() {
   local url="$1"
   local file="$2";
@@ -53,7 +54,6 @@ function build_libaio() {
 }
 
 function build_fio() {
-  apt-get install libpthread-stubs0-dev -y -qq
   local url="https://brick.kernel.dk/snaps/fio-3.27.tar.gz"
   echo "BUILDING FIO: $url"
   local work=/transient-builds/fio-dev
@@ -66,22 +66,46 @@ function build_fio() {
   cd fio* || true
   echo "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
-  make -j |& tee SYSTEM_ARTIFACTSDIRECTORY/fio-make-$FIO_NAME.log
-  make install
+  make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
+  make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
   Say "fio complete"
-  fio --version
-  fio --enghelp
+  (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
 }
 
 function build_fio_twice() {
-  Say "Static fio build"
-  export FIO_CONFIGURE_OPTIONS="" FIO_NAME=shared
-  build_fio
+  local err
 
   Say "Static fio build"
   export FIO_CONFIGURE_OPTIONS="--build-static" FIO_NAME=static
-  # build_fio
+  build_fio || true
+  err=$?;
+  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+  rm -f /usr/local/bin/fio
+
+  Say "Shared fio build"
+  export FIO_CONFIGURE_OPTIONS="" FIO_NAME=shared
+  build_fio || true
+  err=$?;
+  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+  rm -f /usr/local/bin/fio
 }
+
+function build_open_ssl() {
+  # ssl 1.1.1
+  export OPENSSL_HOME=/opt/openssl-1.1
+  Say "Installing OpenSSL 1.1.1m to [$OPENSSL_HOME]"
+  script=https://raw.githubusercontent.com/devizer/w3top-bin/master/tests/openssl-1.1-from-source.sh
+  file=/tmp/openssl-1.1.1.sh
+  try-and-retry wget --no-check-certificate -O $file $script 2>/dev/null || curl -ksSL -o $file $script
+  source $file
+  Say "System OpenSSL Version: $(get_openssl_system_version)"
+  install_openssl_111 > /dev/null
+  LD_LIBRARY_PATH="$OPENSSL_HOME/lib" $OPENSSL_HOME/bin/openssl version |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.log || true
+  err=$?;
+  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.result
+}
+
+build_open_ssl
 
 build_libaio
 build_fio_twice
