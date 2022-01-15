@@ -82,7 +82,7 @@ function build_fio_twice() {
     build_fio || true
     err=$?;
     echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
-    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME
+    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
 
     rm -f /usr/local/bin/fio
     Say "Shared fio build $FIO_VER"
@@ -90,7 +90,7 @@ function build_fio_twice() {
     build_fio || true
     err=$?;
     echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
-    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME
+    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
     rm -f /usr/local/bin/fio
   done
 }
