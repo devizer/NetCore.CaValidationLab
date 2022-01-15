@@ -198,3 +198,19 @@ jobs:
       "
 
     displayName: 'Test GCC'
+
+  - script: |
+      mkdir -p ~/from-container; pushd ~/from-container
+      Say "Grab Logs"
+      docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $(pwd)
+      tar xzf * $SYSTEM_ARTIFACTSDIRECTORY
+      ls -la
+    condition: succeededOrFailed()
+    displayName: 'Grab Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'ALL @ Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
