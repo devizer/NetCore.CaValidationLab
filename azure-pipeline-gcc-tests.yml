@@ -1,19 +1,82 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# https://mattvsts.github.io/2020/01/07/create-a-build-matrix-with-azure-pipelines/
 
-trigger:
-- master
+# trigger:
+# - master
+variables:
+  FLAGS: "-O2"
 
-pool:
-  vmImage: ubuntu-latest
+jobs:
+- job: TEST
+  pool:
+    vmImage: 'ubuntu-20.04'
+  timeoutInMinutes: 360
+  strategy:
+    matrix:
+      'System':
+        GCC: ""
+        IMAGE: "debian:7"
+      '11.1-Wheezy':
+        GCC: "11.1"
+        IMAGE: "debian:7"
+      '11.2-Wheezy':
+        GCC: "11.2"
+        IMAGE: "debian:7"
+      '10.2-Wheezy':
+        GCC: "10.2"
+        IMAGE: "debian:7"
+      '10.3-Wheezy':
+        GCC: "10.3"
+        IMAGE: "debian:7"
+      '9.4-Wheezy':
+        GCC: "9.4"
+        IMAGE: "debian:7"
+      '8.5-Wheezy':
+        GCC: "8.5"
+        IMAGE: "debian:7"
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  steps:
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - script: |
+      set -e
+      set -u
+      script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      cd 4gcc
+
+      Say "Start image $(IMAGE)"
+      docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
+      for cmd in Say try-and-retry; do
+        docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
+      done
+      if [[ "$IMAGE" == alpine* ]]; then docker exec -t gcc-container sh -c "apk update --no-progress; apk add --no-progress curl tar sudo bzip2 bash; apk add --no-progress bash icu-libs ca-certificates krb5-libs libgcc libstdc++ libintl libstdc++ tzdata userspace-rcu zlib openssl; echo"; fi
+      for sh in *.sh; do
+        docker cp $sh gcc-container:/$sh
+      done
+
+      Say "Test GCC $(GCC)"
+      docker exec -t -e GCC="$(GCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" gcc-container bash -c "
+        set -e; set -u; set -o pipefail; Say --Reset-Stopwatch
+        Say 'Starting container (taget gcc ver is [$(GCC)]) ... '
+        cd /
+        source build-gcc-utilities.sh
+        prepare_os
+        install_precompiled_gcc "$(GCC)" | cat
+        bash test-gcc.sh
+      "
+
+    displayName: 'Test GCC'
+
+  - script: |
+      mkdir -p ~/from-container; pushd ~/from-container
+      Say "Grab Logs"
+      docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $(pwd)
+      tar czf $SYSTEM_ARTIFACTSDIRECTORY/from-container.tar.gz .
+      ls -la
+    condition: succeededOrFailed()
+    displayName: 'Grab Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    condition: succeededOrFailed()
+    displayName: 'ALL @ Publish'
+    inputs:
+      pathtoPublish: '$(System.ARTIFACTSDIRECTORY)'
+      artifactName: '$(Agent.JobName)'
