@@ -37,7 +37,8 @@ function install_precompiled_gcc() {
   if [[ "${ver:-}" != "" ]]; then
     Say "Installing Precompiled GCC ver ${ver}"
     export GCC_INSTALL_VER="${ver}" GCC_INSTALL_DIR=/usr/local; 
-    script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+    # script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+    script="https://master.dl.sourceforge.net/project/gcc-precompiled/install-gcc.sh?viasf=1"; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
   else
     Say "Skip precompiled gcc installation. Use system gcc"
   fi
