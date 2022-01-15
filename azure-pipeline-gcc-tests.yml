@@ -12,6 +12,12 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '6.5-Wheezy':
+        GCC: "6.5"
+        IMAGE: "debian:7"
+      '7.5-Wheezy':
+        GCC: "7.5"
+        IMAGE: "debian:7"
       '8.5-Wheezy':
         GCC: "8.5"
         IMAGE: "debian:7"

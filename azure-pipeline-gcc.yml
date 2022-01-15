@@ -1,7 +1,17 @@
 # https://mattvsts.github.io/2020/01/07/create-a-build-matrix-with-azure-pipelines/
 
-# trigger:
-# - master
+trigger:
+  branches:
+    include:
+    - master
+    - releases/*
+  paths:
+    include:
+    - '*'
+    exclude:
+    - 'azure-pipeline-gcc-tests.yml'
+    - '4gcc/test-gcc.sh'
+
 variables:
   FLAGS: "-O2"
 
