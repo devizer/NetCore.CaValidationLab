@@ -33,6 +33,17 @@ Say "Completed system prerequisites"
 
 }
 
+function install_precompiled_gcc() {
+  local ver="$1"
+  if [[ "${ver:-}" != "" ]]; then
+    Say "Installing Precompiled GCC ver ${ver}"
+    export GCC_INSTALL_VER="${ver}" GCC_INSTALL_DIR=/usr/local; 
+    script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+  else
+    Say "Skip precompiled gcc installation. Use system gcc"
+  fi
+}
+
 
 function generate_uninstall_this_gcc() {
   file="$1"

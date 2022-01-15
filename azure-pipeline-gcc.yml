@@ -142,6 +142,9 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      'System':
+        GCC: ""
+        IMAGE: "debian:7"
       '11.1-Wheezy':
         GCC: "11.1"
         IMAGE: "debian:7"
@@ -186,6 +189,7 @@ jobs:
         cd /
         source build-gcc-utilities.sh
         prepare_os
+        install_precompiled_gcc "$(GCC)" | cat
         bash test-gcc.sh
       "
 
