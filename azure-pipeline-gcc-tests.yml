@@ -43,8 +43,9 @@ jobs:
       cd 4gcc
 
       sudo apt-get install util-linux hwinfo -y -qq
-      lscpu |& tee $SYSTEM_ARTIFACTSDIRECTORY/lscpu-on-the-host.log
-      hwinfo |& tee $SYSTEM_ARTIFACTSDIRECTORY/hwinfo-on-the-host.log
+      sudo lscpu |& tee $SYSTEM_ARTIFACTSDIRECTORY/lscpu-on-the-host.log
+      sudo hwinfo > $SYSTEM_ARTIFACTSDIRECTORY/hwinfo-on-the-host.log
+      cat /proc/cpuinfo > $SYSTEM_ARTIFACTSDIRECTORY/cpuinfo-on-the-host.log
 
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
