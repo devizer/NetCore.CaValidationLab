@@ -74,6 +74,7 @@ jobs:
       docker exec -t -e USEGCC="$(USEGCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
         cd /
+        ls -la build-gcc-utilities.sh
         source build-gcc-utilities.sh
         prepare_os
         bash -e build-gcc-task.sh

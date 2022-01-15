@@ -20,9 +20,6 @@ echo '
 deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
 deb http://archive.debian.org/debian wheezy-backports main non-free contrib
-# stable-jessie/snapshots/X.XX.X
-# deb http://download.mono-project.com/repo/debian stable-wheezy/snapshots/5.10 main
-# deb http://download.mono-project.com/repo/debian wheezy main
 ' > /etc/apt/sources.list
 try-and-retry apt-get update -qq
 
