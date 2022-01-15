@@ -169,9 +169,6 @@ jobs:
   steps:
 
   - script: |
-      wget --no-check-certificate -O /tmp/gcc.tar.xz "https://master.dl.sourceforge.net/project/gcc-precompiled/gcc-x86_64-linux-8.5.0.tar.xz?viasf=1"
-      tar tJf /tmp/gcc.tar.xz
-
       set -e
       set -u
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null

@@ -5,10 +5,7 @@ export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}
 Say "TARGET GCC: [$GCCURL], Using GCC: [${USEGCC:-}]"
 Say "Flags: [${FLAGS:-}]"
 
-prepare_os
-
 if [[ "${USEGCC:-}" != "" ]]; then
-  
   export GCC_INSTALL_VER="${USEGCC}" GCC_INSTALL_DIR=/usr/local; 
   Say "Installing GCC ${USEGCC} into $GCC_INSTALL_DIR"
   script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
