@@ -193,7 +193,7 @@ jobs:
         cd /
         source build-gcc-utilities.sh
         prepare_os
-        install_precompiled_gcc "$(GCC)"
+        install_precompiled_gcc "$(GCC)" | cat
         bash test-gcc.sh
       "
 
