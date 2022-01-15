@@ -176,10 +176,10 @@ jobs:
         docker cp $sh gcc-container:/$sh
       done
 
-      Say "Test GCC $GCC"
+      Say "Test GCC $(GCC)"
       docker exec -t -e GCC="$(GCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" gcc-container bash -c "
-        set -e; set -u; Say --Reset-Stopwatch
-        Say "Test GCC ver $GCC"
+        set -e; set -u; set -o pipefail; Say --Reset-Stopwatch
+        Say 'Testing GCC ver $(GCC)'
         source build-gcc-utilities.sh
         bash test-gcc.sh 
         bash -e /build-gcc-task.sh
