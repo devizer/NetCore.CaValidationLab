@@ -189,7 +189,7 @@ jobs:
         cd /
         source build-gcc-utilities.sh
         prepare_os
-        install_precompiled_gcc "$(GCC)" | cat
+        install_precompiled_gcc "$(GCC)"
         bash test-gcc.sh
       "
 
