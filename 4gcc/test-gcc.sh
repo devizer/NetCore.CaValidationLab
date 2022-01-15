@@ -105,6 +105,8 @@ function build_open_ssl() {
   echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.result
 }
 
+Say "gcc version $(gcc --version | head -1)"
+
 build_open_ssl
 
 build_libaio

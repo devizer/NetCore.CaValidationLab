@@ -30,7 +30,6 @@ try-and-retry apt-get install build-essential gettext autoconf automake bison fl
 try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
 try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
 Say "Completed system prerequisites"
-
 }
 
 function install_precompiled_gcc() {
