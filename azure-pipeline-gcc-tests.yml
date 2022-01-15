@@ -48,7 +48,7 @@ jobs:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       cd 4gcc
 
-      sudo apt-get install util-linux hwinfo -y -qq
+      try-and-retry sudo apt-get install util-linux hwinfo -y -qq >/dev/null
       sudo lscpu |& tee $SYSTEM_ARTIFACTSDIRECTORY/lscpu-on-the-host.log
       sudo hwinfo > $SYSTEM_ARTIFACTSDIRECTORY/hwinfo-on-the-host.log
       cat /proc/cpuinfo > $SYSTEM_ARTIFACTSDIRECTORY/cpuinfo-on-the-host.log

@@ -72,6 +72,7 @@ function build_fio() {
   make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
   make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
   Say "fio complete"
+  strip /usr/local/bin/fio 2>/dev/null || true 
   (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
 }
 
