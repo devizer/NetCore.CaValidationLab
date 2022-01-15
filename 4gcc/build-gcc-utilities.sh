@@ -1,5 +1,17 @@
 #!/usr/bin/env bash
 
+function get_cpu_name() {
+  # onbly x86_64. TODO: add arm
+  local cpu="$(cat /proc/cpuinfo | grep -E '^model name' | awk -F':' 'NR==1 {print $2}')"
+  cpu="$(echo -e "${cpu:-}" | sed -e 's/^[[:space:]]*//')"
+  echo "${cpu:-}"
+}
+
+function say_cpu_name() {
+  Say "CPU: [$(get_cpu_name)]"
+}
+
+
 function prepare_os() {
 Say "Provisioning container..."
 echo '
