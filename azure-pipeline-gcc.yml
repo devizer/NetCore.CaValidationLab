@@ -68,8 +68,9 @@ jobs:
 
       Say "Check CPU"
       is_platinum="$(cat /proc/cpuinfo | grep Platinum | head -1)"
-      if [[ "${is_platinum:-}" != "" ]]; then
-        Say "ERROR! XEON Platinum is not supported"
+      is_E526xx="$(cat /proc/cpuinfo | grep "E5-26" | head -1)"
+      # if [[ "${is_platinum:-}" != "" ]]; then Say "ERROR! XEON Platinum is NOT SUPPORTED"
+      if [[ "${is_E526xx:-}" == "" ]]; then Say "ERROR! XEON E5-26xx is REQUIRED"
         exit 234
       fi
 
