@@ -59,7 +59,7 @@ function build_fio() {
   FIO_VER="${FIO_VER:-3.27}"
   local url="https://brick.kernel.dk/snaps/fio-${FIO_VER}.tar.gz"
   echo "BUILDING FIO: $url"
-  local work=/transient-builds/fio-dev
+  local work=/transient-builds/fio-src
   mkdir -p "$work"
   pushd "$work"
   rm -rf *
