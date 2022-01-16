@@ -117,10 +117,8 @@ function build_open_ssl() {
   try-and-retry wget --no-check-certificate -O $file $script 2>/dev/null || curl -ksSL -o $file $script
   source $file
   Say "System OpenSSL Version: $(get_openssl_system_version)"
-  install_openssl_111 > /dev/null
-  LD_LIBRARY_PATH="$OPENSSL_HOME/lib" $OPENSSL_HOME/bin/openssl version |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.log || true
-  err=$?;
-  echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/openssl-version.result
+  wrap_cmd "openssl-install" bash -c "install_openssl_111 > /dev/null"
+  wrap_cmd "openssl-version" bash -c "LD_LIBRARY_PATH="$OPENSSL_HOME/lib" $OPENSSL_HOME/bin/openssl version"
 }
 
 Say "gcc version [$(gcc --version | head -1)]"
