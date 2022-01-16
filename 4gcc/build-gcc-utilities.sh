@@ -15,10 +15,10 @@ function say_cpu_name() {
 
 
 function prepare_os() {
+  Say "Provisioning container..."
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
   if [[ "${os_ver}" == "debian:7" ]]; then
-Say "Provisioning container..."
 echo '
 Acquire::Check-Valid-Until "0";
 APT::Get::Assume-Yes "true";
@@ -38,7 +38,7 @@ deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
 deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
-  }
+  fi
 
   if [[ "${ID:-}" = "debian" ]]; then
     try-and-retry apt-get update -qq
