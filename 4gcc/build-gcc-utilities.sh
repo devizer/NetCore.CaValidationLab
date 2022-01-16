@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export DEBIAN_FRONTEND=noninteractive
+
 function get_cpu_name() {
   # onbly x86_64. TODO: add arm
   local cpu="$(cat /proc/cpuinfo | grep -E '^model name' | awk -F':' 'NR==1 {print $2}')"
@@ -13,6 +15,9 @@ function say_cpu_name() {
 
 
 function prepare_os() {
+  test -f /etc/os-release && source /etc/os-release
+  local os_ver="${ID:-}:${VERSION_ID:-}"
+  if [[ "${os_ver}" == "debian:7" ]]; then
 Say "Provisioning container..."
 echo '
 Acquire::Check-Valid-Until "0";
@@ -33,12 +38,15 @@ deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
 deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
-try-and-retry apt-get update -qq
+}
 
-export DEBIAN_FRONTEND=noninteractive
+if [[ "${ID:-}" = "debian" ]]; then
+try-and-retry apt-get update -qq
 try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
 try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
 try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
+fi
+
 Say "Completed system prerequisites"
 }
 
