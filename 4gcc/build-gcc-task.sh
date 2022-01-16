@@ -27,6 +27,7 @@ cd gcc*
 contrib/download_prerequisites
 args=""; 
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
+if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
 ./configure --prefix=/usr/local $args |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
 cpus=$(nproc)
 # cpus=$((cpus+1))

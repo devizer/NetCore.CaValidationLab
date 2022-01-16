@@ -22,18 +22,18 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
-      '5.5-Wheezy':
-        GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz
-        IMAGE: "debian:7"
-        ARTIFACT: "gcc-x86_64-linux-5.5.0"
-      '4.9.4-Wheezy':
-        GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
-        IMAGE: "debian:7"
-        ARTIFACT: "gcc-x86_64-linux-4.9.4"
       '4.7-Wheezy':
         GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2
         IMAGE: "debian:7"
         ARTIFACT: "gcc-x86_64-linux-4.7.0"
+      # '5.5-Wheezy':
+      #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz
+      #   IMAGE: "debian:7"
+      #   ARTIFACT: "gcc-x86_64-linux-5.5.0"
+      # '4.9.4-Wheezy':
+      #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
+      #   IMAGE: "debian:7"
+      #   ARTIFACT: "gcc-x86_64-linux-4.9.4"
       # '6.5-Wheezy':
       #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz'
       #   IMAGE: "debian:7"
