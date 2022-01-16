@@ -13,7 +13,7 @@ function wrap_cmd() {
   shift
   eval $* |& tee "$SYSTEM_ARTIFACTSDIRECTORY/$key.log"
   local err=$?
-  echo "{$err}" > "$SYSTEM_ARTIFACTSDIRECTORY/$key.result"
+  echo "$err" > "$SYSTEM_ARTIFACTSDIRECTORY/$key.result"
 }
 
 function download_file() {
