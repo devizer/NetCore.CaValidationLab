@@ -65,8 +65,8 @@ function build_fio() {
   rm -rf *
 
   DOWNLOAD_SHOW_PROGRESS=True
-  download_file "$url" _fio-3.27.tar.gz
-  tar xzf _fio-3.27.tar.gz
+  download_file "$url" _fio-${FIO_VER}.tar.gz
+  tar xzf _fio-${FIO_VER}.tar.gz
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
