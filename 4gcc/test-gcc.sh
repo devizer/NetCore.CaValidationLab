@@ -123,7 +123,7 @@ function build_open_ssl() {
 
 Say "gcc version [$(gcc --version | head -1)]"
 
-build_open_ssl
+build_open_ssl || true
 
 build_libaio
 build_fio_twice
