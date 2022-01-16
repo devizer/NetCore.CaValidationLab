@@ -92,17 +92,17 @@ function build_fio() {
 
 function build_fio_twice() {
   local err
-  for FIO_VER in 3.26 3.27 3.28 3.29; do
+  for FIO_VER in 3.29 3.28 3.27 3.26; do
     rm -f /usr/local/bin/fio
     Say "Static fio build $FIO_VER"
     export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
-    build_fio
+    build_fio || true
     cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
 
     rm -f /usr/local/bin/fio
     Say "Shared fio build $FIO_VER"
     export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
-    build_fio
+    build_fio || true
     cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
     rm -f /usr/local/bin/fio
   done
