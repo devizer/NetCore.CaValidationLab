@@ -12,6 +12,34 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '6.5-Jessie':
+        GCC: "6.5"
+        IMAGE: "debian:8"
+      '7.5-Jessie':
+        GCC: "7.5"
+        IMAGE: "debian:8"
+      '8.5-Jessie':
+        GCC: "8.5"
+        IMAGE: "debian:8"
+      'System-Jessie':
+        GCC: ""
+        IMAGE: "debian:8"
+      '11.1-Jessie':
+        GCC: "11.1"
+        IMAGE: "debian:8"
+      '11.2-Jessie':
+        GCC: "11.2"
+        IMAGE: "debian:8"
+      '10.2-Jessie':
+        GCC: "10.2"
+        IMAGE: "debian:8"
+      '10.3-Jessie':
+        GCC: "10.3"
+        IMAGE: "debian:8"
+      '9.4-Jessie':
+        GCC: "9.4"
+        IMAGE: "debian:8"
+
       '6.5-Buster':
         GCC: "6.5"
         IMAGE: "debian:10"
