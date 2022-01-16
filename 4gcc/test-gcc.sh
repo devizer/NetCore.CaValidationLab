@@ -70,24 +70,24 @@ function build_fio() {
   local work=/transient-builds/fio-src
   mkdir -p "$work"
   pushd "$work"
-  rm -rf fio*
+  rm -rf *
   
   DOWNLOAD_SHOW_PROGRESS=True
-  test ! -s _fio-${FIO_VER}.tar.gz && download_file "$url" _fio-${FIO_VER}.tar.gz
-  tar xzf _fio-${FIO_VER}.tar.gz
+  fio_archive=/tmp/fio-${FIO_VER}.tar.gz
+  test ! -s $fio_archive && download_file "$url" $fio_archive
+  tar xzf $fio_archive
+  rm -f $fio_archive
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
-  ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
-  # make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
-  # make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
-  wrap_cmd "fio-$FIO_NAME-make"            make -j
-  wrap_cmd "fio-$FIO_NAME-make-install"    make install
+  wrap_cmd "fio-$FIO_NAME-configure"    ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
+  wrap_cmd "fio-$FIO_NAME-make"         make -j
+  wrap_cmd "fio-$FIO_NAME-make-install" make install
   Say "fio complete"
-  strip /usr/local/bin/fio 2>/dev/null || true 
+  strip /usr/local/bin/fio 2>/dev/null || true
   # (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
-  wrap_cmd "fio-$FIO_NAME-get-version"     fio --version
-  wrap_cmd "fio-$FIO_NAME-get-getengines"  fio --enghelp
-
+  wrap_cmd "fio-$FIO_NAME-get-version"    fio --version
+  wrap_cmd "fio-$FIO_NAME-get-getengines" fio --enghelp
+  wrap_cmd "fio-$FIO_NAME-bench"          fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
 }
 
 function build_fio_twice() {
