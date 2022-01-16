@@ -45,6 +45,21 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
     try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
     try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
     try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
+
+    # old gcc 4.7 needs LANG and LC_ALL
+    apt-get install g++ -y -qq > /dev/null
+    apt-get install gawk -y -qq > /dev/null
+    apt-get install m4 -y -qq > /dev/null
+    Say "Configure LANG and LC_ALL"
+    apt-get install locales -y -qq > /dev/null
+
+echo '
+en_US.UTF-8 UTF-8
+ru_RU.UTF-8 UTF-8
+' > /etc/locale.gen 
+DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
+  export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+  Say "LANG=$LANG LC_ALL=$LC_ALL"
   fi
 
   Say "Completed system prerequisites"

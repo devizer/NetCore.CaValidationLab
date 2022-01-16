@@ -25,7 +25,7 @@ rm -f _gcc.tar.*
 cd gcc*
 # export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 contrib/download_prerequisites
-args=""; 
+args="";
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
 if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
 ./configure --prefix=/usr/local $args |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
