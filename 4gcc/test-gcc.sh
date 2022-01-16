@@ -11,7 +11,7 @@ mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 function wrap_cmd() {
   local key="$1"
   shift
-  eval $* |& tee "$SYSTEM_ARTIFACTSDIRECTORY/$key.log"
+  eval "$@" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/$key.log"
   local err=$?
   echo "$err" > "$SYSTEM_ARTIFACTSDIRECTORY/$key.result"
 }
@@ -125,7 +125,7 @@ function build_open_ssl() {
 
 Say "gcc version [$(gcc --version | head -1)]"
 
-# build_open_ssl
+build_open_ssl
 
 build_libaio
 build_fio_twice
