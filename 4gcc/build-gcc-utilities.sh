@@ -27,10 +27,10 @@ Acquire::AllowInsecureRepositories "1";
 Acquire::AllowDowngradeToInsecureRepositories "1";
 Acquire::CompressionTypes::Order { "gz"; };
 APT::NeverAutoRemove:: ".*";
-APT::Compressor::gzip::CompressArg:: "-1";
-APT::Compressor::xz::CompressArg:: "-1";
-APT::Compressor::bzip2::CompressArg:: "-1";
-APT::Compressor::lzma::CompressArg:: "-1";
+# APT::Compressor::gzip::CompressArg:: "-1";
+# APT::Compressor::xz::CompressArg:: "-1";
+# APT::Compressor::bzip2::CompressArg:: "-1";
+# APT::Compressor::lzma::CompressArg:: "-1";
 ' > /etc/apt/apt.conf.d/99Z_Custom
 
 echo '
@@ -38,16 +38,16 @@ deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
 deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
-}
+  }
 
-if [[ "${ID:-}" = "debian" ]]; then
-try-and-retry apt-get update -qq
-try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
-try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
-try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
-fi
+  if [[ "${ID:-}" = "debian" ]]; then
+    try-and-retry apt-get update -qq
+    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
+    try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
+    try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
+  fi
 
-Say "Completed system prerequisites"
+  Say "Completed system prerequisites"
 }
 
 function install_precompiled_gcc() {
