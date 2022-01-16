@@ -21,7 +21,7 @@ jobs:
       '8.5-Buster':
         GCC: "8.5"
         IMAGE: "debian:10"
-      'System':
+      'System-Buster':
         GCC: ""
         IMAGE: "debian:10"
       '11.1-Buster':
@@ -49,7 +49,7 @@ jobs:
       '8.5-Wheezy':
         GCC: "8.5"
         IMAGE: "debian:7"
-      'System':
+      'System-Wheezy':
         GCC: ""
         IMAGE: "debian:7"
       '11.1-Wheezy':
