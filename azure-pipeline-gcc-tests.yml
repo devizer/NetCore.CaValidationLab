@@ -141,7 +141,7 @@ jobs:
       mkdir -p ~/from-container; pushd ~/from-container
       Say "Grab Logs"
       docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $(pwd)
-      tar czf $SYSTEM_ARTIFACTSDIRECTORY/from-container.tar.gz .
+      tar czf "$SYSTEM_ARTIFACTSDIRECTORY/from-container ($SYSTEM_JOBDISPLAYNAME).tar.gz" .
       ls -la
     condition: succeededOrFailed()
     displayName: 'Grab Artifacts'
