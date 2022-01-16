@@ -18,10 +18,11 @@ Say "SYSTEM_ARTIFACTSDIRECTORY: [$SYSTEM_ARTIFACTSDIRECTORY]"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 mkdir -p $work
 cd $work
-try-and-retry wget --no-check-certificate -O _gcc.tar.xz $GCCURL
-[[ "$GCCURL" == *".bz2" ]] && pv _gcc.tar.xz | tar xjf -
-[[ "$GCCURL" == *".xz" ]]  && pv _gcc.tar.xz | tar xJf -
-rm -f _gcc.tar.*
+try-and-retry wget --no-check-certificate -O _gcc.tar $GCCURL
+[[ "$GCCURL" == *".bz2" ]] && pv _gcc.tar | tar xjf -
+[[ "$GCCURL" == *".xz" ]]  && pv _gcc.tar | tar xJf -
+[[ "$GCCURL" == *".gz" ]]  && pv _gcc.tar | tar xzf -
+rm -f _gcc.tar*
 cd gcc*
 # export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 contrib/download_prerequisites

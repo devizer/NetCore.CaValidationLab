@@ -18,7 +18,7 @@ function prepare_os() {
   Say "Provisioning container..."
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
-  if [[ "${os_ver}" == "debian:7" ]]; then
+  if [[ "${ID:-}" == "debian" ]]; then
 echo '
 Acquire::Check-Valid-Until "0";
 APT::Get::Assume-Yes "true";
@@ -27,12 +27,14 @@ Acquire::AllowInsecureRepositories "1";
 Acquire::AllowDowngradeToInsecureRepositories "1";
 Acquire::CompressionTypes::Order { "gz"; };
 APT::NeverAutoRemove:: ".*";
-# APT::Compressor::gzip::CompressArg:: "-1";
-# APT::Compressor::xz::CompressArg:: "-1";
-# APT::Compressor::bzip2::CompressArg:: "-1";
-# APT::Compressor::lzma::CompressArg:: "-1";
+APT::Compressor::gzip::CompressArg:: "-1";
+APT::Compressor::xz::CompressArg:: "-1";
+APT::Compressor::bzip2::CompressArg:: "-1";
+APT::Compressor::lzma::CompressArg:: "-1";
 ' > /etc/apt/apt.conf.d/99Z_Custom
+  fi
 
+  if [[ "${os_ver}" == "debian:7" ]]; then
 echo '
 deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
@@ -50,6 +52,7 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
     apt-get install g++ -y -qq > /dev/null
     apt-get install gawk -y -qq > /dev/null
     apt-get install m4 -y -qq > /dev/null
+    
     Say "Configure LANG and LC_ALL"
     apt-get install locales -y -qq > /dev/null
 

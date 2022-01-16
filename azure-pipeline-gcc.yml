@@ -104,7 +104,7 @@ jobs:
         cd /
         source build-gcc-utilities.sh
         prepare_os
-        bash -e build-gcc-task.sh
+        source build-gcc-task.sh
       "
 
     displayName: 'Build GCC'
