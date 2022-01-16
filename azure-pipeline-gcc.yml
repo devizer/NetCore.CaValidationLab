@@ -99,7 +99,7 @@ jobs:
         docker cp $sh gcc-container:/$sh
       done
       Say "Build"
-      docker exec -t -e USEGCC="$(USEGCC)" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
+      docker exec -t -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="$(GCCURL)" -e FLAGS="$(FLAGS)" gcc-container bash -c "
         Say --Reset-Stopwatch
         cd /
         source build-gcc-utilities.sh
