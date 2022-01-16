@@ -8,6 +8,14 @@ set -o pipefail
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$HOME/build-agent-artifacts}"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
+function wrap_cmd() {
+  local key="$1"
+  shift
+  eval $* |& tee "$SYSTEM_ARTIFACTSDIRECTORY/$key.log"
+  local err=$?
+  echo "{$err}" > "$SYSTEM_ARTIFACTSDIRECTORY/$key.result"
+}
+
 function download_file() {
   local url="$1"
   local file="$2";
@@ -70,11 +78,16 @@ function build_fio() {
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
-  make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
-  make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
+  # make -j |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make.log
+  # make install |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-make-install.log
+  wrap_cmd "fio-$FIO_NAME-make"            make -j
+  wrap_cmd "fio-$FIO_NAME-make-install"    make install
   Say "fio complete"
   strip /usr/local/bin/fio 2>/dev/null || true 
-  (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
+  # (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
+  wrap_cmd "fio-$FIO_NAME-get-version"     fio --version
+  wrap_cmd "fio-$FIO_NAME-get-getengines"  fio --enghelp
+
 }
 
 function build_fio_twice() {
