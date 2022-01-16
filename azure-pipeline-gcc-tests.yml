@@ -12,6 +12,34 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '6.5-Buster':
+        GCC: "6.5"
+        IMAGE: "debian:10"
+      '7.5-Buster':
+        GCC: "7.5"
+        IMAGE: "debian:10"
+      '8.5-Buster':
+        GCC: "8.5"
+        IMAGE: "debian:10"
+      'System':
+        GCC: ""
+        IMAGE: "debian:10"
+      '11.1-Buster':
+        GCC: "11.1"
+        IMAGE: "debian:10"
+      '11.2-Buster':
+        GCC: "11.2"
+        IMAGE: "debian:10"
+      '10.2-Buster':
+        GCC: "10.2"
+        IMAGE: "debian:10"
+      '10.3-Buster':
+        GCC: "10.3"
+        IMAGE: "debian:10"
+      '9.4-Buster':
+        GCC: "9.4"
+        IMAGE: "debian:10"
+
       '6.5-Wheezy':
         GCC: "6.5"
         IMAGE: "debian:7"
@@ -40,33 +68,6 @@ jobs:
         GCC: "9.4"
         IMAGE: "debian:7"
 
-      '6.5-Buster':
-        GCC: "6.5"
-        IMAGE: "debian:10"
-      '7.5-Buster':
-        GCC: "7.5"
-        IMAGE: "debian:10"
-      '8.5-Buster':
-        GCC: "8.5"
-        IMAGE: "debian:10"
-      'System':
-        GCC: ""
-        IMAGE: "debian:10"
-      '11.1-Buster':
-        GCC: "11.1"
-        IMAGE: "debian:10"
-      '11.2-Buster':
-        GCC: "11.2"
-        IMAGE: "debian:10"
-      '10.2-Buster':
-        GCC: "10.2"
-        IMAGE: "debian:10"
-      '10.3-Buster':
-        GCC: "10.3"
-        IMAGE: "debian:10"
-      '9.4-Buster':
-        GCC: "9.4"
-        IMAGE: "debian:10"
 
   steps:
 
