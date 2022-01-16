@@ -95,18 +95,14 @@ function build_fio_twice() {
   for FIO_VER in 3.26 3.27 3.28 3.29; do
     rm -f /usr/local/bin/fio
     Say "Static fio build $FIO_VER"
-    export FIO_CONFIGURE_OPTIONS="--build-static" FIO_NAME="static-$FIO_VER"
-    build_fio || true
-    err=$?;
-    echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+    export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
+    build_fio
     cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
 
     rm -f /usr/local/bin/fio
     Say "Shared fio build $FIO_VER"
-    export FIO_CONFIGURE_OPTIONS="" FIO_NAME="shared-$FIO_VER"
-    build_fio || true
-    err=$?;
-    echo "Exit code: $err" |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME-exit-code.result
+    export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
+    build_fio
     cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
     rm -f /usr/local/bin/fio
   done
