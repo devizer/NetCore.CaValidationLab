@@ -70,10 +70,10 @@ function build_fio() {
   local work=/transient-builds/fio-src
   mkdir -p "$work"
   pushd "$work"
-  rm -rf *
-
+  rm -rf fio*
+  
   DOWNLOAD_SHOW_PROGRESS=True
-  download_file "$url" _fio-${FIO_VER}.tar.gz
+  test ! -s _fio-${FIO_VER}.tar.gz && download_file "$url" _fio-${FIO_VER}.tar.gz
   tar xzf _fio-${FIO_VER}.tar.gz
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
