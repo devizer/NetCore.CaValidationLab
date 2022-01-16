@@ -62,6 +62,7 @@ function build_fio() {
   local work=/transient-builds/fio-dev
   mkdir -p "$work"
   pushd "$work"
+  rm -rf *
 
   DOWNLOAD_SHOW_PROGRESS=True
   download_file "$url" _fio-3.27.tar.gz
