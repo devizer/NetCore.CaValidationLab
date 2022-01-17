@@ -52,6 +52,7 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
     try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
     try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
     try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
+    try-and-retry apt-get install pkg-config -y -qq > /dev/null
 
     # old gcc 4.7 needs LANG and LC_ALL
     apt-get install g++ -y -qq > /dev/null
