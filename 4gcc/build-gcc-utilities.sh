@@ -53,8 +53,8 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
     apt-get install gawk -y -qq > /dev/null
     apt-get install m4 -y -qq > /dev/null
     
-    Say "Configure LANG and LC_ALL"
-    apt-get install locales -y -qq > /dev/null
+    Say "Configure LANG and LC_ALL and install **libicu**"
+    apt-get install locales mc -y -qq > /dev/null
 
 echo '
 en_US.UTF-8 UTF-8
