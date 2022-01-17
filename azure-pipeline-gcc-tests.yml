@@ -146,7 +146,6 @@ jobs:
 
       source build-gcc-utilities.sh 
       Say "CPU: [$(get_cpu_name)]"
-      printenv | sort
 
       try-and-retry sudo apt-get install util-linux hwinfo -y -qq >/dev/null
       sudo lscpu > $SYSTEM_ARTIFACTSDIRECTORY/lscpu-on-the-host.log
