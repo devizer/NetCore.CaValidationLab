@@ -52,7 +52,7 @@ function build_libaio() {
   download_file "$url" _libaio-libaio-0.3.112.tar.gz
   tar xzf _libaio-libaio-0.3.112.tar.gz
   cd libaio*
-  time make prefix=/usr install
+  time make prefix=/usr/local install
   echo '
   # export CFLAGS="-O2 -I/transient-builds/libaio-dev/include/"
   # export LDFLAGS="-L/transient-builds/libaio-dev/lib/"
