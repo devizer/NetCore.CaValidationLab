@@ -2,13 +2,16 @@
 
 export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-10.3.0
+mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
 export IMAGE=debian:9
 
+script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash 
+Say --Reset-Stopwatch
+
 for f in build-gcc-utilities.sh build-gcc-task.sh; do
-  curl -kSL -o /tmp/$f https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/4gcc/$f
+  try-and-retry curl -kSL -o /tmp/$f https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/4gcc/$f
 done
 
-script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash 
 
 Say "Start container $IMAGE"
 docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"

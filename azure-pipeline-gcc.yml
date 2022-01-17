@@ -84,10 +84,10 @@ jobs:
       Say "Check CPU"
       cpu="$(get_cpu_name)"
       Say "CPU: [$(get_cpu_name)]"
-      if [[ "${cpu:-}" == *"Platinum"* ]]; then Say "ERROR! XEON Platinum is NOT SUPPORTED"
+      # if [[ "${cpu:-}" == *"Platinum"* ]]; then Say "ERROR! XEON Platinum is NOT SUPPORTED"
       # if [[ "${cpu:-}" != *"Platinum"* ]]; then Say "ERROR! XEON Platinum is REQUIRED"
-        exit 234
-      fi
+      #  exit 234
+      # fi
 
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
