@@ -128,3 +128,9 @@ build_open_ssl || true
 build_libaio
 build_fio_twice
 
+Say "Pack /usr/local"
+/usr/local/uninstall-this-gcc.sh || true
+pushd /usr/local
+GZIP -9 tar czf $SYSTEM_ARTIFACTSDIRECTORY/usr-local.tar.gz .
+popd
+
