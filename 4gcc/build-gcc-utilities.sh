@@ -13,7 +13,6 @@ function say_cpu_name() {
   Say "CPU: [$(get_cpu_name)]"
 }
 
-
 function prepare_os() {
   Say "Provisioning container..."
   test -f /etc/os-release && source /etc/os-release
@@ -40,6 +39,12 @@ deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
 deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
+  fi
+
+  if [[ "$(command -v dnf)" != "" ]]; then
+    dnf install make autoconf libtool curl wget -y -q
+  elif [[ "$(command -v yum)" != "" ]]; then
+    yum install make autoconf libtool curl wget -y -q
   fi
 
   if [[ "${ID:-}" = "debian" ]]; then
