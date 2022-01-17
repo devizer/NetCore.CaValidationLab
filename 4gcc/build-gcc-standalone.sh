@@ -15,6 +15,7 @@ done
 
 
 Say "Start container $IMAGE"
+docker rm -f gcc-container
 docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
 for cmd in Say try-and-retry; do
     docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
