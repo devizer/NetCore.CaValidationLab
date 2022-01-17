@@ -42,9 +42,9 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
   fi
 
   if [[ "$(command -v dnf)" != "" ]]; then
-    dnf install make autoconf libtool curl wget -y -q
+    dnf install gcc make autoconf libtool curl wget -y -q
   elif [[ "$(command -v yum)" != "" ]]; then
-    yum install make autoconf libtool curl wget -y -q
+    yum install gcc make autoconf libtool curl wget -y -q
   fi
 
   if [[ "$(command -v apt-get)" != "" ]]; then
