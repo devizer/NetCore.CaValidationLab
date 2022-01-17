@@ -42,4 +42,5 @@ docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ART
 
 Say "Grab gcc binaries"
 docker cp gcc-container:/gcc.tar.gz $SYSTEM_ARTIFACTSDIRECTORY/gcc.tar.gz
-
+Say "Grab other artifacts from [gcc-container:$SYSTEM_ARTIFACTSDIRECTORY]"
+docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
