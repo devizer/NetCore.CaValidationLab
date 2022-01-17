@@ -12,6 +12,12 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '7.5-Ubuntu-22.04':
+        GCC: "7.5"
+        IMAGE: "ubuntu:22.04"
+      '7.5-Ubuntu-20.04':
+        GCC: "7.5"
+        IMAGE: "ubuntu:20.04"
       '7.5-CentOS-8':
         GCC: "7.5"
         IMAGE: "centos:8"
@@ -24,12 +30,6 @@ jobs:
       '7.5-Fedora-35':
         GCC: "7.5"
         IMAGE: "fedora:35"
-      '7.5-Ubuntu-22.04':
-        GCC: "7.5"
-        IMAGE: "ubuntu:22.04"
-      '7.5-Ubuntu-20.04':
-        GCC: "7.5"
-        IMAGE: "ubuntu:20.04"
       '6.5-Jessie':
         GCC: "6.5"
         IMAGE: "debian:8"

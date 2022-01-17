@@ -44,7 +44,7 @@ function download_file() {
 
 function build_libaio() {
   local url="https://pagure.io/libaio/archive/libaio-0.3.112/libaio-libaio-0.3.112.tar.gz"
-  echo "BUILDING LIBAIO: $url"
+  Say "BUILDING LIBAIO: $url"
   local work=/transient-builds/libaio-dev
   mkdir -p "$work"
   pushd "$work"
