@@ -26,7 +26,7 @@ done
 Say "Build"
 docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" gcc-container bash -c "
     Say --Reset-Stopwatch
-    Say "ENABLE_LANGUAGES: \$ENABLE_LANGUAGES"
+    Say \"ENABLE_LANGUAGES: \$ENABLE_LANGUAGES\"
     cd /
     source build-gcc-utilities.sh
     prepare_os
