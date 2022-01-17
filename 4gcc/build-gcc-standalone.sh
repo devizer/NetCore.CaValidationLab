@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
+export VER=10.3.0
 export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz
-export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-10.3.0
+export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
 mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
 export IMAGE=debian:9
 
@@ -23,8 +24,9 @@ for f in build-gcc-utilities.sh build-gcc-task.sh; do
 done
 
 Say "Build"
-docker exec -t -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" gcc-container bash -c "
+docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" gcc-container bash -c "
     Say --Reset-Stopwatch
+    Say "ENABLE_LANGUAGES: \$ENABLE_LANGUAGES"
     cd /
     source build-gcc-utilities.sh
     prepare_os
