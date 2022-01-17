@@ -12,6 +12,25 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '11.2-Ubuntu-22.04':
+        GCC: "11.2"
+        IMAGE: "ubuntu:22.04"
+      '11.2-Ubuntu-20.04':
+        GCC: "11.2"
+        IMAGE: "ubuntu:20.04"
+      '11.2-CentOS-8':
+        GCC: "11.2"
+        IMAGE: "centos:8"
+      '11.2-CentOS-7':
+        GCC: "11.2"
+        IMAGE: "centos:7"
+      '11.2-Fedora-24':
+        GCC: "11.2"
+        IMAGE: "fedora:24"
+      '11.2-Fedora-35':
+        GCC: "11.2"
+        IMAGE: "fedora:35"
+
       '7.5-Ubuntu-22.04':
         GCC: "7.5"
         IMAGE: "ubuntu:22.04"
@@ -30,6 +49,8 @@ jobs:
       '7.5-Fedora-35':
         GCC: "7.5"
         IMAGE: "fedora:35"
+
+
       '6.5-Jessie':
         GCC: "6.5"
         IMAGE: "debian:8"
