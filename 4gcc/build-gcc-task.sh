@@ -30,7 +30,7 @@ args="";
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
 if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
 if [[ "$(uname -m)" == "aarch64" ]]; then args="--disable-multilib"; fi
-if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then $langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
+if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
 ./configure --prefix=/usr/local ${langs_arg:-} ${args:-} |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
 cpus=$(nproc)
 # cpus=$((cpus+1))
