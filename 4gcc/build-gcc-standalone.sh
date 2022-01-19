@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-export VER=10.3.0
-export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.gz
+export VER=8.5.0
+export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.gz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
 mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
 export IMAGE=debian:9
@@ -15,17 +15,18 @@ done
 
 
 Say "Start container $IMAGE"
-docker rm -f gcc-container
-docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
+container="gcc-$VER-container"
+docker rm -f $container
+docker run --privileged -t --rm -d --hostname $container --name $container "$IMAGE" sh -c "while true; do sleep 42; done"
 for cmd in Say try-and-retry; do
-    docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
+    docker cp /usr/local/bin/$cmd $container:/usr/bin/$cmd
 done
 for f in build-gcc-utilities.sh build-gcc-task.sh; do
-  docker cp /tmp/$f gcc-container:/$f
+  docker cp /tmp/$f $container:/$f
 done
 
 Say "Build"
-docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" gcc-container bash -c "
+docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" $container bash -c "
     Say --Reset-Stopwatch
     Say \"ENABLE_LANGUAGES: \$ENABLE_LANGUAGES\"
     cd /
@@ -42,6 +43,6 @@ docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ART
 "
 
 Say "Grab gcc binaries"
-docker cp gcc-container:/gcc.tar.gz $SYSTEM_ARTIFACTSDIRECTORY/gcc.tar.gz
-Say "Grab other artifacts from [gcc-container:$SYSTEM_ARTIFACTSDIRECTORY]"
-docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
+docker cp $container:/gcc.tar.gz $SYSTEM_ARTIFACTSDIRECTORY/gcc.tar.gz
+Say "Grab other artifacts from [$container:$SYSTEM_ARTIFACTSDIRECTORY]"
+docker cp $container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
