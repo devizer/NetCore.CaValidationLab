@@ -27,7 +27,7 @@ function download_file() {
   fi
   local try1=""
   if [[ "$(command -v wget)" != null ]]; then
-    try1="${try1:-} wget $progress1 --no-check-certificate -O '$file' '$url'"
+    try1="wget $progress1 --no-check-certificate -O '$file' '$url'"
   fi
   if [[ "$(command -v curl)" != null ]]; then
     [[ -n "${try1:-}" ]] && try1="$try1 || "

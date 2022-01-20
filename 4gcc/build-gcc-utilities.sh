@@ -48,19 +48,19 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
   fi
 
   if [[ "$(command -v apt-get)" != "" ]]; then
-    try-and-retry apt-get update -qq
-    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -qq > /dev/null
-    try-and-retry apt-get install libc6-dev* -y -qq > /dev/null
-    try-and-retry apt-get install gcc-multilib -y -qq > /dev/null
-    try-and-retry apt-get install pkg-config -y -qq > /dev/null
+    try-and-retry apt-get update -q
+    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q 
+    try-and-retry apt-get install libc6-dev -y -q #*
+    try-and-retry apt-get install gcc-multilib -y -q
+    try-and-retry apt-get install pkg-config -y -q
 
     # old gcc 4.7 needs LANG and LC_ALL
-    apt-get install g++ -y -qq > /dev/null
-    apt-get install gawk -y -qq > /dev/null
-    apt-get install m4 -y -qq > /dev/null
+    apt-get install g++ -y -q
+    apt-get install gawk -y -q
+    apt-get install m4 -y -q
     
     Say "Configure LANG and LC_ALL and install **libicu**"
-    apt-get install locales mc -y -qq > /dev/null
+    apt-get install locales mc -y -q
 
 echo '
 en_US.UTF-8 UTF-8
