@@ -254,3 +254,4 @@ paket-files/
 .idea/
 *.sln.iml
 Images/fedora-36.txt
+4gcc/build-tmp.sh
