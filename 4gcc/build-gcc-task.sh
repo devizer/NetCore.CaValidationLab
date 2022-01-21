@@ -25,8 +25,12 @@ try-and-retry wget --no-check-certificate -O _gcc.tar $GCCURL
 rm -f _gcc.tar*
 cd gcc*
 # export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
+# 32 bit OS: https://stackoverflow.com/a/18190496/15524858
+export C_INCLUDE_PATH="/usr/include/$(gcc -print-multiarch)"
+Say "C_INCLUDE_PATH: [$C_INCLUDE_PATH]"
 contrib/download_prerequisites
 args="";
+
 if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
 if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
 if [[ "$(uname -m)" == "aarch64" ]]; then args="--disable-multilib"; fi

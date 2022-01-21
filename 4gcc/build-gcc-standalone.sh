@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-export VER=8.5.0
-export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.gz
+export VER=5.5.0
+export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
 mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
-export IMAGE=debian:9
+export IMAGE=debian:7
 
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash 
 Say --Reset-Stopwatch
