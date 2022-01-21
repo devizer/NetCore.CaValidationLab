@@ -14,7 +14,7 @@ function say_cpu_name() {
 }
 
 function prepare_os() {
-  Say "Provisioning container..."
+  Say "Provisioning container, arch is [$(uname -m)]..."
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
   if [[ "${ID:-}" == "debian" ]]; then
