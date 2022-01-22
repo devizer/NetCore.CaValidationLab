@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 
-export VER=5.5.0
+# for ver in 7.5.0 9.4.0; do
+# export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
+export IMAGE=debian:9
+export VER=11.2.0
+export USEGCC=10
+# export VER=$ver
 export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
 mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
-export IMAGE=debian:7
 
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash 
 Say --Reset-Stopwatch
+
+if [[ "$IMAGE" == *"arm"* ]]; then
+  Say "Register qemu static"
+  docker run --rm --privileged multiarch/qemu-user-static:register --reset
+fi
 
 for f in build-gcc-utilities.sh build-gcc-task.sh; do
   try-and-retry curl -kSL -o /tmp/$f https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/4gcc/$f
@@ -46,3 +55,5 @@ Say "Grab gcc binaries"
 docker cp $container:/gcc.tar.gz $SYSTEM_ARTIFACTSDIRECTORY/gcc.tar.gz
 Say "Grab other artifacts from [$container:$SYSTEM_ARTIFACTSDIRECTORY]"
 docker cp $container:$SYSTEM_ARTIFACTSDIRECTORY/. $SYSTEM_ARTIFACTSDIRECTORY
+
+# done # for ver
