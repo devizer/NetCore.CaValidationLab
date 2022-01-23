@@ -15,7 +15,55 @@ jobs:
       '7.5-Jessie':
         GCC: "7.5"
         IMAGE: "debian:8"
-        ARTIFACT: '7.5-jessie-x86_64'
+      '7.5-Stretch':
+        GCC: "7.5"
+        IMAGE: "debian:9"
+      '7.5-Buster':
+        GCC: "7.5"
+        IMAGE: "debian:10"
+      '7.5-Bullseye':
+        GCC: "7.5"
+        IMAGE: "debian:11"
+
+      '8.5-Jessie':
+        GCC: "8.5"
+        IMAGE: "debian:8"
+      '8.5-Stretch':
+        GCC: "8.5"
+        IMAGE: "debian:9"
+      '8.5-Buster':
+        GCC: "8.5"
+        IMAGE: "debian:10"
+      '8.5-Bullseye':
+        GCC: "8.5"
+        IMAGE: "debian:11"
+
+      '9.4-Jessie':
+        GCC: "9.4"
+        IMAGE: "debian:8"
+      '9.4-Stretch':
+        GCC: "9.4"
+        IMAGE: "debian:9"
+      '9.4-Buster':
+        GCC: "9.4"
+        IMAGE: "debian:10"
+      '9.4-Bullseye':
+        GCC: "9.4"
+        IMAGE: "debian:11"
+
+      '10.3-Jessie':
+        GCC: "10.3"
+        IMAGE: "debian:8"
+      '10.3-Stretch':
+        GCC: "10.3"
+        IMAGE: "debian:9"
+      '10.3-Buster':
+        GCC: "10.3"
+        IMAGE: "debian:10"
+      '10.3-Bullseye':
+        GCC: "10.3"
+        IMAGE: "debian:11"
+
       '7.5-CentOS-7':
         GCC: "7.5"
         IMAGE: "centos:7"
