@@ -130,7 +130,8 @@ function build_fio_twice() {
     rm -f /usr/local/bin/fio
   done
 
-  install_libpthread_dev
+  wrap_cmd "install-libpthread-stub" install_libpthread_dev
+  
   for FIO_VER in $versions; do
     rm -f /usr/local/bin/fio
     Say "Static fio build with PTHREAD STUBS $FIO_VER"
