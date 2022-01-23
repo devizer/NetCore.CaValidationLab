@@ -197,7 +197,8 @@ jobs:
 
   - script: |
        cd ~/gcc-from-container
-       Ldd_Version=$(cat ldd-ver)
+       Ldd_Version=$(cat ldd-version.log)
+       Say "Ldd_Version: [$Ldd_Version]"
        echo Not Implemented
     condition: succeededOrFailed()
     displayName: 'Deploy'
