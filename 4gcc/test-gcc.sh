@@ -131,15 +131,14 @@ function build_fio_twice() {
     # rm -f /usr/local/bin/fio
   done
 
-  wrap_cmd "install-libpthread-stub" install_libpthread_dev
-  
-  for FIO_VER in $versions; do
-    # SKIP STATIC
+  # SKIP STATIC
+  # wrap_cmd "install-libpthread-stub" install_libpthread_dev
+  # for FIO_VER in $versions; do
     # rm -f /usr/local/bin/fio
     # Say "Static fio build with PTHREAD STUBS $FIO_VER"
     # export FIO_NAME="$FIO_VER-static-with-posixaio" FIO_CONFIGURE_OPTIONS="--build-static"
     # build_fio || true
-  done
+  # done
 }
 
 function build_open_ssl() {

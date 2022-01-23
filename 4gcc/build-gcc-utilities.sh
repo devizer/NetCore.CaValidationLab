@@ -41,6 +41,14 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
+  if [[ "${os_ver}" == "debian:8" ]]; then
+echo '
+deb http://archive.debian.org/debian/ jessie main non-free contrib
+# deb http://archive.debian.org/debian-security jessie/updates main non-free contrib
+deb http://archive.debian.org/debian jessie-backports main non-free contrib
+' > /etc/apt/sources.list
+  fi
+
   if [[ "$(command -v dnf)" != "" ]]; then
     dnf install gcc make autoconf libtool curl wget -y -q
   elif [[ "$(command -v yum)" != "" ]]; then
