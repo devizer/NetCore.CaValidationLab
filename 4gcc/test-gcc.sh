@@ -92,7 +92,9 @@ function build_fio() {
   wrap_cmd "fio-$FIO_NAME-ldd"            ldd -v /usr/local/bin/fio
 
   export LD_LIBRARY_PATH=/usr/local/lib
-  wrap_cmd "fio-$FIO_NAME-bench"          fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "fio-$FIO_NAME-bench-sync"      fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "fio-$FIO_NAME-bench-libaio"    fio --name=test --randrepeat=1 --ioengine=libaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "fio-$FIO_NAME-bench-posixaio"  fio --name=test --randrepeat=1 --ioengine=posixaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
 }
 
 function build_fio_twice() {
@@ -130,6 +132,7 @@ Say "gcc version [$(gcc --version | head -1)]"
 Say "LDD VERSION"
 wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}' || true"
 
+# for deployment
 # build_open_ssl || true
 
 build_libaio
