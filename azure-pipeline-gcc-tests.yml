@@ -141,8 +141,10 @@ jobs:
   - script: |
         sudo apt-get install sshpass rsync -y -qq
         mkdir -p ~/.ssh; printf "Host frs.sourceforge.net\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
+        echo "Login length: [${#LOGIN}]"
+        echo "Password length: [${#PASSWORD}]"
         echo "TODO ..." > /tmp/readme
-        sshpass -p "$PASSWORD" rsync -r /tmp/readme ${LOGIN}@frs.sourceforge.net:/home/frs/p/fio/build-matrix archivarius@frs.sourceforge.net:/home/frs/p/fio/build-matrix
+        sshpass -p "$PASSWORD" rsync -r /tmp/readme "${LOGIN}@frs.sourceforge.net:/home/frs/p/fio/build-matrix archivarius@frs.sourceforge.net:/home/frs/p/fio/build-matrix/"
         echo OKey
     displayName: 'test sf'
     env:
