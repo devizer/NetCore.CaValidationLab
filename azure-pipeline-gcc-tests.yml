@@ -103,62 +103,33 @@ jobs:
         IMAGE: "fedora:35"
 
 
-      '6.5-Jessie':
-        GCC: "6.5"
-        IMAGE: "debian:8"
-      '8.5-Jessie':
-        GCC: "8.5"
-        IMAGE: "debian:8"
       'System-Jessie':
         GCC: ""
         IMAGE: "debian:8"
+      'System-Stretch':
+        GCC: ""
+        IMAGE: "debian:9"
+      'System-Buster':
+        GCC: ""
+        IMAGE: "debian:10"
+      'System-Bullseye':
+        GCC: ""
+        IMAGE: "debian:11"
+      
       '11.1-Jessie':
         GCC: "11.1"
         IMAGE: "debian:8"
       '11.2-Jessie':
         GCC: "11.2"
         IMAGE: "debian:8"
-      '10.2-Jessie':
-        GCC: "10.2"
-        IMAGE: "debian:8"
-      '10.3-Jessie':
-        GCC: "10.3"
-        IMAGE: "debian:8"
-      '9.4-Jessie':
-        GCC: "9.4"
-        IMAGE: "debian:8"
 
-      '6.5-Buster':
-        GCC: "6.5"
-        IMAGE: "debian:10"
-      '7.5-Buster':
-        GCC: "7.5"
-        IMAGE: "debian:10"
-      '8.5-Buster':
-        GCC: "8.5"
-        IMAGE: "debian:10"
-      'System-Buster':
-        GCC: ""
-        IMAGE: "debian:10"
       '11.1-Buster':
         GCC: "11.1"
         IMAGE: "debian:10"
       '11.2-Buster':
         GCC: "11.2"
         IMAGE: "debian:10"
-      '10.2-Buster':
-        GCC: "10.2"
-        IMAGE: "debian:10"
-      '10.3-Buster':
-        GCC: "10.3"
-        IMAGE: "debian:10"
-      '9.4-Buster':
-        GCC: "9.4"
-        IMAGE: "debian:10"
 
-      '6.5-Wheezy':
-        GCC: "6.5"
-        IMAGE: "debian:7"
       '8.5-Wheezy':
         GCC: "8.5"
         IMAGE: "debian:7"
