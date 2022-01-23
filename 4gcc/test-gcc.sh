@@ -11,6 +11,7 @@ mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 function wrap_cmd() {
   local key="$1"
   shift
+  mkdir -p "$(dirname "$SYSTEM_ARTIFACTSDIRECTORY/$key.log")"
   eval "$@" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/$key.log"
   local err=$?
   echo "$err" > "$SYSTEM_ARTIFACTSDIRECTORY/$key.result"
@@ -80,20 +81,21 @@ function build_fio() {
   tar xzf $fio_archive
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
-  wrap_cmd "fio-$FIO_NAME-configure"    ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
-  wrap_cmd "fio-$FIO_NAME-make"         make -j
-  wrap_cmd "fio-$FIO_NAME-make-install" make install
+  local key="${FIO_VER}/$FIO_NAME"
+  wrap_cmd "$key/configure"    ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
+  wrap_cmd "$key/make"         make -j
+  wrap_cmd "$key/make-install" make install
   Say "fio complete"
   strip /usr/local/bin/fio 2>/dev/null || true
   # (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
-  wrap_cmd "fio-$FIO_NAME-get-version"    fio --version
-  wrap_cmd "fio-$FIO_NAME-get-getengines" fio --enghelp
-  wrap_cmd "fio-$FIO_NAME-ldd"            ldd -v /usr/local/bin/fio
+  wrap_cmd "$key/get-version"    fio --version
+  wrap_cmd "$key/get-getengines" fio --enghelp
+  wrap_cmd "$key/ldd"            ldd -v /usr/local/bin/fio
 
   export LD_LIBRARY_PATH=/usr/local/lib
-  wrap_cmd "fio-$FIO_NAME-bench-sync"      fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
-  wrap_cmd "fio-$FIO_NAME-bench-libaio"    fio --name=test --randrepeat=1 --ioengine=libaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
-  wrap_cmd "fio-$FIO_NAME-bench-posixaio"  fio --name=test --randrepeat=1 --ioengine=posixaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "$key/bench-sync"      fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "$key/bench-libaio"    fio --name=test --randrepeat=1 --ioengine=libaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  wrap_cmd "$key/bench-posixaio"  fio --name=test --randrepeat=1 --ioengine=posixaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
 }
 
 function build_fio_twice() {
