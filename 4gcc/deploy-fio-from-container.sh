@@ -14,8 +14,11 @@ for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
     Say "-- Version [$ver]; Mode [$mode]; Is Shared [$is_shared]"
     pushd "$dir_mode" >/dev/null
       configure_result="$(cat configure.result)"
+      make_result="$(cat make.result)"
       if [[ "$configure_result" -ne 0 ]]; then
         echo "   skip. configure.result is [$configure_result]"
+      if [[ "$make_result" -ne 0 ]]; then
+        echo "   skip. make.result is [$make_result]"
       elif [[ ! -s fio ]]; then
         echo "   skip. missing fio"
       else
