@@ -87,6 +87,8 @@ function build_fio() {
   wrap_cmd "$key/make-install" make install
   Say "fio complete"
   strip /usr/local/bin/fio 2>/dev/null || true
+  cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/$key/fio || true
+
   # (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
   wrap_cmd "$key/get-version"    fio --version
   wrap_cmd "$key/get-getengines" fio --enghelp
@@ -105,13 +107,11 @@ function build_fio_twice() {
     Say "Static fio build $FIO_VER"
     export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
     build_fio || true
-    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
 
     rm -f /usr/local/bin/fio
     Say "Shared fio build $FIO_VER"
     export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
     build_fio || true
-    cp -f /usr/local/bin/fio $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME || true
     rm -f /usr/local/bin/fio
   done
 }
