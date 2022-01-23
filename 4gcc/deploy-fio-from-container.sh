@@ -17,7 +17,7 @@ for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
       make_result="$(cat make.result)"
       if [[ "$configure_result" -ne 0 ]]; then
         echo "   skip. configure.result is [$configure_result]"
-      if [[ "$make_result" -ne 0 ]]; then
+      elif [[ "$make_result" -ne 0 ]]; then
         echo "   skip. make.result is [$make_result]"
       elif [[ ! -s fio ]]; then
         echo "   skip. missing fio"
