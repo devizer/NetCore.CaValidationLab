@@ -88,6 +88,8 @@ function build_fio() {
   # (command -v fio; fio --version; fio --enghelp) |& tee $SYSTEM_ARTIFACTSDIRECTORY/fio-$FIO_NAME.log || true
   wrap_cmd "fio-$FIO_NAME-get-version"    fio --version
   wrap_cmd "fio-$FIO_NAME-get-getengines" fio --enghelp
+  wrap_cmd "fio-$FIO_NAME-ldd"            ldd -v /usr/local/bin/fio
+
   export LD_LIBRARY_PATH=/usr/local/lib
   wrap_cmd "fio-$FIO_NAME-bench"          fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
 }
