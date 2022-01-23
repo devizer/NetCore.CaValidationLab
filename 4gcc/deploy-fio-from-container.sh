@@ -11,18 +11,19 @@ for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
   for dir_mode in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
     mode="$(basename "$dir_mode")"
     is_shared="False"; [[ "$mode" == *"shared"* ]] && is_shared="True";
-    Say "-- Version [$ver]; Mode [$mode]; Is Shared [$is_shared]"
+    full_description="Version: [$ver]; Mode: [$mode]; Is Shared: [$is_shared]"
+    echo "checking $full_description ..."
     pushd "$dir_mode" >/dev/null
       configure_result="$(cat configure.result)"
       make_result="$(cat make.result)"
       if [[ "$configure_result" -ne 0 ]]; then
-        echo "   skip. configure.result is [$configure_result]"
+        Say --Display-As=Error "Error configure.result is [$configure_result] for $full_description"
       elif [[ "$make_result" -ne 0 ]]; then
-        echo "   skip. make.result is [$make_result]"
+        Say --Display-As=Error "Error make.result is [$make_result] for $full_description"
       elif [[ ! -s fio ]]; then
-        echo "   skip. missing fio"
+        Say --Display-As=Error "Error missing fio for $full_description"
       else
-        Say "++ Ready to Deploy for [$ver --> $mode]"
+        Say "Ready to Deploy the $full_description"
         for result in *.result; do
         echo "       $result: $(cat "$result")"
         done
