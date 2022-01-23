@@ -11,6 +11,7 @@ trigger:
     exclude:
     - 'azure-pipeline-gcc-tests.yml'
     - '4gcc/test-gcc.sh'
+    - '4gcc/deploy-fio-from-container.sh'
 
 variables:
   FLAGS: "-O2"
