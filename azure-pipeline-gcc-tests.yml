@@ -196,10 +196,16 @@ jobs:
     displayName: 'Grab Artifacts'
 
   - script: |
+       cd 4gcc
+       scripts="$(pwd)"
        cd ~/gcc-from-container
        Ldd_Version=$(cat ldd-version.log)
        Say "Ldd_Version: [$Ldd_Version]"
-       echo Not Implemented
+       Say "Raw File Structure"
+       find .
+       Say "Raw Versions"
+       find . -maxdepth 1 -type d
+       bash "$scripts/deploy-fio-from-container.sh"
     condition: succeededOrFailed()
     displayName: 'Deploy'
 
