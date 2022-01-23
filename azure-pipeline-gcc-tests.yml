@@ -12,6 +12,18 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '8.5-Stretch-arm64':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:arm64-stretch"
+        QEMU: arm64
+      '8.5-Buster-arm64':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:arm64-buster"
+      '8.5-Bullseye-arm64':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:arm64-bullseye"
+        QEMU: arm64
+
       '7.5-Jessie':
         GCC: "7.5"
         IMAGE: "debian:8"
@@ -182,6 +194,11 @@ jobs:
       sudo hwinfo > $SYSTEM_ARTIFACTSDIRECTORY/hwinfo-on-the-host.log
       cat /proc/cpuinfo > $SYSTEM_ARTIFACTSDIRECTORY/cpuinfo-on-the-host.log
 
+      if [[ "${QEMU:-}" != "" ]]; then
+        Say "Register qemu user static"
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+      fi
+      
       Say "Start image $(IMAGE)"
       docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
       for cmd in Say try-and-retry; do

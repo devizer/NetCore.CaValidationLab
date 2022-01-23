@@ -123,20 +123,22 @@ function build_fio_twice() {
     export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
     build_fio || true
 
-    rm -f /usr/local/bin/fio
-    Say "Shared fio build $FIO_VER"
-    export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
-    build_fio || true
-    rm -f /usr/local/bin/fio
+    # SKIP STATIC
+    # rm -f /usr/local/bin/fio
+    # Say "Shared fio build $FIO_VER"
+    # export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
+    # build_fio || true
+    # rm -f /usr/local/bin/fio
   done
 
   wrap_cmd "install-libpthread-stub" install_libpthread_dev
   
   for FIO_VER in $versions; do
-    rm -f /usr/local/bin/fio
-    Say "Static fio build with PTHREAD STUBS $FIO_VER"
-    export FIO_NAME="$FIO_VER-static-with-posixaio" FIO_CONFIGURE_OPTIONS="--build-static"
-    build_fio || true
+    # SKIP STATIC
+    # rm -f /usr/local/bin/fio
+    # Say "Static fio build with PTHREAD STUBS $FIO_VER"
+    # export FIO_NAME="$FIO_VER-static-with-posixaio" FIO_CONFIGURE_OPTIONS="--build-static"
+    # build_fio || true
   done
 }
 
