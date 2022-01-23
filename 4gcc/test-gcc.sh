@@ -127,7 +127,7 @@ function build_open_ssl() {
 
 Say "gcc version [$(gcc --version | head -1)]"
 Say "LDD VERSION"
-wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}'"
+wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}' || true"
 
 build_open_ssl || true
 
