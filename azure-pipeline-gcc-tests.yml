@@ -140,7 +140,8 @@ jobs:
 
   - script: |
         sudo apt-get install sshpass rsync -y -qq
-        mkdir -p ~/.ssh; printf "Host frs.sourceforge.net\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
+        # mkdir -p ~/.ssh; printf "Host frs.sourceforge.net\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
+        mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
         echo "Login length: [${#LOGIN}]"
         echo "Password length: [${#PASSWORD}]"
         echo "[$date] TODO ..." > /tmp/readme
