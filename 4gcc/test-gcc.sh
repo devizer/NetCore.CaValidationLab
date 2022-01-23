@@ -53,7 +53,7 @@ function build_libaio() {
   tar xzf _libaio-libaio-0.3.112.tar.gz
   cd libaio*
   time make prefix=/usr/local install
-  wrap_cmd "ldd-libaio.so.1" ldd /usr/local/lib/libaio.so.1 || true
+  wrap_cmd "ldd-libaio.so.1" ldd -v /usr/local/lib/libaio.so.1 || true
   echo '
   # export CFLAGS="-O2 -I/transient-builds/libaio-dev/include/"
   # export LDFLAGS="-L/transient-builds/libaio-dev/lib/"
