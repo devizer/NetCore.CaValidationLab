@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # OK. 10.3, 9.4, 11.1, 11.2, 
+# actually it builds fio matrix
 
 set -e
 set -u
@@ -100,9 +101,23 @@ function build_fio() {
   wrap_cmd "$key/bench-posixaio"  fio --name=test --randrepeat=1 --ioengine=posixaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
 }
 
+function install_libpthread_dev() {
+  # dnf install compat-libpthread-nonshared -y -q - centos8
+  # pthread-stubs
+  [[ "$(command -v apt-get)" != "" ]] && apt-get install libpthread-stubs0-dev -y -qq
+  [[ "$(command -v dnf)" != "" ]]     && dnf install compat-libpthread-nonshared -y -q | cat || true
+}
+
+function remove_libpthread_dev() {
+  [[ "$(command -v apt-get)" != "" ]] && apt-get purge libpthread-stubs0-dev -y -qq
+  [[ "$(command -v dnf)" != "" ]]     && dnf remove --noautoremove --nogpgcheck compat-libpthread-nonshared -y -q | cat || true
+}
+
 function build_fio_twice() {
   local err
-  for FIO_VER in 3.29 3.28 3.27 3.26; do
+  local versions="3.29 3.28 3.27 3.26"
+  for FIO_VER in $versions; do
+    
     rm -f /usr/local/bin/fio
     Say "Static fio build $FIO_VER"
     export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
@@ -113,6 +128,14 @@ function build_fio_twice() {
     export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
     build_fio || true
     rm -f /usr/local/bin/fio
+  done
+
+  install_libpthread_dev
+  for FIO_VER in $versions; do
+    rm -f /usr/local/bin/fio
+    Say "Static fio build with PTHREAD STUBS $FIO_VER"
+    export FIO_NAME="$FIO_VER-static-with-posixaio" FIO_CONFIGURE_OPTIONS="--build-static"
+    build_fio || true
   done
 }
 
