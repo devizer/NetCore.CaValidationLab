@@ -78,7 +78,6 @@ function build_fio() {
   fio_archive=/tmp/fio-${FIO_VER}.tar.gz
   test ! -s $fio_archive && download_file "$url" $fio_archive
   tar xzf $fio_archive
-  rm -f $fio_archive
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   wrap_cmd "fio-$FIO_NAME-configure"    ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
