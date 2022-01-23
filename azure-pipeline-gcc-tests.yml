@@ -15,6 +15,7 @@ jobs:
       '7.5-Jessie':
         GCC: "7.5"
         IMAGE: "debian:8"
+        ARTIFACT: '7.5-jessie-x86_64'
       '7.5-CentOS-7':
         GCC: "7.5"
         IMAGE: "centos:7"
@@ -186,7 +187,7 @@ jobs:
     displayName: 'Test GCC'
 
   - script: |
-      mkdir -p ~/from-container; pushd ~/from-container
+      mkdir -p ~/gcc-from-container; pushd ~/gcc-from-container
       Say "Grab Logs"
       docker cp gcc-container:$SYSTEM_ARTIFACTSDIRECTORY/. $(pwd)
       tar czf "$SYSTEM_ARTIFACTSDIRECTORY/from-container ($SYSTEM_JOBDISPLAYNAME).tar.gz" .
@@ -195,6 +196,8 @@ jobs:
     displayName: 'Grab Artifacts'
 
   - script: |
+       cd ~/gcc-from-container
+       Ldd_Version=$(cat ldd-ver)
        echo Not Implemented
     condition: succeededOrFailed()
     displayName: 'Deploy'

@@ -54,6 +54,7 @@ function build_libaio() {
   cd libaio*
   time make prefix=/usr/local install
   wrap_cmd "ldd-libaio.so.1" ldd -v /usr/local/lib/libaio.so.1 || true
+  cp /usr/local/lib/libaio.so.1 $SYSTEM_ARTIFACTSDIRECTORY/libaio.so.1 || true
   echo '
   # export CFLAGS="-O2 -I/transient-builds/libaio-dev/include/"
   # export LDFLAGS="-L/transient-builds/libaio-dev/lib/"
@@ -129,7 +130,7 @@ Say "gcc version [$(gcc --version | head -1)]"
 Say "LDD VERSION"
 wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}' || true"
 
-build_open_ssl || true
+# build_open_ssl || true
 
 build_libaio
 build_fio_twice
