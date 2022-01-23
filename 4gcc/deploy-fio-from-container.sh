@@ -21,7 +21,7 @@ for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
       else
         Say "++ Ready to Deploy for [$ver --> $mode]"
         for result in *.result; do
-        echo "       $result: (cat "$result")"
+        echo "       $result: $(cat "$result")"
         done
       fi
     popd >/dev/null
