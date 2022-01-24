@@ -2,9 +2,9 @@
 
 # for ver in 7.5.0 9.4.0; do
 # export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
-export IMAGE=debian:9
-export VER=11.2.0
-export USEGCC=10
+export IMAGE=debian:8
+export VER=8.5.0
+export USEGCC="" # 10
 # export VER=$ver
 export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER

@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+# --target=$TARGET --with-arch=$ARCH --with-fpu=$FPU --with-float=hard --enable-languages=$LANGUAGES --disable-multilib
+# armv7: --with-fpu=vfp --with-float=hard
+# ARCH: armv6|armv7-a|armv8-a, $FPU=vfp|neon-vfpv4|neon-fp-armv8
+# TARGET=aarch64-linux-gnu|arm-linux-gnueabihf
+         
 set -e
 set -u
 export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}"
@@ -26,15 +31,19 @@ rm -f _gcc.tar*
 cd gcc*
 # export CFLAGS="${FLAGS:-}" CPPFLAGS="${FLAGS:-}" CXXFLAGS="${FLAGS:-}"
 # 32 bit OS: https://stackoverflow.com/a/18190496/15524858
-export C_INCLUDE_PATH="/usr/include/$(gcc -print-multiarch)"
-Say "C_INCLUDE_PATH: [$C_INCLUDE_PATH]"
+# export C_INCLUDE_PATH="/usr/include/$(gcc -print-multiarch)"
+# Say "C_INCLUDE_PATH: [$C_INCLUDE_PATH]"
 contrib/download_prerequisites
 args="";
 
-if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
-if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
-if [[ "$(uname -m)" == "aarch64" ]]; then args="--disable-multilib"; fi
+# if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
+# if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
+# if [[ "$(uname -m)" == "aarch64" ]]; then args="--disable-multilib"; fi
+
 args="--disable-multilib"
+# next is for armv7 only
+if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="${args:-} --with-fpu=vfp --with-float=hard"; fi
+
 if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
 ./configure --prefix=/usr/local ${langs_arg:-} ${args:-} |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
 cpus=$(nproc)
