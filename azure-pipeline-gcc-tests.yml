@@ -19,11 +19,12 @@ jobs:
       '8.5-Buster-arm64':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-buster"
+        QEMU: arm64
+        # IMAGE: "arm64v8/debian:10"
       '8.5-Bullseye-arm64':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-bullseye"
         QEMU: arm64
-
       '7.5-Jessie':
         GCC: "7.5"
         IMAGE: "debian:8"
