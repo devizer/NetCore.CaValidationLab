@@ -96,9 +96,10 @@ function build_fio() {
   wrap_cmd "$key/ldd"            ldd -v /usr/local/bin/fio
 
   export LD_LIBRARY_PATH=/usr/local/lib
-  wrap_cmd "$key/bench-sync"      fio --name=test --randrepeat=1 --ioengine=sync --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
-  wrap_cmd "$key/bench-libaio"    fio --name=test --randrepeat=1 --ioengine=libaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
-  wrap_cmd "$key/bench-posixaio"  fio --name=test --randrepeat=1 --ioengine=posixaio --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  for engine in sync libaio posixaio; do
+    Say "Test Engine [$engine] of fio ver [$FIO_VER]"
+    wrap_cmd "$key/bench-$engine"      fio --name=test --randrepeat=1 --ioengine=$engine --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+  done
 }
 
 function install_libpthread_dev() {
