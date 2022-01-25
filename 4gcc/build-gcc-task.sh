@@ -3,6 +3,8 @@
 # armv7: --with-fpu=vfp --with-float=hard
 # ARCH: armv6|armv7-a|armv8-a, $FPU=vfp|neon-vfpv4|neon-fp-armv8
 # TARGET=aarch64-linux-gnu|arm-linux-gnueabihf
+
+# OK ARM32v7: https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/21d9f648982054e55d294a16256c6d8ad9c61287/4gcc/build-gcc-task.sh
          
 set -e
 set -u
@@ -39,12 +41,16 @@ args="";
 # if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="--disable-multilib"; fi
 # if [[ "$GCCURL" == *"gcc-4.7"* ]]; then args="--disable-multilib"; fi
 # if [[ "$(uname -m)" == "aarch64" ]]; then args="--disable-multilib"; fi
-
 args="--disable-multilib"
 # next is for armv7 only
-if [[ "$(getconf LONG_BIT)" != "32" ]]; then args="${args:-} --with-fpu=vfp --with-float=hard"; fi
-
+if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm"* ]]; then
+  # https://wiki.segger.com/GCC_floating-point_options
+  if [[ "$(getconf LONG_BIT)" == "32" ]]; then args="${args:-} --with-fpu=vfpv3 --with-float=hard"; fi
+  # if [[ "$(getconf LONG_BIT)" == "64" ]]; then args="${args:-} --with-fpu=vfpv4 --with-float=hard"; fi
+fi
 if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
+echo "ARGS: ${langs_arg:-} ${args:-}" > "$SYSTEM_ARTIFACTSDIRECTORY/configure-args.txt"
+Say "ARGS: ${langs_arg:-} ${args:-}"
 ./configure --prefix=/usr/local ${langs_arg:-} ${args:-} |& tee "$SYSTEM_ARTIFACTSDIRECTORY/configure.log"
 cpus=$(nproc)
 # cpus=$((cpus+1))
