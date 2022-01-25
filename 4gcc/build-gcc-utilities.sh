@@ -41,7 +41,7 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
-  if [[ "${os_ver}" == "debian:8" ]] && [[ "$(getconf LONG_BIT)" == "64" ]]; then
+  if [[ "${os_ver}" == "debian:8" ]] && [[ "$(getconf LONG_BIT)" == "64" ]] && [[ "$(uname -m)" != x86_64 ]]; then
 echo '
 deb http://archive.debian.org/debian/ jessie main non-free contrib
 # deb http://archive.debian.org/debian-security jessie/updates main non-free contrib
