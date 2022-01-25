@@ -12,6 +12,23 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
+      '8.5-Jessie-arm':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:armhf-jessie"
+        QEMU: armhf
+      '8.5-Stretch-arm':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:armhf-stretch"
+        QEMU: armhf
+      '8.5-Buster-arm':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:armhf-buster"
+        QEMU: armhf
+      '8.5-Bullseye-arm':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:armhf-bullseye"
+        QEMU: armhf
+        
       '8.5-Stretch-arm64':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-stretch"
