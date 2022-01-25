@@ -119,17 +119,17 @@ function build_fio_twice() {
   local versions="2.11 3.16 3.29 3.28 3.27 3.26"
   for FIO_VER in $versions; do
     
-    rm -f /usr/local/bin/fio
-    Say "Static fio build $FIO_VER"
-    export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
-    build_fio || true
-
     # SKIP STATIC
     # rm -f /usr/local/bin/fio
-    # Say "Shared fio build $FIO_VER"
-    # export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
+    # Say "Static fio build $FIO_VER"
+    # export FIO_NAME="$FIO_VER-static" FIO_CONFIGURE_OPTIONS="--build-static"
     # build_fio || true
-    # rm -f /usr/local/bin/fio
+
+    rm -f /usr/local/bin/fio
+    Say "Shared fio build $FIO_VER"
+    export FIO_NAME="$FIO_VER-shared" FIO_CONFIGURE_OPTIONS=""
+    build_fio || true
+    rm -f /usr/local/bin/fio
   done
 
   # SKIP STATIC
