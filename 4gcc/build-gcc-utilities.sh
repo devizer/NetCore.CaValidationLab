@@ -41,6 +41,15 @@ deb http://archive.debian.org/debian wheezy-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
+echo 'JESSIE x86_64:
+# deb http://snapshot.debian.org/archive/debian/20210326T030000Z jessie main
+deb http://deb.debian.org/debian jessie main
+# deb http://snapshot.debian.org/archive/debian-security/20210326T030000Z jessie/updates main
+deb http://security.debian.org/debian-security jessie/updates main
+# deb http://snapshot.debian.org/archive/debian/20210326T030000Z jessie-updates main
+deb http://deb.debian.org/debian jessie-updates main
+'>/dev/null
+
   if [[ "${os_ver}" == "debian:8" ]] && [[ "$(getconf LONG_BIT)" == "64" ]] && [[ "$(uname -m)" != x86_64 ]]; then
 echo '
 deb http://archive.debian.org/debian/ jessie main non-free contrib
@@ -67,7 +76,7 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
     try-and-retry apt-get update -q
     try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q 
     try-and-retry apt-get install libc6-dev -y -q #*
-    try-and-retry apt-get install gcc-multilib -y -q
+    try-and-retry apt-get install gcc-multilib -y -q || true
     try-and-retry apt-get install pkg-config -y -q
 
     # old gcc 4.7 needs LANG and LC_ALL
