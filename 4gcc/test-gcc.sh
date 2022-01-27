@@ -116,7 +116,7 @@ function remove_libpthread_dev() {
 
 function build_fio_twice() {
   local err
-  local versions="2.11 3.16 3.29 3.28 3.27 3.26"
+  local versions="2.21 3.16 3.29 3.28 3.27 3.26"
   for FIO_VER in $versions; do
     
     # SKIP STATIC
