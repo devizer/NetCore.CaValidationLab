@@ -1,17 +1,24 @@
 #!/usr/bin/env bash
 set -e; set -u; set -o pipefail
 
+
 Ldd_Version=$(cat ldd-version.log)
 Say "Ldd_Version: [$Ldd_Version]"
+Gcc_Version=$(cat gcc-version.log)
+Say "Gcc_Version: [$Gcc_Version]"
 
-for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
+function Get-Sub-Directories() {
+  find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V
+}
+
+for dir_ver in "$(Get-Sub-Directories ".")"; do
   ver="$(basename "$dir_ver")"
   Say "Version [$ver]"
   pushd "$dir_ver" >/dev/null
-  for dir_mode in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
+  for dir_mode in "$(Get-Sub-Directories ".")"; do
     mode="$(basename "$dir_mode")"
     is_shared="False"; [[ "$mode" == *"shared"* ]] && is_shared="True";
-    full_description="Version: [$ver]; Mode: [$mode]; Is Shared: [$is_shared]"
+    full_description="Version: [$ver]; ; Mode: [$mode]; Is Shared: [$is_shared]"
     echo "checking $full_description ..."
     pushd "$dir_mode" >/dev/null
       configure_result="$(cat configure.result)"
@@ -25,8 +32,12 @@ for dir_ver in $(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V); do
       else
         Say "Ready to Deploy the $full_description"
         for result in *.result; do
-        echo "       $result: $(cat "$result")"
+            echo "       $result: $(cat "$result")"
         done
+        Say "File fio"
+        ls -la fio
+        Say "File ../../libaio.so.1"
+        ls -la fio ../../libaio.so.1
       fi
     popd >/dev/null
   done
