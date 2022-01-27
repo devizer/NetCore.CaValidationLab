@@ -8,14 +8,14 @@ Gcc_Version=$(cat gcc-version.log)
 Say "Gcc_Version: [$Gcc_Version]"
 
 function Get-Sub-Directories() {
-  find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V
+  echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)"
 }
 
-for dir_ver in "$(Get-Sub-Directories ".")"; do
+for dir_ver in $(Get-Sub-Directories "."); do
   ver="$(basename "$dir_ver")"
   Say "Version [$ver]"
   pushd "$dir_ver" >/dev/null
-  for dir_mode in "$(Get-Sub-Directories ".")"; do
+  for dir_mode in $(Get-Sub-Directories "."); do
     mode="$(basename "$dir_mode")"
     is_shared="False"; [[ "$mode" == *"shared"* ]] && is_shared="True";
     full_description="Version: [$ver]; ; Mode: [$mode]; Is Shared: [$is_shared]"
