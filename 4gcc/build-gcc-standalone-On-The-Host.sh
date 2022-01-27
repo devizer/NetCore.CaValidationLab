@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -eu
-script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+export TARGET_DIR=/usr/bin; script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
 Say --Reset-Stopwatch
 
 # for ver in 7.5.0 9.4.0; do
