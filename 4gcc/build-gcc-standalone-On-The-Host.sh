@@ -28,22 +28,23 @@ for ver in 8.5.0 9.4.0 10.3.0 7.5.0 6.5.0 5.5.0 10.2.0; do
     bash -e /tmp/build-gcc-task.sh
 
     tmparch="/tmp/gcc-armv7-linux-$VER.tar.gz"
-    Say "Pack /usr/local to $tmparch"
+    Say "Pack /usr/local to [$tmparch] for $VER"
     pushd /usr/local
     tar cf - . | gzip -9 > $tmparch
     popd
-    Say "Completed $tmparch. Ready to Repack"
+    Say "Completed $tmparch. Ready to Repack for $VER"
 
-    Say "Repacking ..."
+    Say "Repacking for $VER ..."
     bash -e /tmp/Repack-GCC.sh "$tmparch"
 
-    Say "Uninstalling ..."
+    Say "Uninstalling for $VER ..."
     tmp1=/tmp/gcc-tmp; mkdir -p $tmp1; rm -rf $tmp1/*
     artifact="$DEPLOY_DIR/$(basename $tmparch)"
     tar xzf $artifact -C $tmp1
     cp $tmp1/uninstall-this-gcc.sh /usr/local/uninstall-this-gcc.sh
     rm -rf $tmp1/*
     /usr/local/uninstall-this-gcc.sh
+    Say "Uninstal completed for $VER ..."
 
     rm -f "$tmparch"
 done
