@@ -36,7 +36,7 @@ EOF_SHOW_GLIBC_VERSION
   echo "${GLIBC_VERSION:-}"
 }
 
-# get_glibc_version && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
+# glibc_version=$(get_glibc_version) && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
 
 
 function prepare_os() {
