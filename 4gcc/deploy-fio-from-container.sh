@@ -20,12 +20,13 @@ function Get-Sub-Directories() {
 function Deploy-Set-of-Files() {
   local name="$1"
   shift
-  local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
+  # local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
+  local tmp="$(mktemp -d -t "some-fio-XXXXXXXXXX")"
   local file;
   echo file list: [$*]
   for file in $*; do
     echo " ... copying $file to $tmp/"
-    cp "$file" "$tmp/"
+    cp -v "$file" "$tmp/"
   done
   pushd "$tmp" >/dev/null
   mkdir -p output;
