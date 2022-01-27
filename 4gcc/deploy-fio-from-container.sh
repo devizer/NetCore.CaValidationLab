@@ -22,7 +22,7 @@ function Deploy-Set-of-Files() {
   shift
   # local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
   local tmp="$(mktemp -d -t "fio-content-XXXXXXXXXX")"
-  local tmp_output="$(mktemp -d -t "fio-archive-XXXXXXXXXX")"
+  local tmp_archive="$(mktemp -d -t "fio-archive-XXXXXXXXXX")"
   local file;
   echo file list: [$*]
   for file in $*; do
@@ -30,12 +30,12 @@ function Deploy-Set-of-Files() {
     cp -v "$file" "$tmp/"
   done
   pushd "$tmp" >/dev/null
-  tar cf - . | gzip -9 > "$tmp_output/$name.tar.gz"
+  tar cf - . | gzip -9 > "$tmp_archive/$name.tar.gz"
   cd output
-  echo "CONTENT of [$tmp_output/$name.tar.gz]:"
-  tar tzvf "$tmp_output/$name.tar.gz"
+  echo "CONTENT of [$tmp_archive/$name.tar.gz]:"
+  tar tzvf "$tmp_archive/$name.tar.gz"
   popd >/dev/null;
-  rm -rf "$tmp" "$tmp_output"
+  rm -rf "$tmp" "$tmp_archive"
 }
 
 for dir_ver in $(Get-Sub-Directories "."); do
