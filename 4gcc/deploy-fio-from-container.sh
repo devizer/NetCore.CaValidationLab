@@ -22,7 +22,9 @@ function Deploy-Set-of-Files() {
   shift
   local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
   local file;
+  echo file list: [$*]
   for file in $*; do
+    echo " ... copying $file to $tmp/"
     cp "$file" "$tmp/"
   done
   pushd "$tmp" >/dev/null
