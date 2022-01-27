@@ -35,7 +35,7 @@ for ver in 8.5.0 9.4.0 10.3.0 7.5.0 6.5.0 5.5.0 10.2.0; do
     Say "Completed $tmparch. Ready to Repack"
 
     Say "Repacking ..."
-    bash -e /tmp/Repack-GCC.sh 
+    bash -e /tmp/Repack-GCC.sh "$tmparch"
 
     Say "Uninstalling ..."
     tmp1=/tmp/gcc-tmp; mkdir -p $tmp1; rm -rf $tmp1/*
@@ -45,4 +45,5 @@ for ver in 8.5.0 9.4.0 10.3.0 7.5.0 6.5.0 5.5.0 10.2.0; do
     rm -rf $tmp1/*
     /usr/local/uninstall-this-gcc.sh
 
+    rm -f "$tmparch"
 done
