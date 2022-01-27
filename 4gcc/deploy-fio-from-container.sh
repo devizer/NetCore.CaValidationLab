@@ -31,9 +31,9 @@ function Deploy-Set-of-Files() {
   done
   pushd "$tmp" >/dev/null
   tar cf - . | gzip -9 > "$tmp_archive/$name.tar.gz"
-  cd output
   echo "CONTENT of [$tmp_archive/$name.tar.gz]:"
-  tar tzvf "$tmp_archive/$name.tar.gz"
+  cd "$tmp_archive"
+  tar tzvf "$name.tar.gz"
   popd >/dev/null;
   rm -rf "$tmp" "$tmp_archive"
 }
