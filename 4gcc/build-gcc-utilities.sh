@@ -13,6 +13,32 @@ function say_cpu_name() {
   Say "CPU: [$(get_cpu_name)]"
 }
 
+# returns 21900 for debian 8
+function get_glibc_version() {
+  GLIBC_VERSION=""
+  GLIBC_VERSION_STRING="$(ldd --version 2>/dev/null| awk 'NR==1 {print $NF}')"
+  # '{a=$1; gsub("[^0-9]", "", a); b=$2; gsub("[^0-9]", "", b); if ((a ~ /^[0-9]+$/) && (b ~ /^[0-9]+$/)) {print a*10000 + b*100}}'
+  local toNumber='{if ($1 ~ /^[0-9]+$/ && $2 ~ /^[0-9]+$/) { print $1 * 10000 + $2 * 100 }}'
+  GLIBC_VERSION="$(echo "${GLIBC_VERSION_STRING:-}" | awk -F'.' "$toNumber")"
+
+  if [[ -z "${GLIBC_VERSION:-}" ]] && [[ -n "$(command -v gcc)" ]]; then
+    local cfile="$HOME/temp_show_glibc_version"
+    rm -f "$cfile"
+    cat <<-'EOF_SHOW_GLIBC_VERSION' > "$cfile.c"
+#include <gnu/libc-version.h>
+#include <stdio.h>
+int main() { printf("%s\n", gnu_get_libc_version()); }
+EOF_SHOW_GLIBC_VERSION
+    GLIBC_VERSION_STRING="$(gcc $cfile.c -o $cfile 2>/dev/null && $cfile)"
+    rm -f "$cfile"; rm -f "$cfile.c" 
+    GLIBC_VERSION="$(echo "${GLIBC_VERSION_STRING:-}" | awk -F'.' "$toNumber")"
+  fi
+  echo "${GLIBC_VERSION:-}"
+}
+
+# get_glibc_version && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
+
+
 function prepare_os() {
   Say "Provisioning container, arch is [$(uname -m)]..."
   test -f /etc/os-release && source /etc/os-release
@@ -34,6 +60,14 @@ APT::Compressor::lzma::CompressArg:: "-1";
   fi
 
   if [[ "${os_ver}" == "debian:7" ]]; then
+echo '
+deb http://archive.debian.org/debian/ wheezy main non-free contrib
+deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
+deb http://archive.debian.org/debian wheezy-backports main non-free contrib
+' > /etc/apt/sources.list
+  fi
+
+  if [[ "${os_ver}" == "debian:7" ]] && [[ "$(getconf LONG_BIT)" == 32 ]] ; then
 echo '
 deb http://archive.debian.org/debian/ wheezy main non-free contrib
 deb http://archive.debian.org/debian-security wheezy/updates main non-free contrib
