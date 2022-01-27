@@ -25,7 +25,7 @@ for ver in 8.5.0 9.4.0 10.3.0 7.5.0 6.5.0 5.5.0 10.2.0; do
     Say "ENABLE_LANGUAGES: $ENABLE_LANGUAGES"
     source /tmp/build-gcc-utilities.sh
     # prepare_os
-    bash -e /tmp/build-gcc-task.sh
+    bash -e /tmp/build-gcc-task.sh INFO=$VER
 
     tmparch="/tmp/gcc-armv7-linux-$VER.tar.gz"
     Say "Pack /usr/local to [$tmparch] for $VER"
