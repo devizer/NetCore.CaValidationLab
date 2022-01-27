@@ -8,7 +8,9 @@
          
 set -e
 set -u
-export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz}"
+# export ENABLE_LANGUAGES="c,c++" # without docker aka on termux
+DEFAULT_GCC_VER=10.3.0
+export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-${DEFAULT_GCC_VER}/gcc-${DEFAULT_GCC_VER}.tar.xz}"
 Say "TARGET GCC: [$GCCURL], Using GCC: [${USEGCC:-}]"
 Say "Flags: [${FLAGS:-}]"
 
@@ -62,3 +64,4 @@ if [[ -f /usr/local/uninstall-this-gcc.sh ]]; then
 fi
 time make install-strip |& tee "$SYSTEM_ARTIFACTSDIRECTORY/make-install-strip.log"
 bash -c "gcc --version" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/gcc-version.log"
+

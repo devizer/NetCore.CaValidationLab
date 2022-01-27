@@ -29,6 +29,10 @@ jobs:
         IMAGE: "multiarch/debian-debootstrap:armhf-bullseye"
         QEMU: armhf
         
+      '8.5-Jessie-arm64':
+        GCC: "8.5"
+        IMAGE: "multiarch/debian-debootstrap:arm64-jessie"
+        QEMU: arm64
       '8.5-Stretch-arm64':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-stretch"
