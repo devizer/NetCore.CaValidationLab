@@ -21,21 +21,21 @@ function Deploy-Set-of-Files() {
   local name="$1"
   shift
   # local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
-  local tmp="$(mktemp -d -t "some-fio-XXXXXXXXXX")"
+  local tmp="$(mktemp -d -t "fio-content-XXXXXXXXXX")"
+  local tmp_output="$(mktemp -d -t "fio-archive-XXXXXXXXXX")"
   local file;
   echo file list: [$*]
   for file in $*; do
-    echo " ... copying $file to $tmp/"
+    # echo " ... copying $file to $tmp/"
     cp -v "$file" "$tmp/"
   done
   pushd "$tmp" >/dev/null
-  mkdir -p output;
-  tar cf - | gzip -9 > "output/$name.tar.gz"
+  tar cf - . | gzip -9 > "$tmp_output/$name.tar.gz"
   cd output
-  echo "CONTENT of [$name.tar.gz]:"
-  tar tf "$name.tar.gz"
+  echo "CONTENT of [$tmp_output/$name.tar.gz]:"
+  tar tzvf "$tmp_output/$name.tar.gz"
   popd >/dev/null;
-  rm -rf "$tmp"
+  rm -rf "$tmp" "$tmp_output"
 }
 
 for dir_ver in $(Get-Sub-Directories "."); do
