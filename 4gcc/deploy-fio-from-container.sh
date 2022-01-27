@@ -7,6 +7,12 @@ Say "Ldd_Version: [$Ldd_Version]"
 Gcc_Version=$(cat gcc-version.log)
 Say "Gcc_Version: [$Gcc_Version]"
 
+Machine=$(cat machine.log)
+Say "Machine: [$Machine]"
+Os=$(cat machine.log)
+Say "Os: [$Os]"
+
+
 function Get-Sub-Directories() {
   echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)"
 }
@@ -54,7 +60,7 @@ for dir_ver in $(Get-Sub-Directories "."); do
         done
         Say "Files: fio and ../../libaio.so.1"
         ls -la fio ../../libaio.so.1
-        Deploy-Set-of-Files "fio-$ver gcc-$Gcc_Version glib-$Ldd_Version is_shared-$is_shared mode=$mode"
+        Deploy-Set-of-Files "fio-$ver gcc-$Gcc_Version glib-$Ldd_Version is_shared-$is_shared mode=$mode machine=${Machine} os=${Os}"
       fi
     popd >/dev/null
   done
