@@ -11,6 +11,24 @@ function Get-Sub-Directories() {
   echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)"
 }
 
+function Deploy-Set-of-Files() {
+  local name="$1"
+  shift
+  local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
+  local file;
+  for file in $*; do
+    cp "$file" "$tmp/"
+  done
+  pushd "$tmp" >/dev/null
+  mkdir -p output;
+  tar cf - | gzip -9 > "output/$name.tar.gz"
+  cd output
+  echo "CONTENT of [$name.tar.gz]:"
+  tar tf "$name.tar.gz"
+  popd >/dev/null;
+  rm -rf "$tmp"
+}
+
 for dir_ver in $(Get-Sub-Directories "."); do
   ver="$(basename "$dir_ver")"
   Say "Version [$ver]"
@@ -34,10 +52,9 @@ for dir_ver in $(Get-Sub-Directories "."); do
         for result in *.result; do
             echo "       $result: $(cat "$result")"
         done
-        Say "File fio"
-        ls -la fio
-        Say "File ../../libaio.so.1"
+        Say "Files: fio and ../../libaio.so.1"
         ls -la fio ../../libaio.so.1
+        Deploy-Set-of-Files "fio-$ver gcc-$Gcc_Version glib-$Ldd_Version is_shared-$is_shared mode=$mode"
       fi
     popd >/dev/null
   done
