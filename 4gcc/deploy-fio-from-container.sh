@@ -12,7 +12,7 @@ Say "OS and Versions:
   Os: [$Os]"
 
 Say "Provosioning in [$(pwd)]..."
-sudo apt-get install sshpass rsync p7zip-full -y -qq >/dev/null
+sudo apt-get install tree sshpass rsync p7zip-full -y -qq >/dev/null
 mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
 
 
@@ -39,12 +39,15 @@ function Deploy-Set-of-Files() {
   build_all_known_hash_sums "$tmp_archive/$name.tar.xz"
   tar cf - . | bzip2 -z -9 > "$tmp_archive/$name.tar.bz2"
   build_all_known_hash_sums "$tmp_archive/$name.tar.bz2"
-  7z a "$tmp_archive/$name.7z" * 
+  7z a -mx=9 -ms=on "$tmp_archive/$name.7z" * 
   build_all_known_hash_sums "$tmp_archive/$name.7z"
   
-  echo "CONTENT of [$tmp_archive/$name.tar.gz]:"
   cd "$tmp_archive"
+  echo "CONTENT of archive [$tmp_archive/$name.tar.gz]:"
   tar tzvf "$name.tar.gz"
+  echo "CONTENT of deploy dir [$tmp_archive/$name.tar.gz]:"
+  tree -h
+  sshpass -p "$PASSWORD" rsync -r . "${LOGIN}@${SSH_HOST_AND_PATH}"
   popd >/dev/null;
   rm -rf "$tmp" "$tmp_archive"
 }

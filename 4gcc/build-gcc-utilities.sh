@@ -198,7 +198,7 @@ function build_all_known_hash_sums() {
   local file="$1"
   for alg in md5 sha1 sha224 sha256 sha384 sha512; do
     if [[ "$(command -v ${alg}sum)" != "" ]]; then
-      local sum=$(eval ${alg}sum "$file" | awk '{print $1}')
+      local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
       printf "$sum" > "$file.${alg}"
     else
       echo "warning! ${alg}sum missing"

@@ -264,6 +264,10 @@ jobs:
        bash -c "source $scripts/build-gcc-utilities.sh; source $scripts/deploy-fio-from-container.sh"
     condition: succeededOrFailed()
     displayName: 'Deploy'
+    env:
+        PASSWORD: $(SECRET_PASSWORD)
+        LOGIN: $(SECRET_LOGIN)
+        SSH_HOST_AND_PATH: $(SECRET_SSH_HOST_AND_PATH)
 
   - task: PublishBuildArtifacts@1
     condition: succeededOrFailed()
