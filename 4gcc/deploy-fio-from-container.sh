@@ -3,19 +3,18 @@ set -e; set -u; set -o pipefail
 
 
 Ldd_Version=$(cat ldd-version.log)
-Say "Ldd_Version: [$Ldd_Version]"
 Gcc_Version=$(cat gcc-version.log)
-Say "Gcc_Version: [$Gcc_Version]"
-
 Machine=$(cat machine.log)
-Say "Machine: [$Machine]"
 Os=$(cat os.log)
-Say "Os: [$Os]"
+Say "OS and Versions:
+  Ldd_Version: [$Ldd_Version]
+  Gcc_Version: [$Gcc_Version]
+  Machine: [$Machine]
+  Os: [$Os]"
 
-Say "Provosioning ..."
-sudo apt-get install sshpass rsync -y -qq
+Say "Provosioning in [$(pwd)]..."
+sudo apt-get install sshpass rsync p7zip-full -y -qq >/dev/null
 mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
-
 
 
 function Get-Sub-Directories() {
@@ -36,8 +35,13 @@ function Deploy-Set-of-Files() {
   done
   pushd "$tmp" >/dev/null
   tar cf - . | gzip -9     > "$tmp_archive/$name.tar.gz"
+  build_all_known_hash_sums "$tmp_archive/$name.tar.gz"
   tar cf - . | xz -z -9 -e > "$tmp_archive/$name.tar.xz"
+  build_all_known_hash_sums "$tmp_archive/$name.tar.xz"
   tar cf - . | bzip2 -z -9 > "$tmp_archive/$name.tar.bz2"
+  build_all_known_hash_sums "$tmp_archive/$name.tar.bz2"
+  7z a "$tmp_archive/$name.7z" * 
+  build_all_known_hash_sums "$tmp_archive/$name.7z"
   
   echo "CONTENT of [$tmp_archive/$name.tar.gz]:"
   cd "$tmp_archive"
