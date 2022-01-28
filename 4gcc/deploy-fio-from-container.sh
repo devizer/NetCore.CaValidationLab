@@ -9,7 +9,7 @@ Say "Gcc_Version: [$Gcc_Version]"
 
 Machine=$(cat machine.log)
 Say "Machine: [$Machine]"
-Os=$(cat machine.log)
+Os=$(cat os.log)
 Say "Os: [$Os]"
 
 
