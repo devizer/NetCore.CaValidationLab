@@ -57,7 +57,7 @@ function Deploy-Set-of-Files() {
   tree -h
   local total_size="$(du -a -d 0 -h . | awk '{print $1}')"
   local total_files="$(find . -type f  | wc -l)"
-  Say "Deploying...  total size: ${total_size}, total files: ${total_files}"
+  Say "Deploying...  total size: [${total_size}], total files: [${total_files}]"
   sshpass -p "$PASSWORD" rsync -r . "${LOGIN}@${SSH_HOST_AND_PATH}"
   popd >/dev/null;
   rm -rf "$tmp" "$tmp_archive"
