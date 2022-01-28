@@ -12,6 +12,11 @@ Say "Machine: [$Machine]"
 Os=$(cat os.log)
 Say "Os: [$Os]"
 
+Say "Provosioning ..."
+sudo apt-get install sshpass rsync -y -qq
+mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
+
+
 
 function Get-Sub-Directories() {
   echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)"
@@ -30,7 +35,10 @@ function Deploy-Set-of-Files() {
     cp -v "$file" "$tmp/"
   done
   pushd "$tmp" >/dev/null
-  tar cf - . | gzip -9 > "$tmp_archive/$name.tar.gz"
+  tar cf - . | gzip -9     > "$tmp_archive/$name.tar.gz"
+  tar cf - . | xz -z -9 -e > "$tmp_archive/$name.tar.xz"
+  tar cf - . | bzip2 -z -9 > "$tmp_archive/$name.tar.bz2"
+  
   echo "CONTENT of [$tmp_archive/$name.tar.gz]:"
   cd "$tmp_archive"
   tar tzvf "$name.tar.gz"
@@ -63,7 +71,7 @@ for dir_ver in $(Get-Sub-Directories "."); do
         done
         Say "Files: fio and ../../libaio.so.1"
         ls -la fio ../../libaio.so.1
-        Deploy-Set-of-Files "fio-$ver gcc-$Gcc_Version glib-$Ldd_Version is_shared-$is_shared mode=$mode machine=${Machine} os=${Os}" fio ../../libaio.so.1
+        Deploy-Set-of-Files "fio=$ver gcc=$Gcc_Version glib=$Ldd_Version is_shared=$is_shared mode=$mode machine=${Machine} os=${Os}" fio ../../libaio.so.1
       fi
     popd >/dev/null
   done
