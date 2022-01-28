@@ -193,6 +193,25 @@ generate_uninstall_this_gcc 1.tar.gz uninstall-this-gcc.sh
 nano uninstall.log
 }
 
+function get_linux_os_key() {
+  test -e /etc/os-release && source /etc/os-release
+  local ret="${ID:-}"
+  if [[ -n "${VERSION_ID:-}" ]]; then ret="${ret}_${VERSION_ID:-}"; fi
+  if [[ -n "${VERSION_CODENAME:-}" ]]; then ret="${ret}_${VERSION_CODENAME:-}"; fi
+  ret="${ret//[ ]/}"
+
+  if [ -e /etc/redhat-release ]; then
+    local redhatRelease=$(</etc/redhat-release)
+    if [[ $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
+      ret="rhel_6"
+    fi
+    if [[ $redhatRelease == "CentOS release 6."* ]]; then
+      ret="centos_6"
+    fi
+  fi
+  [[ -z "${ret:-}" ]] && ret="linux"
+  echo "${ret}"
+}
 
 function build_all_known_hash_sums() {
   local file="$1"

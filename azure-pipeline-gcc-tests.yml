@@ -239,7 +239,7 @@ jobs:
         source build-gcc-utilities.sh
         prepare_os
         install_precompiled_gcc "$(GCC)" | cat
-        bash test-gcc.sh
+        source test-gcc.sh
       "
 
     displayName: 'Test GCC'

@@ -161,11 +161,8 @@ wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}' || tru
 wrap_cmd "gcc-version" eval "gcc --version | head -1 | awk '{print \$NF}' || true"
 wrap_cmd "machine" eval "uname -m | head -1 | awk '{print \$NF}' || true"
 
-test -f /etc/os-release && source /etc/os-release
-OS_AND_VERSION="${ID:-}_${VERSION_ID:-}_${VERSION_CODENAME:-}"
-wrap_cmd "os" eval "echo ${OS_AND_VERSION:-}"
-
-
+linux_os_key=$(get_linux_os_key)
+wrap_cmd "os" eval "echo ${linux_os_key:-}"
 
 # for deployment
 # build_open_ssl || true
