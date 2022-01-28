@@ -40,22 +40,22 @@ jobs:
         QEMU: "True"
       '8.5-Wheezy-armhf':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
-        IMAGE: "debian:7"
+        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
         ARTIFACT: "gcc-armhf-linux-8.5.0"
         QEMU: "True"
       '9.4-Wheezy-armhf':
         GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
-        IMAGE: "debian:7"
+        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
         ARTIFACT: "gcc-armhf-linux-9.4.0"
         QEMU: "True"
       '10.2-Wheezy-armhf':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
-        IMAGE: "debian:7"
+        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
         ARTIFACT: "gcc-armhf-linux-10.2.0"
         QEMU: "True"
       '10.3-Wheezy-armhf':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz"
-        IMAGE: "debian:7"
+        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
         ARTIFACT: "gcc-armhf-linux-10.3.0"
         QEMU: "True"
 
