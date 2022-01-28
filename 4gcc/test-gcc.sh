@@ -83,6 +83,9 @@ function build_fio() {
   cd fio* || true
   Say "CURRENT DIRECTORY: [$(pwd)]. Building fio"
   local key="${FIO_VER}/$FIO_NAME"
+  # experimetal c99 for fio 3.29
+  CFLAGS=""; if [[ "${FIO_VER}" == "3.29" ]]; then CFLAGS="-std=c99"; fi; 
+  export CFLAGS
   wrap_cmd "$key/configure"    ./configure --prefix=/usr/local $FIO_CONFIGURE_OPTIONS
   wrap_cmd "$key/make"         make -j
   wrap_cmd "$key/make-install" make install
