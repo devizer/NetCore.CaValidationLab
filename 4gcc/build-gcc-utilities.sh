@@ -165,27 +165,33 @@ CENTOS6_REPO
   fi
 
   if [[ "$(command -v apt-get)" != "" ]]; then
-    try-and-retry apt-get update -q
-    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q 
-    try-and-retry apt-get install libc6-dev -y -q #*
-    try-and-retry apt-get install gcc-multilib -y -q || true
-    try-and-retry apt-get install pkg-config -y -q
+    try-and-retry apt-get update -qq >/dev/null
+    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q >/dev/null
+    try-and-retry apt-get install libc6-dev -y -q >/dev/null #* 
+
+    # gcc-multilib is optional
+    local multilib="$(apt-cache search gcc-multilib | grep -E "gcc-multilib\ " | awk '{print $1}')"
+    if [[ -n "${multilib:-}" ]]; then
+      Say "Installing the gcc-multilib package"
+      try-and-retry apt-get install gcc-multilib -y -q >/dev/null
+    fi
+    
+    try-and-retry apt-get install pkg-config -y -q >/dev/null
 
     # old gcc 4.7 needs LANG and LC_ALL
-    apt-get install g++ -y -q
-    apt-get install gawk -y -q
-    apt-get install m4 -y -q
+    apt-get install g++ gawk m4 -y -q >/dev/null
     
-    Say "Configure LANG and LC_ALL and install **libicu**"
-    apt-get install locales mc -y -q
-
 echo '
 en_US.UTF-8 UTF-8
 ru_RU.UTF-8 UTF-8
 ' > /etc/locale.gen 
-DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
-  export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-  Say "LANG=$LANG LC_ALL=$LC_ALL"
+
+    Say "Configure LANG and LC_ALL and install **libicu**"
+    apt-get install locales mc -y -q >/dev/null
+
+    # DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
+    export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+    Say "LANG=$LANG LC_ALL=$LC_ALL"
   fi
 
   Say "Completed system prerequisites"
