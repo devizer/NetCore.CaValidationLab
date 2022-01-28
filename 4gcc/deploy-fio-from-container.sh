@@ -55,38 +55,9 @@ function Deploy-Set-of-Files() {
   tar tzvf "$tmp_archive/$name/fio.tar.gz"
   echo "CONTENT of deploy dir [$(pwd)]:"
   tree -h
-  sshpass -p "$PASSWORD" rsync -r . "${LOGIN}@${SSH_HOST_AND_PATH}"
-  popd >/dev/null;
-  rm -rf "$tmp" "$tmp_archive"
-}
-
-function Deploy-Set-of-Files-Prev() {
-  local name="$1"
-  shift
-  # local tmp="$(mktemp -d -t "$name-XXXXXXXXXX")"
-  local tmp="$(mktemp -d -t "fio-content-XXXXXXXXXX")"
-  local tmp_archive="$(mktemp -d -t "fio-archive-XXXXXXXXXX")"
-  local file;
-  echo file list: [$*]
-  for file in $*; do
-    # echo " ... copying $file to $tmp/"
-    cp -v "$file" "$tmp/"
-  done
-  pushd "$tmp" >/dev/null
-  tar cf - . | gzip -9     > "$tmp_archive/$name.tar.gz"
-  build_all_known_hash_sums "$tmp_archive/$name.tar.gz"
-  tar cf - . | xz -z -9 -e > "$tmp_archive/$name.tar.xz"
-  build_all_known_hash_sums "$tmp_archive/$name.tar.xz"
-  tar cf - . | bzip2 -z -9 > "$tmp_archive/$name.tar.bz2"
-  build_all_known_hash_sums "$tmp_archive/$name.tar.bz2"
-  7z a -mx=9 -ms=on "$tmp_archive/$name.file.7z" * 
-  build_all_known_hash_sums "$tmp_archive/$name.7z"
-  
-  cd "$tmp_archive"
-  echo "CONTENT of archive [$tmp_archive/$name.tar.gz]:"
-  tar tzvf "$name.tar.gz"
-  echo "CONTENT of deploy dir [$tmp_archive/$name.tar.gz]:"
-  tree -h
+  local total_size="$(du -a -d 0 -h . | awk '{print $1}')"
+  local total_files="$(find . -type f  | wc -l)"
+  Say "Deploying...  total size: ${total_size}, total files: ${total_files}"
   sshpass -p "$PASSWORD" rsync -r . "${LOGIN}@${SSH_HOST_AND_PATH}"
   popd >/dev/null;
   rm -rf "$tmp" "$tmp_archive"
