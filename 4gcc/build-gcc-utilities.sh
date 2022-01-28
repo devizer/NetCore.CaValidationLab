@@ -13,6 +13,19 @@ function say_cpu_name() {
   Say "CPU: [$(get_cpu_name)]"
 }
 
+function get_gcc_version() {
+  local gcc_version=""
+  local cfile="$HOME/temp_show_gcc_version"
+  rm -f "$cfile"
+  cat <<-'EOF_SHOW_GCC_VERSION' > "$cfile.c"
+#include <stdio.h>
+int main() { printf("%d.%d.%d\n", __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__); }
+EOF_SHOW_GCC_VERSION
+  gcc_version="$(gcc $cfile.c -o $cfile 2>/dev/null && $cfile)"
+  rm -f "$cfile"; rm -f "$cfile.c" 
+  echo "${gcc_version:-}"
+}
+
 # returns 21900 for debian 8
 function get_glibc_version() {
   GLIBC_VERSION=""
