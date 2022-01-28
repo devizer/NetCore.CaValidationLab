@@ -52,7 +52,7 @@ function Deploy-Set-of-Files() {
   
   cd "$tmp_archive"
   echo "CONTENT of archive [$tmp_archive/$name.tar.gz]:"
-  tar tzvf "$name.tar.gz"
+  tar tzvf "$tmp_archive/$name/fio.tar.gz"
   echo "CONTENT of deploy dir [$(pwd)]:"
   tree -h
   sshpass -p "$PASSWORD" rsync -r . "${LOGIN}@${SSH_HOST_AND_PATH}"
