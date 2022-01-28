@@ -25,7 +25,8 @@ work=/transient-builds/gcc-src
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-$work-articacts}"
 Say "SYSTEM_ARTIFACTSDIRECTORY: [$SYSTEM_ARTIFACTSDIRECTORY]"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
-mkdir -p $work; rm -rf $work/*
+mkdir -p $work; 
+rm -rf $work/* 2>/dev/null; rm -rf $work/* 2>/dev/null; rm -rf $work/* # termux is wierd
 cd $work
 try-and-retry wget --no-check-certificate -O _gcc.tar $GCCURL
 [[ "$GCCURL" == *".bz2" ]] && pv _gcc.tar | tar xjf -
