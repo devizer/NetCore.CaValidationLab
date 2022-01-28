@@ -117,7 +117,7 @@ for dir_ver in $(Get-Sub-Directories "."); do
         done
         Say "Files: fio and ../../libaio.so.1"
         ls -la fio ../../libaio.so.1
-        Deploy-Set-of-Files "fio=$ver glib=$Ldd_Version machine=${Machine} gcc=$Gcc_Version is_shared=$is_shared mode=$mode os=${Os}" fio ../../libaio.so.1
+        Deploy-Set-of-Files "fio=$ver glibc=$Ldd_Version cpu=${Machine} gcc=$Gcc_Version is_shared=$is_shared mode=$mode os=${Os}" fio ../../libaio.so.1
       fi
     popd >/dev/null
   done
