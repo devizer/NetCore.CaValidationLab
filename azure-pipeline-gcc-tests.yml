@@ -16,7 +16,7 @@ jobs:
         GCC: ""
         IMAGE: "centos:6"
 
-        '8.5-Jessie-arm':
+      '8.5-Jessie-arm':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:armhf-jessie"
         QEMU: armhf
