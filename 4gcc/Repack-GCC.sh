@@ -491,7 +491,7 @@ Say "Check needed files in $(pwd)"
 Trim-Files-Before-Repack # current folder matters
 
 Say "Build uninstall-this-gcc.sh"
-tar cf - . | gzip -1 > /tmp/temp-gcc-for-uninstall-script.tar.gz
+tar cf - . | gzip -1 > /tmp/temp-gcc-for-uninstall-script.tar.gz || true
 generate_uninstall_this_gcc /tmp/temp-gcc-for-uninstall-script.tar.gz $work/uninstall-this-gcc.sh
 rm -f /tmp/temp-gcc-for-uninstall-script.tar.gz
 chmod +x $work/uninstall-this-gcc.sh
