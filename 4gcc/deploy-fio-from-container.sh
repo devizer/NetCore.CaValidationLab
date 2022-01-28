@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -e; set -u; set -o pipefail
 
-
 Ldd_Version=$(cat ldd-version.log)
 Gcc_Version=$(cat gcc-version.log)
 Machine=$(cat machine.log)
