@@ -4,6 +4,7 @@ set -e; set -u; set -o pipefail
 Ldd_Version=$(cat ldd-version.log)
 Gcc_Version=$(cat gcc-version.log)
 Machine=$(cat machine.log)
+[[ "$Machine" == "armv7"* ]] && Machine=armv7
 Os=$(cat os.log)
 Say "OS and Versions:
   Ldd_Version: [$Ldd_Version]
