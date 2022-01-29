@@ -114,7 +114,7 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
   fi
 
   if [[ "$(get_linux_os_key)" == "centos_6" ]]; then
-  Say "Resetting CentOS Repo"
+  Say "Resetting CentOS 6 Repo"
 cat <<-'CENTOS6_REPO' > /etc/yum.repos.d/CentOS-Base.repo
 [C6.10-base]
 name=CentOS-6.10 - Base
@@ -158,14 +158,19 @@ metadata_expire=never
 CENTOS6_REPO
   fi
 
-  if [[ "$(command -v dnf)" != "" ]]; then
-    dnf install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
-  elif [[ "$(command -v yum)" != "" ]]; then
-    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
-  fi
-
   if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
     # centos/redhat/fedora
+    if [[ -d /etc/yum.repos.d ]]; then
+      Say "Switch off gpgcheck for /etc/yum.repos.d/*.repo"
+      sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.repos.d/*.repo
+    fi
+
+    if [[ -e /etc/dnf/dnf.conf ]]; then
+      Say "Switch off gpgcheck for dnf"
+      sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/dnf/dnf.conf
+    fi
+
+    # LANG & LC_ALL
     if [[ -n "$(command -v locale)" ]]; then
       l="$(locale -a | grep -i 'en_us\.utf8')"
       if [[ -n "${l:-}" ]]; then
@@ -174,6 +179,13 @@ CENTOS6_REPO
       fi
     fi
   fi
+
+  if [[ "$(command -v dnf)" != "" ]]; then
+    dnf install gcc make autoconf libtool curl wget mc nano less -y -q
+  elif [[ "$(command -v yum)" != "" ]]; then
+    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
+  fi
+
 
 
   if [[ "$(command -v apt-get)" != "" ]]; then
