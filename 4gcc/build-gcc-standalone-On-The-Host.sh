@@ -9,8 +9,12 @@ Say --Reset-Stopwatch
 export DEPLOY_DIR="/transient-builds/gcc-deploy"; 
 mkdir -p $DEPLOY_DIR
 
-for ver in 8.5.0 9.4.0 10.3.0 7.5.0 6.5.0 5.5.0 10.2.0; do
+for ver in 10.3.0 11.2.0; do
   export VER=$ver
+  USEGCC=""
+  if [[ "$VER" == "11"* ]]; then USEGCC="8.5"; fi
+  export USEGCC
+
   export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
   export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
   mkdir -p $SYSTEM_ARTIFACTSDIRECTORY

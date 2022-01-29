@@ -159,10 +159,22 @@ CENTOS6_REPO
   fi
 
   if [[ "$(command -v dnf)" != "" ]]; then
-    dnf install gcc make autoconf libtool curl wget -y -q
+    dnf install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
   elif [[ "$(command -v yum)" != "" ]]; then
-    yum install gcc make autoconf libtool curl wget -y -q
+    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
   fi
+
+  if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
+    # centos/redhat/fedora
+    if [[ -n "$(command -v locale)" ]]; then
+      l="$(locale -a | grep -i 'en_us\.utf8')"
+      if [[ -n "${l:-}" ]]; then
+        Say "Configure LC_ALL and LANG as [$l] for centos/redhat/fedora"
+        export LC_ALL="$l" LANG="$l"
+      fi
+    fi
+  fi
+
 
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
