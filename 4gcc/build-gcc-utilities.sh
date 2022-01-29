@@ -181,9 +181,9 @@ CENTOS6_REPO
   fi
 
   if [[ "$(command -v dnf)" != "" ]]; then
-    dnf install gcc make autoconf libtool curl wget mc nano less -y -q
+    dnf install gcc make autoconf libtool curl wget mc nano less -y -q >/dev/null
   elif [[ "$(command -v yum)" != "" ]]; then
-    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q
+    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q >/dev/null
   fi
 
 
