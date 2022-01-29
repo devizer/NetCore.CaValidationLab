@@ -28,10 +28,10 @@ function download_file() {
     progress2="-s"
   fi
   local try1=""
-  if [[ "$(command -v wget)" != null ]]; then
+  if [[ "$(command -v wget)" != "" ]]; then
     try1="wget $progress1 --no-check-certificate -O '$file' '$url'"
   fi
-  if [[ "$(command -v curl)" != null ]]; then
+  if [[ "$(command -v curl)" != "" ]]; then
     [[ -n "${try1:-}" ]] && try1="$try1 || "
     try1="${try1:-} curl $progress2 -kSL -o '$file' '$url'"
   fi
