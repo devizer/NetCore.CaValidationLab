@@ -281,7 +281,28 @@ generate_uninstall_this_gcc 1.tar.gz uninstall-this-gcc.sh
 nano uninstall.log
 }
 
+function get_linux_os_id() {
+  # RHEL: ID="rhel" VERSION_ID="7.5" PRETTY_NAME="Red Hat Enterprise Linux" (without version)
+  test -e /etc/os-release && source /etc/os-release
+  local ret="${ID:-}:${VERSION_ID:-}"
+  ret="${ret//[ ]/}"
+
+  if [ -e /etc/redhat-release ]; then
+    local redhatRelease=$(</etc/redhat-release)
+    if [[ $redhatRelease == "Red Hat Enterprise Linux Server release 6."* ]]; then
+      ret="rhel:6"
+    fi
+    if [[ $redhatRelease == "CentOS release 6."* ]]; then
+      ret="centos:6"
+    fi
+  fi
+  [[ -z "${ret:-}" ]] && ret="linux"
+  echo "${ret}"
+}
+
+# safe file name
 function get_linux_os_key() {
+  # RHEL: ID="rhel" VERSION_ID="7.5" PRETTY_NAME="Red Hat Enterprise Linux" (without version)
   test -e /etc/os-release && source /etc/os-release
   local ret="${ID:-}"
   if [[ -n "${VERSION_ID:-}" ]]; then ret="${ret}_${VERSION_ID:-}"; fi
