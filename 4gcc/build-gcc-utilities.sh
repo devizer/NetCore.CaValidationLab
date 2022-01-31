@@ -296,7 +296,7 @@ function get_linux_os_id() {
       ret="centos:6"
     fi
   fi
-  [[ -z "${ret:-}" ]] && ret="linux"
+  [[ "${ret:-}" == ":" ]] && ret="linux"
   echo "${ret}"
 }
 
