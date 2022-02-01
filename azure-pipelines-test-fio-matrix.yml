@@ -36,6 +36,8 @@ jobs:
       Show-System-Stat
       Say "Free Size"
       sudo df -h -T
+      Say "Containers"
+      docker ps -a --format "table {{.ID}}\t{{.Names}}"
 
       set -e
       cd 4gcc
