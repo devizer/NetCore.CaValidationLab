@@ -153,5 +153,7 @@ function Run-Fio-Tests() {
 
 Run-Fio-Tests
 
-7z a -mx=1 "${CONTAINERS_BOOT_LOG_DIR}.7z" "${CONTAINERS_BOOT_LOG_DIR}.7z" -sdel
+Say "Pack ${CONTAINERS_BOOT_LOG_DIR}"
+7z a -mx=1 "${CONTAINERS_BOOT_LOG_DIR}.7z" "${CONTAINERS_BOOT_LOG_DIR}" -sdel
+Say "Pack ${FIO_LOG_DIR}"
 7z a -mx=1 "${FIO_LOG_DIR}.7z" "${FIO_LOG_DIR}" -sdel
