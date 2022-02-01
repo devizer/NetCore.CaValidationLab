@@ -97,7 +97,7 @@ function Run-4-Tests() {
 
 Run-4-Tests centos:6 centos:7 centos:8
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
-echo '
+
 Run-4-Tests arm32v7/debian:11 arm64v8/debian:8 arm64v8/debian:9 arm64v8/debian:10 arm64v8/debian:11
 
 Run-4-Tests debian:7 debian:8 debian:9 debian:10 debian:11
@@ -111,7 +111,6 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
-'>/dev/null
 
 Publish-Containers-Logs
 
