@@ -19,6 +19,15 @@ function Publish-Containers-Logs() {
   done 
 }
 
+cat <<-'START_CONTAINER_AS_DAEMON' > "/tmp/start-container-as-daemon.sh"
+echo container: $CONTAINER; 
+echo image: $IMAGE; 
+echo machine: $(uname -m);
+echo "hostname: $(hostname)"
+echo "glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
+tail -f /dev/null
+START_CONTAINER_AS_DAEMON
+
 TOTAL_FAIL=0
 TOTAL_IMAGES=0
 function Run-4-Tests() {
@@ -32,10 +41,19 @@ function Run-4-Tests() {
     echo "$image" >> "$IMAGE_LIST"
     # Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
-    (docker pull "$image" && docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged --hostname "$container" --name "$container" -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static "$image" sh -c "echo container: $container; echo image: $image; echo machine: \$(uname -m); echo Starting...; tail -f /dev/null") &
+    (
+        docker pull "$image" &&
+        docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged \
+          --hostname "$container" --name "$container" \
+          -e CONTAINER="$container" -e IMAGE="$image" \
+          -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
+          -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static \
+          -v /tmp/start-container-as-daemon.sh:/tmp/start-container-as-daemon.sh \
+          "$image" sh -c /tmp/start-container-as-daemon.sh
+    ) &
+    pid=$!
     sleep 0.3
     # Say "Pulling-B #$TOTAL_IMAGES: $image"
-    pid=$!
     # Say "Pulling-C #$TOTAL_IMAGES: $image"
     pids[${#pids[@]}]=$pid
     # Say "Pulled #$TOTAL_IMAGES: $image"
