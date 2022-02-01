@@ -61,7 +61,7 @@ function Run-4-Tests() {
     let "i+=1"
     local container="$(Get-Container-Name-by-Image "$image")"
     echo "$image" >> "$IMAGE_LIST"
-    # Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
+    Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
     (
         docker pull "$image" &&
@@ -127,7 +127,7 @@ function Run-Fio-Tests() {
       echo " --> TRY [$dir_name]"
       mkdir -p /tmp/push-fio-to-container
       rm -rf /tmp/push-fio-to-container/*
-      tar xvJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C /tmp/push-fio-to-container
+      tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C /tmp/push-fio-to-container
       docker cp /tmp/push-fio-to-container/. "$container":/fio
       for engine in sync libaio posixaio; do
         local benchmark_log_file="$FIO_LOG_DIR/${container}-${engine} ${dir_name}.txt"
