@@ -41,7 +41,9 @@ jobs:
       Say "Free Size"
       sudo df -h -T
       Say "Containers"
-      docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
+      docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/containers-table.txt"
+      Say "Images"
+      docker image list --format="table {{.Repository}}:{{.Tag}}\t{{.Size}}\t{{.ID}}\t{{.CreatedSince}}" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/images-table.txt"
 
       set -e
       cd 4gcc

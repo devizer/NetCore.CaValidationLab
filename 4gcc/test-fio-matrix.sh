@@ -4,7 +4,7 @@ mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/logs"
 mkdir -p "$LOG_DIR"
 
-IMAGE_LIST="$LOG_DIR/IMAGE-LIST.log"
+IMAGE_LIST="$SYSTEM_ARTIFACTSDIRECTORY/IMAGE-ARRAY.txt"
 FIO_VER3_DISTRIBUTION_HOME="$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution"
 mkdir -p "$FIO_VER3_DISTRIBUTION_HOME"
 
@@ -13,9 +13,6 @@ function Load-Fio-Ver-3-Distribution() {
   sudo apt-get install tree aria2 rsync sshpass tree -y -qq
   mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
   pushd "$FIO_VER3_DISTRIBUTION_HOME"
-  Say "LOGIN             : [$LOGIN], Length is ${#LOGIN}"
-  Say "PASSWORD          : [$PASSWORD], Length is ${#PASSWORD}"
-  Say "SSH_HOST_AND_PATH : [$SSH_HOST_AND_PATH], Length is ${#SSH_HOST_AND_PATH}"
   # all tree heararchy needs too much time, about 8 minutes
   # time sshpass -p "$PASSWORD" rsync --progress -r "${LOGIN}@${SSH_HOST_AND_PATH}" .
   # .tar.xz archive only needs 3 seconds
@@ -107,7 +104,6 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
-
 
 Publish-Containers-Logs
 
