@@ -1,19 +1,24 @@
+function Get-Container-Name-by-Image() {
+  echo "fio-on-${1//[\/:\.]/-}"
+}
 
 TOTAL_FAIL=0
 TOTAL_IMAGES=0
 function Run-4-Tests() {
   set +eu
-  local i=0 image FAIL=0 job pids=() pid
+  local i=0 image FAIL=0 job pids pid container
+  pids=()
   for image in "$@"; do
     let "TOTAL_IMAGES+=1"
     let "i+=1"
-    Say "Pulling-A #$TOTAL_IMAGES: $image"
+    local container="$(Get-Container-Name-by-Image "$image")"
+    Say "Pulling #$TOTAL_IMAGES: $image as [$container]"
     docker pull "$image" & 
-    Say "Pulling-B #$TOTAL_IMAGES: $image"
+    # Say "Pulling-B #$TOTAL_IMAGES: $image"
     pid=$!
-    Say "Pulling-C #$TOTAL_IMAGES: $image"
+    # Say "Pulling-C #$TOTAL_IMAGES: $image"
     pids[${#pids[@]}]=$pid
-    Say "Pulled #$TOTAL_IMAGES: $image"
+    # Say "Pulled #$TOTAL_IMAGES: $image"
   done 
   
   for pid in "${pids[@]}"; do
