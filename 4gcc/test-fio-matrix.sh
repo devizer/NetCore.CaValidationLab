@@ -40,6 +40,4 @@ Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
 
 
-Say "Free Size"
-sudo df -h -T
 

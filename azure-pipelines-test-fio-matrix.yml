@@ -19,6 +19,7 @@ jobs:
       set -e
       set -u
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
+      Say --Reset-Stowatch
       cd 4gcc
 
       source build-gcc-utilities.sh
@@ -27,6 +28,11 @@ jobs:
     displayName: 'FIO TEST MATRIX'
 
   - script: |
+      Say "System Statisctics"
+      Show-System-Stat
+      Say "Free Size"
+      sudo df -h -T
+
       set -e
       cd 4gcc
       source build-gcc-utilities.sh
