@@ -21,7 +21,7 @@ jobs:
       script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash >/dev/null
       Say --Reset-Stopwatch
 
-      Say "Registering qemu system arm"
+      Say "Registering qemu user static"
       sudo apt-get install qemu-user-static -qq -y >/dev/null
       docker run --rm --privileged multiarch/qemu-user-static:register --reset >/dev/null 2>&1 
       cd 4gcc
