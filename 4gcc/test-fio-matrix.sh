@@ -130,7 +130,7 @@ function Run-Fio-Tests() {
       tar xvJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C /tmp/push-fio-to-container
       docker cp /tmp/push-fio-to-container/. "$container":/fio
       for engine in sync libaio posixaio; do
-        local benchmark_log_file="$FIO_LOG_DIR/$engine ${dir_name}.txt"
+        local benchmark_log_file="$FIO_LOG_DIR/${container}-${engine} ${dir_name}.txt"
         docker exec -t "$container" sh -c 'export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1' |& tee "$benchmark_log_file"
       done
     done
