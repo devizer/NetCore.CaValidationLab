@@ -15,7 +15,7 @@ function Load-Fio-Ver-3-Distribution() {
   pushd "$FIO_VER3_DISTRIBUTION_HOME"
   Say "LOGIN             : [$LOGIN]"
   Say "SSH_HOST_AND_PATH : [$SSH_HOST_AND_PATH]"
-  time sshpass -p "$PASSWORD" rsync --progress -r "$LOGIN"@"$SSH_HOST_AND_PATH" .
+  time sshpass -p "$PASSWORD" rsync --progress -r "${LOGIN}@${SSH_HOST_AND_PATH}" .
   tree -d -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
   Say "Successfully Loaded fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
   popd
