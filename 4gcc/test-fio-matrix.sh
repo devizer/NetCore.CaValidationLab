@@ -116,6 +116,7 @@ Publish-Containers-Logs
 
 function Run-Fio-Tests() {
   local image container engine
+  # for each running image
   for image in $(cat "$IMAGE_LIST"); do
     container="$(Get-Container-Name-by-Image "$image")"
     local container_machine="$(docker exec -t "$container" uname -m)"
@@ -123,12 +124,15 @@ function Run-Fio-Tests() {
     local filter="$container_machine"
     [[ "$filter" == "armv7"* ]] && filter=armv7
     Say "TEST $image, filter is [$filter]"
+    # for each fio of the same arch
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
       echo " --> TRY [$dir_name]"
-      mkdir -p /tmp/push-fio-to-container
-      rm -rf /tmp/push-fio-to-container/*
-      tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C /tmp/push-fio-to-container
-      docker cp /tmp/push-fio-to-container/. "$container":/fio
+      fio_push_dir="/tmp/push-fio-to-container/$dir_name"
+      if [[ !-d "$fio_push_dir" ]]; then
+        mkdir -p "$fio_push_dir"
+        tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C "$fio_push_dir"
+      fi
+      docker cp "$fio_push_dir/." "$container":/fio
       for engine in sync libaio posixaio; do
         local benchmark_log_file="$FIO_LOG_DIR/${container}-${engine} ${dir_name}.txt"
         docker exec -t "$container" sh -c 'export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1' |& tee "$benchmark_log_file"
