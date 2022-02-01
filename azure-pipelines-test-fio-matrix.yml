@@ -48,7 +48,6 @@ jobs:
       set -e
       cd 4gcc
       source build-gcc-utilities.sh
-      Say --Display-As=Error "Not Implemented"
 
     condition: succeededOrFailed()
     displayName: 'Grab Artifacts'
