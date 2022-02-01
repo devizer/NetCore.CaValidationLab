@@ -42,11 +42,11 @@ function Publish-Containers-Logs() {
 
 cat <<-'START_CONTAINER_AS_DAEMON' > "/tmp/start-container-as-daemon.sh"
 mkdir -p /fio
-echo container: $CONTAINER; 
-echo image: $IMAGE; 
-echo machine: $(uname -m);
-echo "hostname: $(hostname)"
-echo "glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
+echo "host.container: $CONTAINER"; 
+echo "host.image: $IMAGE";
+echo "host.machine: $(uname -m)";
+echo "host.hostname: $(hostname)"
+echo "host.glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
 tail -f /dev/null
 START_CONTAINER_AS_DAEMON
 
@@ -157,7 +157,10 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 
 Run-Fio-Tests
 
-Say "Pack ${CONTAINERS_BOOT_LOG_DIR}"
+Say "Pack [${CONTAINERS_BOOT_LOG_DIR}]"
 7z a -mx=1 "${CONTAINERS_BOOT_LOG_DIR}.7z" "${CONTAINERS_BOOT_LOG_DIR}" -sdel
-Say "Pack ${FIO_LOG_DIR}"
+Say "Pack [${FIO_LOG_DIR}]"
 7z a -mx=1 "${FIO_LOG_DIR}.7z" "${FIO_LOG_DIR}" -sdel
+Say "Pack [$FIO_VER3_DISTRIBUTION_HOME]"
+7z a -mx=1 "${FIO_VER3_DISTRIBUTION_HOME} (xz only).7z" "${FIO_VER3_DISTRIBUTION_HOME}" -sdel
+Say "Pack Complete. Welcomeback"
