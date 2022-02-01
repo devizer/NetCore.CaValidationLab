@@ -19,7 +19,7 @@ function Load-Fio-Ver-3-Distribution() {
   # all tree heararchy needs too much time, about 8 minutes
   # time sshpass -p "$PASSWORD" rsync --progress -r "${LOGIN}@${SSH_HOST_AND_PATH}" .
   # .tar.xz archive only needs 3 seconds
-  time sshpass -p "$PASSWORD" rsync --progress -r --include='*.xz' --exclude='plain/' --include='*/' --exclude='*' "${LOGIN}@${SSH_HOST_AND_PATH}" .
+  time sshpass -p "$PASSWORD" rsync --progress -r --include='*.xz' --include='*.xz.sha256' --exclude='plain/' --include='*/' --exclude='*' "${LOGIN}@${SSH_HOST_AND_PATH}" .
   tree -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
   Say "Successfully Loaded fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
   popd
