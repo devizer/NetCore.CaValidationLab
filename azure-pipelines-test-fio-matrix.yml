@@ -22,7 +22,7 @@ jobs:
       Say --Reset-Stopwatch
 
       Say "Registering qemu system arm"
-      sudo apt-get install qemu-system -qq -y >/dev/null
+      sudo apt-get install qemu-user-static -qq -y >/dev/null
       docker run --rm --privileged multiarch/qemu-user-static:register --reset >/dev/null 2>&1 
       cd 4gcc
 
