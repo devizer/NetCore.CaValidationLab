@@ -119,6 +119,7 @@ function Run-Fio-Tests() {
   for image in $(cat "$IMAGE_LIST"); do
     container="$(Get-Container-Name-by-Image "$image")"
     local container_machine="$(docker exec -t "$container" uname -m)"
+    container_machine="${container_machine//[\t\r\n ]/}"
     local filter="$container_machine"
     [[ "$filter" == "armv7"* ]] && filter=armv7
     Say "TEST $image, filter is [$filter]"
