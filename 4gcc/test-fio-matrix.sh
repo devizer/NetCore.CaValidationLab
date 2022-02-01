@@ -1,5 +1,22 @@
+SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-/transient-builds}"
+mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
+
+LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/matrix"
+mkdir -p "$LOG_DIR"
+
+IMAGE_LIST="$LOG_DIR/IMAGE-LIST.log"
+
 function Get-Container-Name-by-Image() {
   echo "fio-on-${1//[\/:\.]/-}"
+}
+
+function Publish-Containers-Logs() {
+  local image container
+  for image in $(cat "$IMAGE_LIST"); do
+    container="$(Get-Container-Name-by-Image "$image")"
+    Say "Dump Logs for the [$container] container from [$image] image"
+    docker logs "$container" 2>&1 > "$LOG_DIR/$container" || true
+  done 
 }
 
 TOTAL_FAIL=0
@@ -12,9 +29,11 @@ function Run-4-Tests() {
     let "TOTAL_IMAGES+=1"
     let "i+=1"
     local container="$(Get-Container-Name-by-Image "$image")"
+    echo "$image" >> "$IMAGE_LIST"
     # Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
     (docker pull "$image" && docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged --hostname "$container" --name "$container" -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static "$image" sh -c 'tail -f /dev/null') &
+    sleep 0.3
     # Say "Pulling-B #$TOTAL_IMAGES: $image"
     pid=$!
     # Say "Pulling-C #$TOTAL_IMAGES: $image"
@@ -49,4 +68,5 @@ Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
 
 
+Publish-Containers-Logs
 
