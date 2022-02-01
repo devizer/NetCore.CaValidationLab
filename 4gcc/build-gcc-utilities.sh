@@ -2,6 +2,26 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
+function Get-Sub-Directories-As-Names-Only() {
+  local path="${1:-.}" line
+  pushd "$path" >/dev/null
+  # echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)" 
+  find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V | while IFS='' read line; do
+    echo "${line:2}"
+  done
+  popd >/dev/null
+}
+
+function Get-Sub-Directories-As-Full-Names() {
+  local path="${1:-.}" line
+  pushd "$path" > /dev/null; local full_path_name="$(pwd)"; popd > /dev/null
+  local prefix="$full_path_name"
+  [[ "$prefix" == "/" ]] && prefix="";
+  Get-Sub-Directories-As-Names-Only "$full_path_name" | while IFS='' read line; do
+    echo "$prefix/$line"
+  done
+}
+
 function get_cpu_name() {
   # onbly x86_64. TODO: add arm
   local cpu="$(cat /proc/cpuinfo | grep -E '^model name' | awk -F':' 'NR==1 {print $2}')"

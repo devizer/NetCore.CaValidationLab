@@ -3,7 +3,8 @@ mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
 LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/logs"
 mkdir -p "$LOG_DIR"
-
+FIO_LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/fio-results"
+mkdir -p "$FIO_LOG_DIR"
 IMAGE_LIST="$SYSTEM_ARTIFACTSDIRECTORY/IMAGE-ARRAY.txt"
 FIO_VER3_DISTRIBUTION_HOME="$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution"
 mkdir -p "$FIO_VER3_DISTRIBUTION_HOME"
@@ -40,6 +41,7 @@ function Publish-Containers-Logs() {
 }
 
 cat <<-'START_CONTAINER_AS_DAEMON' > "/tmp/start-container-as-daemon.sh"
+mkdir -p /fio
 echo container: $CONTAINER; 
 echo image: $IMAGE; 
 echo machine: $(uname -m);
@@ -89,8 +91,13 @@ function Run-4-Tests() {
   set -eu
 }
 
+
+
+
+
 Run-4-Tests centos:6 centos:7 centos:8
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
+echo '
 Run-4-Tests arm32v7/debian:11 arm64v8/debian:8 arm64v8/debian:9 arm64v8/debian:10 arm64v8/debian:11
 
 Run-4-Tests debian:7 debian:8 debian:9 debian:10 debian:11
@@ -104,6 +111,30 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
+'>/dev/null
 
 Publish-Containers-Logs
 
+function Run-Fio-Tests() {
+  local image container engine
+  for image in $(cat "$IMAGE_LIST"); do
+    container="$(Get-Container-Name-by-Image "$image")"
+    Say "TEST $image"
+    local container_machine="docker exec -t "$container" uname -m"
+    local filter="$container_machine"
+    [[ "$filter" == "armv7"* ]] && filter=armv7
+    Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
+      echo " --> try [$dir_name]"
+      mkdir -p /tmp/push-fio-to-container
+      rm -rf /tmp/push-fio-to-container/*
+      tar xvJf "$FIO_VER3_DISTRIBUTION_HOME/dir/dir_name/fio.tar.xz"
+      docker cp /tmp/push-fio-to-container/. "$container":/fio
+      for engine in sync libaio posixaio; do
+        local benchmark_log_file="$FIO_LOG_DIR/$engine ${dir_name}.txt"
+        docker exec -t "$container" sh -c 'export LD_LIBRARY_PATH=/fio /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1' |& tee "$benchmark_log_file"
+      done
+    done
+  done 
+}
+
+Run-Fio-Tests

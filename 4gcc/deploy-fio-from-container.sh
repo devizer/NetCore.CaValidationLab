@@ -21,6 +21,7 @@ function Get-Sub-Directories() {
   echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)"
 }
 
+
 function Deploy-Set-of-Files() {
   local name="$1"
   shift
