@@ -32,7 +32,7 @@ function Run-4-Tests() {
     echo "$image" >> "$IMAGE_LIST"
     # Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
-    (docker pull "$image" && docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged --hostname "$container" --name "$container" -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static "$image" sh -c 'tail -f /dev/null') &
+    (docker pull "$image" && docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged --hostname "$container" --name "$container" -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static "$image" sh -c "echo Starting $container by $image; tail -f /dev/null") &
     sleep 0.3
     # Say "Pulling-B #$TOTAL_IMAGES: $image"
     pid=$!
