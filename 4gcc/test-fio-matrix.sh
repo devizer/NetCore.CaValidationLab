@@ -128,11 +128,11 @@ function Run-Fio-Tests() {
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
       echo " --> TRY [$dir_name]"
       fio_push_dir="/tmp/push-fio-to-container/$dir_name"
-      if [[ !-d "$fio_push_dir" ]]; then
+      if [[ ! -d "$fio_push_dir" ]]; then
         mkdir -p "$fio_push_dir"
         tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C "$fio_push_dir"
       fi
-      docker cp "$fio_push_dir/." "$container":/fio
+      docker cp "${fio_push_dir}/." "$container":/fio
       for engine in sync libaio posixaio; do
         local benchmark_log_file="$FIO_LOG_DIR/${container}-${engine} ${dir_name}.txt"
         docker exec -t "$container" sh -c 'export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1' |& tee "$benchmark_log_file"
