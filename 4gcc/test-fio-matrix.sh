@@ -14,6 +14,7 @@ function Load-Fio-Ver-3-Distribution() {
   mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
   pushd "$FIO_VER3_DISTRIBUTION_HOME"
   Say "LOGIN             : [$LOGIN], Length is ${#LOGIN}"
+  Say "PASSWORD          : [$PASSWORD], Length is ${#PASSWORD}"
   Say "SSH_HOST_AND_PATH : [$SSH_HOST_AND_PATH], Length is ${#SSH_HOST_AND_PATH}"
   time sshpass -p "$PASSWORD" rsync --progress -r "${LOGIN}@${SSH_HOST_AND_PATH}" .
   tree -d -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
