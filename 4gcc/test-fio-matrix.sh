@@ -13,8 +13,8 @@ function Load-Fio-Ver-3-Distribution() {
   sudo apt-get install tree aria2 rsync sshpass tree -y -qq
   mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
   pushd "$FIO_VER3_DISTRIBUTION_HOME"
-  Say "LOGIN             : [$LOGIN]"
-  Say "SSH_HOST_AND_PATH : [$SSH_HOST_AND_PATH]"
+  Say "LOGIN             : [$LOGIN], Length is ${#LOGIN}"
+  Say "SSH_HOST_AND_PATH : [$SSH_HOST_AND_PATH], Length is ${#SSH_HOST_AND_PATH}"
   time sshpass -p "$PASSWORD" rsync --progress -r "${LOGIN}@${SSH_HOST_AND_PATH}" .
   tree -d -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
   Say "Successfully Loaded fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
