@@ -7,13 +7,13 @@ function Run-4-Tests() {
   for image in "$@"; do
     let "TOTAL_IMAGES+=1"
     let "i+=1"
-    Sey "Pulling-A #$TOTAL_IMAGES: $image"
+    Say "Pulling-A #$TOTAL_IMAGES: $image"
     docker pull "$image" & 
-    Sey "Pulling-B #$TOTAL_IMAGES: $image"
+    Say "Pulling-B #$TOTAL_IMAGES: $image"
     pid=$!
-    Sey "Pulling-C #$TOTAL_IMAGES: $image"
+    Say "Pulling-C #$TOTAL_IMAGES: $image"
     pids[${#pids[@]}]=$pid
-    Sey "Pulled #$TOTAL_IMAGES: $image"
+    Say "Pulled #$TOTAL_IMAGES: $image"
   done 
   
   for pid in "${pids[@]}"; do
