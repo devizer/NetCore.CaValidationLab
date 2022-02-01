@@ -1,4 +1,4 @@
-﻿
+
 TOTAL_FAIL=0
 function Run-4-Tests() {
   local i=0 image FAIL=0 job pids=() pid
