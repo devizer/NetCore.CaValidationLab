@@ -49,7 +49,7 @@ function Run-4-Tests() {
           -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
           -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static \
           -v /tmp/start-container-as-daemon.sh:/tmp/start-container-as-daemon.sh \
-          "$image" sh -c "echo sample output to STDERR >&2; sh /tmp/start-container-as-daemon.sh
+          "$image" sh -c "echo sample output to STDERR >&2; sh /tmp/start-container-as-daemon.sh"
     ) &
     pid=$!
     sleep 0.3
