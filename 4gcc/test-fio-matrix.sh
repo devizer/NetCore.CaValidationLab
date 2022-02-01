@@ -93,7 +93,7 @@ function Run-4-Tests() {
 
 # echo SHORT TEST; Run-4-Tests debian:11 arm32v7/fedora:28 arm32v7/fedora:35 multiarch/ubuntu-debootstrap:arm64-focal
 
-# FULL TEST
+# FULL TEST (todo: opensuse on arm)
 Run-4-Tests centos:6 centos:7 centos:8
 
 # Debian
