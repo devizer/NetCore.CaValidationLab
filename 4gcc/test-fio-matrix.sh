@@ -21,9 +21,9 @@ function Run-4-Tests() {
       wait $pid || let "FAIL+=1"
   done
 
-  set -eu
   let "TOTAL_FAIL+=FAIL"
   echo "Batch Errors: [$FAIL] Total Errors: [$TOTAL_FAIL]"
+  set -eu
 }
 
 Run-4-Tests centos:6 centos:7 centos:8
