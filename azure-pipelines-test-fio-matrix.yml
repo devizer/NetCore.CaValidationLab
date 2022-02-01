@@ -30,6 +30,7 @@ jobs:
       Say "CPU: [$(get_cpu_name)]"
       source test-fio-matrix.sh
     displayName: 'FIO TEST MATRIX'
+    env:
         PASSWORD: $(SECRET_PASSWORD)
         LOGIN: $(SECRET_LOGIN)
         SSH_HOST_AND_PATH: $(SECRET_SSH_HOST_AND_PATH)
