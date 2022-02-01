@@ -49,7 +49,7 @@ function Run-4-Tests() {
           -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
           -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static \
           -v /tmp/start-container-as-daemon.sh:/tmp/start-container-as-daemon.sh \
-          "$image" sh -c /tmp/start-container-as-daemon.sh
+          "$image" sh /tmp/start-container-as-daemon.sh
     ) &
     pid=$!
     sleep 0.3
@@ -81,7 +81,7 @@ Run-4-Tests fedora:24 fedora:25 fedora:26 fedora:27 fedora:28
 Run-4-Tests fedora:29 fedora:30 fedora:31 fedora:32 fedora:33
 Run-4-Tests fedora:34 fedora:35 fedora:36
 
-Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib 
+Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
 
