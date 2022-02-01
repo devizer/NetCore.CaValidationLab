@@ -1,12 +1,19 @@
 
 TOTAL_FAIL=0
+TOTAL_IMAGES=0
 function Run-4-Tests() {
+  set +eu
   local i=0 image FAIL=0 job pids=() pid
   for image in "$@"; do
+    let "TOTAL_IMAGES+=1"
     let "i+=1"
+    Sey "Pulling-A #$TOTAL_IMAGES: $image"
     docker pull "$image" & 
+    Sey "Pulling-B #$TOTAL_IMAGES: $image"
     pid=$!
+    Sey "Pulling-C #$TOTAL_IMAGES: $image"
     pids[${#pids[@]}]=$pid
+    Sey "Pulled #$TOTAL_IMAGES: $image"
   done 
   
   for pid in "${pids[@]}"; do
@@ -14,6 +21,7 @@ function Run-4-Tests() {
       wait $pid || let "FAIL+=1"
   done
 
+  set -eu
   let "TOTAL_FAIL+=FAIL"
   echo "Batch Errors: [$FAIL] Total Errors: [$TOTAL_FAIL]"
 }
