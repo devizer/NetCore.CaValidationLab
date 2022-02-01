@@ -52,7 +52,7 @@ EOF_SHOW_GLIBC_VERSION
 # glibc_version=$(get_glibc_version) && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
 
 function adjust_os_repo() {
-  Say "Adjust os repo for [$(uname -m] $(get_linux_os_id)]"
+  Say "Adjust os repo for [$(uname -m) $(get_linux_os_id)]"
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
   if [[ "${ID:-}" == "debian" ]]; then
