@@ -124,7 +124,7 @@ function Run-Fio-Tests() {
     local filter="$container_machine"
     [[ "$filter" == "armv7"* ]] && filter=armv7
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
-      echo " --> try [$dir_name]"
+      echo " --> TRY [$dir_name]"
       mkdir -p /tmp/push-fio-to-container
       rm -rf /tmp/push-fio-to-container/*
       tar xvJf "$FIO_VER3_DISTRIBUTION_HOME/dir/dir_name/fio.tar.xz"
