@@ -101,7 +101,7 @@ function build_fio() {
   export LD_LIBRARY_PATH=/usr/local/lib
   for engine in sync libaio posixaio; do
     Say "Test Engine [$engine] of fio ver [$FIO_VER]"
-    wrap_cmd "$key/bench-$engine"      fio --name=test --randrepeat=1 --ioengine=$engine --gtod_reduce=1 --filename=~/fio-test.tmp --bs=4k --size=32K --readwrite=read
+    wrap_cmd "$key/bench-$engine"      fio --name=test --randrepeat=1 --ioengine=$engine --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read
   done
 }
 
