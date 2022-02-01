@@ -160,14 +160,24 @@ CENTOS6_REPO
   if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
     # centos/redhat/fedora
     if [[ -d /etc/yum.repos.d ]]; then
-      Say "Switch off gpgcheck for /etc/yum.repos.d/*.repo"
+      Say "Switch off gpgcheck for /etc/yum.repos.d/*.repo for [$(uname -m) $(get_linux_os_id)]"
       sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.repos.d/*.repo
     fi
 
     if [[ -e /etc/dnf/dnf.conf ]]; then
-      Say "Switch off gpgcheck for dnf"
+      Say "Switch off gpgcheck for /etc/dnf/dnf.conf for [$(uname -m) $(get_linux_os_id)]"
       sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/dnf/dnf.conf
     fi
+  fi
+
+  if [[ "$(get_linux_os_id)" == "centos:6" ]]; then
+    Say "Update yum cache for [$(uname -m) $(get_linux_os_id)]"
+    try-end-retry yum makecache -q
+  fi
+
+  if [[ -n "$(command -v apt-get)" ]]; then
+    Say "Update apt cache for [$(uname -m) $(get_linux_os_id)]"
+    try-and-retry apt-get update -qq
   fi
 }
 
