@@ -33,6 +33,9 @@ function Run-4-Tests() {
 }
 
 Run-4-Tests centos:6 centos:7 centos:8
+Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
+Run-4-Tests arm32v7/debian:11 arm64v8/debian:8 arm64v8/debian:9 arm64v8/debian:10 arm64v8/debian:11
+
 Run-4-Tests debian:7 debian:8 debian:9 debian:10 debian:11
 Run-4-Tests ubuntu:22.04 ubuntu:21.10 ubuntu:20.04 ubuntu:18.04
 Run-4-Tests ubuntu:16.04 ubuntu:14.10 ubuntu:12.04
