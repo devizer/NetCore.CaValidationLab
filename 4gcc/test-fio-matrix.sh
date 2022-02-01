@@ -1,9 +1,9 @@
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-/transient-builds}"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
-LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/logs"
-mkdir -p "$LOG_DIR"
-FIO_LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/fio-results"
+CONTAINERS_BOOT_LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/containers-boot-logs"
+mkdir -p "$CONTAINERS_BOOT_LOG_DIR"
+FIO_LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/structured-fio-benchmark-results"
 mkdir -p "$FIO_LOG_DIR"
 IMAGE_LIST="$SYSTEM_ARTIFACTSDIRECTORY/IMAGE-ARRAY.txt"
 FIO_VER3_DISTRIBUTION_HOME="$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution"
@@ -11,7 +11,7 @@ mkdir -p "$FIO_VER3_DISTRIBUTION_HOME"
 
 function Load-Fio-Ver-3-Distribution() {
   Say "Loading fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
-  sudo apt-get install tree aria2 rsync sshpass tree -y -qq
+  sudo apt-get install tree aria2 rsync sshpass tree p7zip-full -y -qq
   mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
   pushd "$FIO_VER3_DISTRIBUTION_HOME"
   # all tree heararchy needs too much time, about 8 minutes
@@ -36,7 +36,7 @@ function Publish-Containers-Logs() {
   for image in $(cat "$IMAGE_LIST"); do
     container="$(Get-Container-Name-by-Image "$image")"
     Say "Dump Logs for the [$container] container from [$image] image"
-    docker logs "$container" 2>&1 > "$LOG_DIR/$container" || true
+    docker logs "$container" 2>&1 > "$CONTAINERS_BOOT_LOG_DIR/$container" || true
   done 
 }
 
@@ -91,6 +91,8 @@ function Run-4-Tests() {
   set -eu
 }
 
+debian:11 multiarch/fedora:28-armhfp multiarch/ubuntu-debootstrap:arm64-focal
+echo '
 Run-4-Tests centos:6 centos:7 centos:8
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
 
@@ -107,6 +109,7 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
+' > /dev/null
 
 Publish-Containers-Logs
 
@@ -132,11 +135,22 @@ function Run-Fio-Tests() {
       fi
       docker cp "${fio_push_dir}/." "$container":/fio
       for engine in sync libaio posixaio; do
-        local benchmark_log_file="$FIO_LOG_DIR/${container}-${engine} ${dir_name}.txt"
-        docker exec -t "$container" sh -c 'export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1' |& tee "$benchmark_log_file"
+        local         benchmark_log_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.txt"
+        local   benchmark_exit_code_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.exit-cde"
+        local  benchmark_structured_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.summary"
+        mkdir -p "$(basename "$benchmark_log_file")"
+        docker exec -t "$container" sh -c 'rm -f /fio-exit-code; export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1; err=$?; > echo -e $? > /fio-exit-code' |& tee "$benchmark_log_file"
+        docker cp "$container":/fio-exit-code "$benchmark_exit_code_file"
+        cp -f "$CONTAINERS_BOOT_LOG_DIR/$container" "$benchmark_structured_file"
+        echo "exit.code: $(cat "$benchmark_exit_code_file")" |& tee -a "$benchmark_structured_file"
+        echo "benchmark.output.size: $(stat --printf="%s" "$benchmark_log_file")" |& tee -a "$benchmark_structured_file"
+        echo "fio: $dir_name" |& tee -a "$benchmark_structured_file"
       done
     done
   done 
 }
 
 Run-Fio-Tests
+
+7z a -mx=1 "${CONTAINERS_BOOT_LOG_DIR}.7z" "${CONTAINERS_BOOT_LOG_DIR}.7z" -sdel
+7z a -mx=1 "${FIO_LOG_DIR}.7z" "${FIO_LOG_DIR}" -sdel
