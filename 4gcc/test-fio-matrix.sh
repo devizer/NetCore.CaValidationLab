@@ -91,7 +91,8 @@ function Run-4-Tests() {
   set -eu
 }
 
-debian:11 multiarch/fedora:28-armhfp multiarch/ubuntu-debootstrap:arm64-focal
+Run-4-Tests debian:11 multiarch/fedora:28-armhfp multiarch/ubuntu-debootstrap:arm64-focal
+
 echo '
 Run-4-Tests centos:6 centos:7 centos:8
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
