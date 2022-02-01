@@ -119,10 +119,10 @@ function Run-Fio-Tests() {
   local image container engine
   for image in $(cat "$IMAGE_LIST"); do
     container="$(Get-Container-Name-by-Image "$image")"
-    Say "TEST $image"
-    local container_machine="docker exec -t "$container" uname -m"
+    local container_machine="$(docker exec -t "$container" uname -m)"
     local filter="$container_machine"
     [[ "$filter" == "armv7"* ]] && filter=armv7
+    Say "TEST $image, filter is [$filter]"
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
       echo " --> TRY [$dir_name]"
       mkdir -p /tmp/push-fio-to-container
