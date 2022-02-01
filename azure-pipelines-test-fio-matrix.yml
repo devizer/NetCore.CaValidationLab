@@ -37,7 +37,7 @@ jobs:
       Say "Free Size"
       sudo df -h -T
       Say "Containers"
-      docker ps -a --format "table {{.ID}}\t{{.Names}}"
+      docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}"
 
       set -e
       cd 4gcc
