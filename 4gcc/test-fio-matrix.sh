@@ -91,26 +91,45 @@ function Run-4-Tests() {
   set -eu
 }
 
-Run-4-Tests debian:11 arm32v7/fedora:28 arm32v7/fedora:35 multiarch/ubuntu-debootstrap:arm64-focal
+# echo SHORT TEST; Run-4-Tests debian:11 arm32v7/fedora:28 arm32v7/fedora:35 multiarch/ubuntu-debootstrap:arm64-focal
 
-echo '
+# FULL TEST
 Run-4-Tests centos:6 centos:7 centos:8
+
+# Debian
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
 
 Run-4-Tests arm32v7/debian:11 arm64v8/debian:8 arm64v8/debian:9 arm64v8/debian:10 arm64v8/debian:11
 
 Run-4-Tests debian:7 debian:8 debian:9 debian:10 debian:11
+
+# Ubuntu
+Run-4-Tests arm64v8/ubuntu:22.04 arm64v8/ubuntu:21.10 arm64v8/ubuntu:20.04 arm64v8/ubuntu:18.04
+Run-4-Tests arm64v8/ubuntu:16.04 arm64v8/ubuntu:14.10
+
+Run-4-Tests arm32v7/ubuntu:22.04 arm32v7/ubuntu:21.10 arm32v7/ubuntu:20.04 arm32v7/ubuntu:18.04
+Run-4-Tests arm32v7/ubuntu:16.04 arm32v7/ubuntu:14.10
+
 Run-4-Tests ubuntu:22.04 ubuntu:21.10 ubuntu:20.04 ubuntu:18.04
 Run-4-Tests ubuntu:16.04 ubuntu:14.10 ubuntu:12.04
+
+# Fedora
+Run-4-Tests arm32v7/fedora:24 arm32v7/fedora:25 arm32v7/fedora:26 arm32v7/fedora:27 arm32v7/fedora:28
+Run-4-Tests arm32v7/fedora:29 arm32v7/fedora:30 arm32v7/fedora:31 arm32v7/fedora:32 arm32v7/fedora:33
+Run-4-Tests arm32v7/fedora:34 arm32v7/fedora:35 arm32v7/fedora:36
+
+Run-4-Tests arm64v8/fedora:24 arm64v8/fedora:25 arm64v8/fedora:26 arm64v8/fedora:27 arm64v8/fedora:28
+Run-4-Tests arm64v8/fedora:29 arm64v8/fedora:30 arm64v8/fedora:31 arm64v8/fedora:32 arm64v8/fedora:33
+Run-4-Tests arm64v8/fedora:34 arm64v8/fedora:35 arm64v8/fedora:36
 
 Run-4-Tests fedora:24 fedora:25 fedora:26 fedora:27 fedora:28
 Run-4-Tests fedora:29 fedora:30 fedora:31 fedora:32 fedora:33
 Run-4-Tests fedora:34 fedora:35 fedora:36
 
+# Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
-' > /dev/null
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
@@ -154,6 +173,7 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 
       done # engine
     done # fio
+    # TODO: Delete Image and Container
   done # image
 }
 
