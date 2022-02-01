@@ -51,9 +51,8 @@ EOF_SHOW_GLIBC_VERSION
 
 # glibc_version=$(get_glibc_version) && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
 
-
-function prepare_os() {
-  Say "Provisioning container, arch is [$(uname -m)]..."
+function adjust_os_repo() {
+  Say "Adjust os repo for [$(uname -m] $(get_linux_os_id)]"
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
   if [[ "${ID:-}" == "debian" ]]; then
@@ -169,24 +168,48 @@ CENTOS6_REPO
       Say "Switch off gpgcheck for dnf"
       sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/dnf/dnf.conf
     fi
+  fi
+}
 
-    # LANG & LC_ALL
+function configure_os_locale() {
+  
+  # LANG & LC_ALL
+  if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
     if [[ -n "$(command -v locale)" ]]; then
-      l="$(locale -a | grep -i 'en_us\.utf8')"
+      local l="$(locale -a | grep -i 'en_us\.utf8')"
       if [[ -n "${l:-}" ]]; then
-        Say "Configure LC_ALL and LANG as [$l] for centos/redhat/fedora"
+        Say "[centos/redhat/fedora] Configure LC_ALL and LANG as [$l] for centos/redhat/fedora"
         export LC_ALL="$l" LANG="$l"
+        Say "LANG=$LANG LC_ALL=$LC_ALL"
       fi
     fi
   fi
 
-  if [[ "$(command -v dnf)" != "" ]]; then
-    dnf install gcc make autoconf libtool curl wget mc nano less -y -q >/dev/null
-  elif [[ "$(command -v yum)" != "" ]]; then
-    yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q >/dev/null
+  if [[ "$(command -v apt-get)" != "" ]]; then
+echo '
+en_US.UTF-8 UTF-8
+ru_RU.UTF-8 UTF-8
+' > /etc/locale.gen 
+
+    Say "[debian/ubuntu] Configure LANG and LC_ALL and install **libicu**"
+    apt-get install locales mc -y -q >/dev/null
+
+    # DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
+    export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+    Say "LANG=$LANG LC_ALL=$LC_ALL"
   fi
 
+}
 
+function prepare_os() {
+  adjust_os_repo
+  Say "Provisioning container, arch is [$(uname -m)]..."
+
+  if [[ "$(command -v dnf)" != "" ]]; then
+    try-and-retry dnf install gcc make autoconf libtool curl wget mc nano less -y -q >/dev/null
+  elif [[ "$(command -v yum)" != "" ]]; then
+    try-and-retry yum install gcc make autoconf libtool curl wget mc nano less ncdu -y -q >/dev/null
+  fi
 
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
@@ -199,25 +222,13 @@ CENTOS6_REPO
       Say "Installing the gcc-multilib package"
       try-and-retry apt-get install gcc-multilib -y -q >/dev/null
     fi
-    
     try-and-retry apt-get install pkg-config -y -q >/dev/null
 
     # old gcc 4.7 needs LANG and LC_ALL
     apt-get install g++ gawk m4 -y -q >/dev/null
-    
-echo '
-en_US.UTF-8 UTF-8
-ru_RU.UTF-8 UTF-8
-' > /etc/locale.gen 
-
-    Say "Configure LANG and LC_ALL and install **libicu**"
-    apt-get install locales mc -y -q >/dev/null
-
-    # DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
-    export LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-    Say "LANG=$LANG LC_ALL=$LC_ALL"
   fi
 
+  configure_os_locale  
   Say "Completed system prerequisites"
 }
 
@@ -328,6 +339,22 @@ function build_all_known_hash_sums() {
     if [[ "$(command -v ${alg}sum)" != "" ]]; then
       local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
       printf "$sum" > "$file.${alg}"
+    else
+      echo "warning! ${alg}sum missing"
+    fi
+  done
+}
+
+function build_all_known_hash_sums_as_single_file() {
+  # centos: yum install fipscheck isomd5sum -y
+  local file="$1"
+  local output="$file.${alg}"
+  rm -f "$output"; printf "" > "$output"
+  for alg in md5 sha1 sha224 sha256 sha384 sha512; do
+    if [[ "$(command -v ${alg}sum)" != "" ]]; then
+      local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
+      printf "$sum" > "$file.${alg}"
+      echo "$alg $sum" > "$output"
     else
       echo "warning! ${alg}sum missing"
     fi

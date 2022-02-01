@@ -15,6 +15,10 @@ jobs:
       'System-CentOS-6':
         GCC: ""
         IMAGE: "centos:6"
+      '9.4-Wheezy':
+        GCC: "9.4"
+        IMAGE: "debian:7"
+
 
       '8.5-Jessie-arm':
         GCC: "8.5"
@@ -45,11 +49,11 @@ jobs:
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-buster"
         QEMU: arm64
-        # IMAGE: "arm64v8/debian:10"
       '8.5-Bullseye-arm64':
         GCC: "8.5"
         IMAGE: "multiarch/debian-debootstrap:arm64-bullseye"
         QEMU: arm64
+
       '7.5-Jessie':
         GCC: "7.5"
         IMAGE: "debian:8"
@@ -185,9 +189,6 @@ jobs:
         IMAGE: "debian:7"
       '10.3-Wheezy':
         GCC: "10.3"
-        IMAGE: "debian:7"
-      '9.4-Wheezy':
-        GCC: "9.4"
         IMAGE: "debian:7"
 
 
