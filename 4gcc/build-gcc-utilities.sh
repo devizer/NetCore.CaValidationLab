@@ -112,7 +112,14 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
-  if [[ "$(get_linux_os_key)" == "centos_6" ]]; then
+  if [[ "$(get_linux_os_id)" == "centos:8" ]]; then
+    Say "Resetting CentOS 8 Repo"
+    sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
+    sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-Linux-*
+  fi
+
+
+  if [[ "$(get_linux_os_id)" == "centos:6" ]]; then
   Say "Resetting CentOS 6 Repo"
 cat <<-'CENTOS6_REPO' > /etc/yum.repos.d/CentOS-Base.repo
 [C6.10-base]
@@ -170,7 +177,7 @@ CENTOS6_REPO
     fi
   fi
 
-  if [[ "$(get_linux_os_id)" == "centos:6" ]]; then
+  if [[ "$(get_linux_os_id)" == "centos"* ]]; then
     Say "Update yum cache for [$(uname -m) $(get_linux_os_id)]"
     try-end-retry yum makecache -q
   fi
