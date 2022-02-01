@@ -179,7 +179,7 @@ CENTOS6_REPO
 
   if [[ "$(get_linux_os_id)" == "centos"* ]]; then
     Say "Update yum cache for [$(uname -m) $(get_linux_os_id)]"
-    try-end-retry yum makecache -q
+    try-and-retry yum makecache -q
   fi
 
   if [[ -n "$(command -v apt-get)" ]]; then
