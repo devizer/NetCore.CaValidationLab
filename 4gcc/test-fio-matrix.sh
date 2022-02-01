@@ -91,10 +91,6 @@ function Run-4-Tests() {
   set -eu
 }
 
-
-
-
-
 Run-4-Tests centos:6 centos:7 centos:8
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
 
@@ -114,6 +110,7 @@ Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
 
 Publish-Containers-Logs
 
+TRY_COUNT=0
 function Run-Fio-Tests() {
   local image container engine
   # for each running image
@@ -126,7 +123,8 @@ function Run-Fio-Tests() {
     Say "TEST $image, filter is [$filter]"
     # for each fio of the same arch
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
-      echo " --> TRY [$dir_name]"
+      let "TRY_COUNT+=1"
+      echo -e "\n --> TRY #TRY_COUNT [$dir_name]"
       fio_push_dir="/tmp/push-fio-to-container/$dir_name"
       if [[ ! -d "$fio_push_dir" ]]; then
         mkdir -p "$fio_push_dir"
