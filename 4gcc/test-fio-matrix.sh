@@ -1,10 +1,27 @@
 SYSTEM_ARTIFACTSDIRECTORY="${SYSTEM_ARTIFACTSDIRECTORY:-/transient-builds}"
 mkdir -p "$SYSTEM_ARTIFACTSDIRECTORY"
 
-LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/matrix"
+LOG_DIR="$SYSTEM_ARTIFACTSDIRECTORY/logs"
 mkdir -p "$LOG_DIR"
 
 IMAGE_LIST="$LOG_DIR/IMAGE-LIST.log"
+FIO_VER3_DISTRIBUTION_HOME="$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution"
+mkdir -p "$FIO_VER3_DISTRIBUTION_HOME"
+
+function Load-Fio-Ver-3-Distribution() {
+  Say "Loading fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
+  sudo apt-get install tree aria2 rsync sshpass tree -y -qq
+  mkdir -p ~/.ssh; printf "Host *\n   StrictHostKeyChecking no\n   UserKnownHostsFile=/dev/null" > ~/.ssh/config
+  pushd "$FIO_VER3_DISTRIBUTION_HOME"
+  time sshpass -p "$PASSWORD" rsync --progress -r "$LOGIN"@"$SSH_HOST_AND_PATH" .
+  tree -d -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
+  Say "Successfully Loaded fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
+  popd
+}
+
+# 1
+Load-Fio-Ver-3-Distribution
+
 
 function Get-Container-Name-by-Image() {
   echo "fio-on-${1//[\/:\.]/-}"
