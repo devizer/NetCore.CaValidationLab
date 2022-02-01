@@ -137,10 +137,10 @@ function Run-Fio-Tests() {
       docker cp "${fio_push_dir}/." "$container":/fio
       for engine in sync libaio posixaio; do
         local         benchmark_log_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.txt"
-        local   benchmark_exit_code_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.exit-cde"
+        local   benchmark_exit_code_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.exit-code"
         local  benchmark_structured_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.summary"
         mkdir -p "$(basename "$benchmark_log_file")"
-        docker exec -t "$container" sh -c 'rm -f /fio-exit-code; export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1; err=$?; echo $err >/fio-exit-code' |& tee "$benchmark_log_file"
+        docker exec -t "$container" sh -c 'rm -f /fio-exit-code; export LD_LIBRARY_PATH=/fio; /fio/fio --name=test --randrepeat=1 --ioengine='$engine' --gtod_reduce=1 --filename=$HOME/fio-test.tmp --bs=4k --size=32K --readwrite=read 2>&1; err=$?; echo $err >/fio-exit-code; exit 0' |& tee "$benchmark_log_file"
         docker cp "$container":/fio-exit-code "$benchmark_exit_code_file"
         cp -f "$CONTAINERS_BOOT_LOG_DIR/$container" "$benchmark_structured_file"
         echo "exit.code: $(cat "$benchmark_exit_code_file")" |& tee -a "$benchmark_structured_file"
