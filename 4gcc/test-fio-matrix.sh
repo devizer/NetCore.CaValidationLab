@@ -111,11 +111,11 @@ function Run-4-Tests() {
 # armv7 V15.3
 Run-4-Tests --force-name "fio-on-opensuse-15-3-arm32v7" "opensuse/leap@sha256:fd21070081a4909b699f77eff9ec6ce5e7bb351a87a0b66dd6d1e764ff3ffd75"
 # ARMV7 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2" CONTAINER="opensuse-tumbleweed-ARMv7-playground"
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2"
 # armv8 v15.3
 Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
 # ARMV8 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84" CONTAINER="opensuse-tumbleweed-ARMv8-playground"
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
 
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
