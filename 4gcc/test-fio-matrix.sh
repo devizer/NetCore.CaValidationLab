@@ -82,7 +82,7 @@ function Run-4-Tests() {
         docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged \
           --hostname "$container" --name "$container" \
           -e CONTAINER="$container" -e IMAGE="$image" \
-          -v "$source_utilities":/build-gcc-utilities.sh \
+          -v "$SOURCE_UTILITIES":/build-gcc-utilities.sh \
           -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
           -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static \
           -v /tmp/start-container-as-daemon.sh:/tmp/start-container-as-daemon.sh \
@@ -127,7 +127,7 @@ Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumblewe
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
-Run-4-Tests debian:11 fedora:35
+Run-4-Tests debian:11 fedora:35 centos:6
 
 
 
