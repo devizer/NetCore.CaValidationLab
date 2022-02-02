@@ -110,7 +110,7 @@ function Run-Multiarch-Tests() {
     local digest="$(cat "$manifest" | Find-Docker-Image-Digest-for-Architecture "$arch")"
     if [[ -n "$digest" ]]; then
       Say "Multiarch [$image] image. Arch is supported: [$arch]. Digest: [$digest]"
-      Run-4-Tests --force-name "fio-on-$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@${digest}"
+      Run-4-Tests --force-name "$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@${digest}"
     fi
   done
 }
@@ -133,17 +133,19 @@ function Run-Multiarch-Tests() {
 # Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
 # ARMV8 tumbleweed
 # Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
+# Run-4-Tests opensuse/tumbleweed opensuse/leap:15 
 
 # New Way
 Run-Multiarch-Tests opensuse/leap:15
 Run-Multiarch-Tests opensuse/tumbleweed
+Run-Multiarch-Tests centos:7
+Run-Multiarch-Tests centos:8
 
-Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
-Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
+Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3 opensuse/leap:42
 
 echo 'SKIP
 # FULL TEST
-Run-4-Tests centos:6 centos:7 centos:8
+Run-4-Tests centos:6 # centos:7 centos:8 are via multiarch
 
 # Debian
 Run-4-Tests arm32v7/debian:7 arm32v7/debian:8 arm32v7/debian:9 arm32v7/debian:10
