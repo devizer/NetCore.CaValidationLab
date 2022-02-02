@@ -52,7 +52,7 @@ echo "host.container: $CONTAINER";
 echo "host.image: $IMAGE";
 echo "host.os: $(get_linux_os_id)";
 echo "host.machine: $(uname -m)";
-echo "host.hostname: $(hostname)"
+echo "host.hostname: $(hostname || cat /etc/hostname)"
 echo "host.glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
 tail -f /dev/null
 START_CONTAINER_AS_DAEMON
