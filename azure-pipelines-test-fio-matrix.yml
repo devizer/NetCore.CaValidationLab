@@ -49,9 +49,9 @@ jobs:
 
   - script: |
       Say "System Statisctics"
-      Show-System-Stat
+      Show-System-Stat |& tee "${SYSTEM_ARTIFACTSDIRECTORY}/Show-System-Stat.txt"
       Say "Free Size"
-      sudo df -h -T
+      sudo df -h -T |& tee "${SYSTEM_ARTIFACTSDIRECTORY}/Free-Space.txt"
       Say "Containers"
       docker ps -a --format "table {{.ID}}\t{{.Names}}\t{{.Status}}" |& tee "$SYSTEM_ARTIFACTSDIRECTORY/containers-table.txt"
       Say "Images"
