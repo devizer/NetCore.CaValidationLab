@@ -75,7 +75,7 @@ function Run-4-Tests() {
     local container="$(Get-Container-Name-by-Image "$image")"
     if [[ -n "${force_name:-}" ]]; then container="${force_name}"; fi
     echo "$image $container" >> "$IMAGE_LIST"
-    Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
+    Say "Pulling #$TOTAL_IMAGES: [$container] from [$image] image"
     (
         docker pull -q "$image" &&
         docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged \
@@ -109,7 +109,7 @@ function Run-Multiarch-Tests() {
   for arch in amd64 arm64 armv7; do
     local digest="$(cat "$manifest" | Find-Docker-Image-Digest-for-Architecture "$arch")"
     if [[ -n "$digest" ]]; then
-      Say "Multiarch [$image] image. Arch is supported: [$arch]. Digest: [$digest]"
+      Say "Arch [$arch] is supported for [$image] image. Digest: [$digest]"
       Run-4-Tests --force-name "$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@${digest}"
     fi
   done
@@ -143,7 +143,6 @@ Run-Multiarch-Tests centos:8
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3 opensuse/leap:42
 
-echo 'SKIP
 # FULL TEST
 Run-4-Tests centos:6 # centos:7 centos:8 are via multiarch
 
@@ -181,7 +180,6 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
-'
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
