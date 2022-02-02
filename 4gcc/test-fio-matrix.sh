@@ -54,12 +54,18 @@ TOTAL_FAIL=0
 TOTAL_IMAGES=0
 function Run-4-Tests() {
   set +eu
-  local i=0 image FAIL=0 job pids pid container
+  local i=0 image FAIL=0 job pids pid container force_name;
+  if [[ "${1:-}" == "" "--force-name" ]]; then
+    force_name="${2}"
+    shift; shift;
+  fi
+
   pids=()
   for image in "$@"; do
     let "TOTAL_IMAGES+=1"
     let "i+=1"
     local container="$(Get-Container-Name-by-Image "$image")"
+    if [[ -n "${force_name:-}" ]]; then container="${force_name}"
     echo "$image" >> "$IMAGE_LIST"
     Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
@@ -93,7 +99,29 @@ function Run-4-Tests() {
 
 # echo SHORT TEST; Run-4-Tests debian:11 arm32v7/fedora:28 arm32v7/fedora:35 multiarch/ubuntu-debootstrap:arm64-focal
 
-# FULL TEST (todo: opensuse on arm)
+
+# OpenSUSE
+# ABANDONED
+# theese two images are abandoned in 2018
+# arm32v7/opensuse -      42.2 42.3 latest leap tumbleweed, leap & latest is 42 (2.22), tumbleweed too old (2.26)
+# arm64v8/opensuse - 42.1 42.2 42.3 latest leap tumbleweed
+
+# armv7 V15.3
+Run-4-Tests --force-name "fio-on-opensuse-15-3-arm32v7" "opensuse/leap@sha256:fd21070081a4909b699f77eff9ec6ce5e7bb351a87a0b66dd6d1e764ff3ffd75"
+# ARMV7 tumbleweed
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2" CONTAINER="opensuse-tumbleweed-ARMv7-playground" Jump-Into-Container
+# armv8 v15.3
+Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
+# ARMV8 tumbleweed
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84" CONTAINER="opensuse-tumbleweed-ARMv8-playground" Jump-Into-Container
+
+Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
+Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
+
+
+# FULL TEST
+echo 'SKIP
+----
 Run-4-Tests centos:6 centos:7 centos:8
 
 # Debian
@@ -129,7 +157,8 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
-Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
+' 
+
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
@@ -172,7 +201,7 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 " |& tee -a "$benchmark_structured_file"
 
       done # engine
-      # break # SHORT TEST
+      break # SHORT TEST
     done # fio
     # TODO: Delete Image and Container
   done # image
