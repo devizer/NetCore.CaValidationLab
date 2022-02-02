@@ -9,6 +9,8 @@ IMAGE_LIST="$SYSTEM_ARTIFACTSDIRECTORY/IMAGE-ARRAY.txt"
 FIO_VER3_DISTRIBUTION_HOME="$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution"
 mkdir -p "$FIO_VER3_DISTRIBUTION_HOME"
 
+SOURCE_UTILITIES="$(pwd)/build-gcc-utilities.sh"
+
 function Load-Fio-Ver-3-Distribution() {
   Say "Loading fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
   sudo apt-get install tree aria2 rsync sshpass tree p7zip-full -y -qq
@@ -45,6 +47,7 @@ cat <<-'START_CONTAINER_AS_DAEMON' > "/tmp/start-container-as-daemon.sh"
 mkdir -p /fio
 echo "host.container: $CONTAINER"; 
 echo "host.image: $IMAGE";
+echo "host.os: $(get_linux_os_id)
 echo "host.machine: $(uname -m)";
 echo "host.hostname: $(hostname)"
 echo "host.glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
@@ -76,10 +79,11 @@ function Run-4-Tests() {
         docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged \
           --hostname "$container" --name "$container" \
           -e CONTAINER="$container" -e IMAGE="$image" \
+          -v "$source_utilities":/build-gcc-utilities.sh \
           -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static \
           -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static \
           -v /tmp/start-container-as-daemon.sh:/tmp/start-container-as-daemon.sh \
-          "$image" sh -c "echo sample output to STDERR >&2; sh /tmp/start-container-as-daemon.sh"
+          "$image" bash -c "echo sample output to STDERR >&2; source /build-gcc-utilities.sh; source /tmp/start-container-as-daemon.sh"
     ) &
     pid=$!
     sleep 0.3
