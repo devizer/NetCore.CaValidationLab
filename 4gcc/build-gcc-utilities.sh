@@ -2,16 +2,84 @@
 
 export DEBIAN_FRONTEND=noninteractive
 
+# Return temp json file name or epty string
+function Get-Docker-Image-Manifest() {
+  local image="${1}"
+  local json_file="$(mktemp || echo "${TMPDIR:-/tmp/a-docker-image-manifest}")"
+  local err=0;
+  docker buildx imagetools inspect --raw "$image" >"$json_file" ||
+  docker manifest inspect "$image" >"$json_file" || err=$?
+  if [[ "$err" -eq 0 ]]; then
+    echo "$json_file"
+  else 
+    rm -f "$json_file"
+  fi
+}
+
+# stdin - json manifests
+function Docker-Image-Manifest-As-Raw-Table() {
+  local f='.manifests | map({"size":.size?|tostring, "digest":.digest?, "os":.platform?.os?, "architecture":.platform?.architecture?, "variant":.platform?.variant?}) | map([.os, .architecture, .variant, .digest, .size] | join("|")) | join("\n") '
+  jq -r "$f"
+}
+
+# stdin - json manifests
+function Docker-Image-Manifest-As-Table() {
+  local os architecture variant digest size
+  Docker-Image-Manifest-As-Raw-Table | while IFS='|' read os architecture variant digest size; do
+    local short_os="$os"
+    [[ -n "$architecture" ]] && short_os="$short_os/$architecture"
+    [[ -n "$variant" ]] && short_os="$short_os/$variant"
+    echo -e "$short_os|$digest|$size"
+  done
+}
+
+# stdin - json manifests
+# argument: amd64 arm64 armv7 arm/v7 armv6 arm/v6 armv5 arm/v5 i386 s390x ppc64le mips64le 
+function Find-Docker-Image-Digest-for-Architecture() {
+  local arch="$1"; 
+  local filter='linux\/'"${arch//\//\\\/}"
+  # [[ "$arch" == "amd64" ]] && filter="linux\/amd64"
+  # [[ "$arch" == "arm64" ]] && filter="linux\/arm64"
+  [[ "$arch" == "armv7" ]] && filter='linux\/arm\/v7'
+  [[ "$arch" == "armv6" ]] && filter='linux\/arm\/v6'
+  [[ "$arch" == "armv5" ]] && filter='linux\/arm\/v5'
+  Docker-Image-Manifest-As-Table | awk -F'|' '$1 ~ /^'$filter'/ {print $2}'
+}
+
+function Help-Docker-Image-Manifest() {
+  set -e 
+  set -u
+  local image json arch
+  for image in debian:8 debian:11 fedora:24 fedora:35 devizervlad/crossplatform-azure-pipelines-agent; do
+    local json="$(Get-Docker-Image-Manifest "$image")"
+    Say    "Raw $image"; 
+    cat "$json" | Docker-Image-Manifest-As-Raw-Table
+
+    Say "Beauty $image"; 
+    cat "$json"  | Docker-Image-Manifest-As-Table
+
+    for arch in amd64 arm64 armv7 arm/v7 armv6 arm/v6 armv5 arm/v5 i386 s390x ppc64le mips64le; do
+      Say "$arch: $(cat "$json" | Find-Docker-Image-Digest-for-Architecture "$arch")"
+    done
+
+    
+  done
+}
+
+Help-Docker-Image-Manifest
+
+
+# arg1: absolute or relative path, default is current 
 function Get-Sub-Directories-As-Names-Only() {
   local path="${1:-.}" line
   pushd "$path" >/dev/null
-  # echo "$(find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V)" 
   find . -maxdepth 1 -type d | grep -v -E '^\.$' | sort -V | while IFS='' read line; do
     echo "${line:2}"
   done
   popd >/dev/null
 }
 
+# arg1: absolute or relative path, default is current 
 function Get-Sub-Directories-As-Full-Names() {
   local path="${1:-.}" line
   pushd "$path" > /dev/null; local full_path_name="$(pwd)"; popd > /dev/null
@@ -265,7 +333,7 @@ function prepare_os() {
     apt-get install g++ gawk m4 -y -q >/dev/null
   fi
 
-  configure_os_locale  
+  configure_os_locale
   Say "Completed system prerequisites"
 }
 

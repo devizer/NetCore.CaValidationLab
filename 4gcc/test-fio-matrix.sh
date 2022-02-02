@@ -102,6 +102,19 @@ function Run-4-Tests() {
   set -eu
 }
 
+function Run-Multiarch-Tests() {
+  local image="$1"
+  local manifest="$(Get-Docker-Image-Manifest "$image")"
+  local arch;
+  for arch in amd64 arm64 armv7; do
+    local digest="$(cat "$manifest" | Find-Docker-Image-Digest-for-Architecture "$arch")"
+    if [[ -n "$digest" ]]; then
+      Say "Multiarch [$image] image. Arch is supported: [$arch]. Digest: [$digest]"
+      Run-4-Tests --force-name "fio-on-$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@{digest}"
+    fi
+  done
+}
+
 # echo SHORT TEST; Run-4-Tests debian:11 arm32v7/fedora:28 arm32v7/fedora:35 multiarch/ubuntu-debootstrap:arm64-focal
 
 
@@ -111,20 +124,24 @@ function Run-4-Tests() {
 # arm32v7/opensuse -      42.2 42.3 latest leap tumbleweed, leap & latest is 42 (2.22), tumbleweed too old (2.26)
 # arm64v8/opensuse - 42.1 42.2 42.3 latest leap tumbleweed
 
+# Obsolete
 # armv7 V15.3
-Run-4-Tests --force-name "fio-on-opensuse-15-3-arm32v7" "opensuse/leap@sha256:fd21070081a4909b699f77eff9ec6ce5e7bb351a87a0b66dd6d1e764ff3ffd75"
+# Run-4-Tests --force-name "fio-on-opensuse-15-3-arm32v7" "opensuse/leap@sha256:fd21070081a4909b699f77eff9ec6ce5e7bb351a87a0b66dd6d1e764ff3ffd75"
 # ARMV7 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2"
+# Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2"
 # armv8 v15.3
-Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
+# Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
 # ARMV8 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
+# Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
 
+# New Way
+Run-Multiarch-Tests opensuse/leap:15
+Run-Multiarch-Tests opensuse/tumbleweed
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
 
-
+echo 'SKIP
 # FULL TEST
 Run-4-Tests centos:6 centos:7 centos:8
 
@@ -154,6 +171,7 @@ Run-4-Tests arm64v8/fedora:24 arm64v8/fedora:25 arm64v8/fedora:26 arm64v8/fedora
 Run-4-Tests arm64v8/fedora:29 arm64v8/fedora:30 arm64v8/fedora:31 arm64v8/fedora:32 arm64v8/fedora:33
 Run-4-Tests arm64v8/fedora:34 arm64v8/fedora:35 arm64v8/fedora:36
 
+# ARMv7 since fedora:25, ARM64 since fedora:26
 Run-4-Tests fedora:24 fedora:25 fedora:26 fedora:27 fedora:28
 Run-4-Tests fedora:29 fedora:30 fedora:31 fedora:32 fedora:33
 Run-4-Tests fedora:34 fedora:35 fedora:36
@@ -161,7 +179,7 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
-
+'
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
@@ -205,7 +223,7 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 " |& tee -a "$benchmark_structured_file"
 
       done # engine
-      # break # SHORT TEST needs break here
+      break # SHORT TEST needs break here
     done # fio
     # TODO: Delete Image and Container
   done # image
