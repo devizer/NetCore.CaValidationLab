@@ -105,13 +105,13 @@ Run-4-Tests debian:7 debian:8 debian:9 debian:10 debian:11
 
 # Ubuntu
 Run-4-Tests arm64v8/ubuntu:22.04 arm64v8/ubuntu:21.10 arm64v8/ubuntu:20.04 arm64v8/ubuntu:18.04
-Run-4-Tests arm64v8/ubuntu:16.04 arm64v8/ubuntu:14.10
+Run-4-Tests arm64v8/ubuntu:16.04 arm64v8/ubuntu:14.04
 
 Run-4-Tests arm32v7/ubuntu:22.04 arm32v7/ubuntu:21.10 arm32v7/ubuntu:20.04 arm32v7/ubuntu:18.04
-Run-4-Tests arm32v7/ubuntu:16.04 arm32v7/ubuntu:14.10
+Run-4-Tests arm32v7/ubuntu:16.04 arm32v7/ubuntu:14.04
 
 Run-4-Tests ubuntu:22.04 ubuntu:21.10 ubuntu:20.04 ubuntu:18.04
-Run-4-Tests ubuntu:16.04 ubuntu:14.10 ubuntu:12.04
+Run-4-Tests ubuntu:16.04 ubuntu:14.04 ubuntu:12.04
 
 # Fedora
 Run-4-Tests arm32v7/fedora:24 arm32v7/fedora:25 arm32v7/fedora:26 arm32v7/fedora:27 arm32v7/fedora:28
@@ -172,6 +172,7 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 " |& tee -a "$benchmark_structured_file"
 
       done # engine
+      break
     done # fio
     # TODO: Delete Image and Container
   done # image
