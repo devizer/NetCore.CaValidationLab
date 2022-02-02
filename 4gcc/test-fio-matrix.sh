@@ -127,13 +127,9 @@ Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumblewe
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
-Run-4-Tests debian:11 fedora:35 centos:6
-
 
 
 # FULL TEST
-echo 'SKIP
-----
 Run-4-Tests centos:6 centos:7 centos:8
 
 # Debian
@@ -169,7 +165,6 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
-' 
 
 
 Say "Wait for 20 seconds before catch logs"
