@@ -55,7 +55,7 @@ TOTAL_IMAGES=0
 function Run-4-Tests() {
   set +eu
   local i=0 image FAIL=0 job pids pid container force_name;
-  if [[ "${1:-}" == "" "--force-name" ]]; then
+  if [[ "${1:-}" == "--force-name" ]]; then
     force_name="${2}"
     shift; shift;
   fi
