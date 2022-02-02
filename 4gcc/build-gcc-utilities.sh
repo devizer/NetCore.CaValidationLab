@@ -66,7 +66,7 @@ function Help-Docker-Image-Manifest() {
   done
 }
 
-Help-Docker-Image-Manifest
+# Help-Docker-Image-Manifest
 
 
 # arg1: absolute or relative path, default is current 
