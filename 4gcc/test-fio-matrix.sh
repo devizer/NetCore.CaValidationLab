@@ -33,8 +33,9 @@ function Get-Container-Name-by-Image() {
 
 function Publish-Containers-Logs() {
   local image container
-  for image in $(cat "$IMAGE_LIST"); do
-    container="$(Get-Container-Name-by-Image "$image")"
+  cat "$IMAGE_LIST" | while IFS=' ' read image container; do
+  # for image in $(cat "$IMAGE_LIST"); do
+    # container="$(Get-Container-Name-by-Image "$image")"
     Say "Dump Logs for the [$container] container from [$image] image"
     docker logs "$container" 2>&1 > "$CONTAINERS_BOOT_LOG_DIR/$container" || true
   done 
@@ -56,6 +57,7 @@ function Run-4-Tests() {
   set +eu
   local i=0 image FAIL=0 job pids pid container force_name;
   if [[ "${1:-}" == "--force-name" ]]; then
+    # does NOT fully implemented
     force_name="${2}"
     shift; shift;
   fi
@@ -66,7 +68,7 @@ function Run-4-Tests() {
     let "i+=1"
     local container="$(Get-Container-Name-by-Image "$image")"
     if [[ -n "${force_name:-}" ]]; then container="${force_name}"; fi
-    echo "$image" >> "$IMAGE_LIST"
+    echo "$image $container" >> "$IMAGE_LIST"
     Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
     (
@@ -109,11 +111,12 @@ function Run-4-Tests() {
 # armv7 V15.3
 Run-4-Tests --force-name "fio-on-opensuse-15-3-arm32v7" "opensuse/leap@sha256:fd21070081a4909b699f77eff9ec6ce5e7bb351a87a0b66dd6d1e764ff3ffd75"
 # ARMV7 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2" CONTAINER="opensuse-tumbleweed-ARMv7-playground" Jump-Into-Container
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm32v7" "opensuse/tumbleweed@sha256:4ac6f1b552f335b1dd4faff8c5d71b2cdb753aa0561cd2068f2985d0ca97c1c2" CONTAINER="opensuse-tumbleweed-ARMv7-playground"
 # armv8 v15.3
 Run-4-Tests --force-name "fio-on-opensuse-15-3-arm64v8" "opensuse/leap@sha256:db4800b5d59741a469a53bfb3e59a3867550ac2c489db770aaa611589b8f8ae6"
 # ARMV8 tumbleweed
-Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84" CONTAINER="opensuse-tumbleweed-ARMv8-playground" Jump-Into-Container
+Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84" CONTAINER="opensuse-tumbleweed-ARMv8-playground"
+
 
 Run-4-Tests arm32v7/opensuse:42.3 arm64v8/opensuse:42.3
 Run-4-Tests opensuse/tumbleweed opensuse/leap:15 opensuse/leap:42
@@ -168,8 +171,9 @@ TRY_COUNT=0
 function Run-Fio-Tests() {
   local image container engine
   # for each running image
-  for image in $(cat "$IMAGE_LIST"); do
-    container="$(Get-Container-Name-by-Image "$image")"
+  cat "$IMAGE_LIST" | while IFS=' ' read image container; do
+  # for image in $(cat "$IMAGE_LIST"); do
+    # container="$(Get-Container-Name-by-Image "$image")"
     local container_machine="$(docker exec -t "$container" uname -m)"
     container_machine="${container_machine//[$'\t\r\n ']}"
     local filter="$container_machine"
