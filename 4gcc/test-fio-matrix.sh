@@ -76,9 +76,8 @@ function Run-4-Tests() {
     if [[ -n "${force_name:-}" ]]; then container="${force_name}"; fi
     echo "$image $container" >> "$IMAGE_LIST"
     Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
-    # docker pull "$image" & 
     (
-        docker pull "$image" &&
+        docker pull -q "$image" &&
         docker run -d --sysctl net.ipv6.conf.all.disable_ipv6=1 --privileged \
           --hostname "$container" --name "$container" \
           -e CONTAINER="$container" -e IMAGE="$image" \
@@ -90,10 +89,7 @@ function Run-4-Tests() {
     ) &
     pid=$!
     sleep 0.3
-    # Say "Pulling-B #$TOTAL_IMAGES: $image"
-    # Say "Pulling-C #$TOTAL_IMAGES: $image"
     pids[${#pids[@]}]=$pid
-    # Say "Pulled #$TOTAL_IMAGES: $image"
   done 
   
   for pid in "${pids[@]}"; do
