@@ -65,7 +65,7 @@ function Run-4-Tests() {
     let "TOTAL_IMAGES+=1"
     let "i+=1"
     local container="$(Get-Container-Name-by-Image "$image")"
-    if [[ -n "${force_name:-}" ]]; then container="${force_name}"
+    if [[ -n "${force_name:-}" ]]; then container="${force_name}"; fi
     echo "$image" >> "$IMAGE_LIST"
     Say "Pulling #$TOTAL_IMAGES: [$image] and run [$container]"
     # docker pull "$image" & 
