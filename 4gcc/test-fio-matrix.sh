@@ -47,7 +47,7 @@ cat <<-'START_CONTAINER_AS_DAEMON' > "/tmp/start-container-as-daemon.sh"
 mkdir -p /fio
 echo "host.container: $CONTAINER"; 
 echo "host.image: $IMAGE";
-echo "host.os: $(get_linux_os_id)
+echo "host.os: $(get_linux_os_id)";
 echo "host.machine: $(uname -m)";
 echo "host.hostname: $(hostname)"
 echo "host.glibc: $(ldd --version | awk 'NR==1 {print $NF}')"
