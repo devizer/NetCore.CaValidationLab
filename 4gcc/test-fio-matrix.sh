@@ -172,7 +172,7 @@ $(cat "$CONTAINERS_BOOT_LOG_DIR/$container")
 " |& tee -a "$benchmark_structured_file"
 
       done # engine
-      break
+      # break # SHORT TEST
     done # fio
     # TODO: Delete Image and Container
   done # image
