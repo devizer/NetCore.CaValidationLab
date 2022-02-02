@@ -26,7 +26,7 @@ jobs:
         QEMU: armhf
       '8.5-CentOS-7-arm64':
         GCC: "8.5"
-        IMAGE: 'arm32v7/centos:7'
+        IMAGE: 'arm64v8/centos:7'
         QEMU: arm64
 
       '8.5-Fedora-24-arm':
@@ -36,6 +36,33 @@ jobs:
       '8.5-Fedora-24-arm64':
         GCC: "8.5"
         IMAGE: 'arm64v8/fedora:24'
+        QEMU: arm64
+
+      '8.5-Fedora-25-arm':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/fedora:25'
+        QEMU: armhf
+      '8.5-Fedora-25-arm64':
+        GCC: "8.5"
+        IMAGE: 'arm64v8/fedora:25'
+        QEMU: arm64
+
+      '8.5-Fedora-26-arm':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/fedora:26'
+        QEMU: armhf
+      '8.5-Fedora-26-arm64':
+        GCC: "8.5"
+        IMAGE: 'arm64v8/fedora:26'
+        QEMU: arm64
+
+      '8.5-Fedora-31-arm':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/fedora:31'
+        QEMU: armhf
+      '8.5-Fedora-31-arm64':
+        GCC: "8.5"
+        IMAGE: 'arm64v8/fedora:31'
         QEMU: arm64
 
 
@@ -241,12 +268,14 @@ jobs:
       cat /proc/cpuinfo > $SYSTEM_ARTIFACTSDIRECTORY/cpuinfo-on-the-host.log
 
       if [[ "${QEMU:-}" != "" ]]; then
+        Say "Check if [qemu-user-static] is installed"
+        sudo apt-get install qemu-user-static -y -qq >/dev/null
         Say "Register qemu user static"
         docker run --rm --privileged multiarch/qemu-user-static:register --reset
       fi
       
       Say "Start image $(IMAGE)"
-      docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container "$IMAGE" sh -c "while true; do sleep 42; done"
+      docker run --privileged -t --rm -d --hostname gcc-container --name gcc-container -v /usr/bin/qemu-arm-static:/usr/bin/qemu-arm-static -v /usr/bin/qemu-aarch64-static:/usr/bin/qemu-aarch64-static "$IMAGE" sh -c "while true; do sleep 42; done"
       for cmd in Say try-and-retry; do
         docker cp /usr/local/bin/$cmd gcc-container:/usr/bin/$cmd
       done
