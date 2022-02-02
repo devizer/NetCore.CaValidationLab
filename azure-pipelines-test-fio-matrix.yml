@@ -26,7 +26,8 @@ jobs:
       Say "docker manifest inspect debian:11"
       docker manifest inspect debian:11 || true
       Say "docker buildx imagetools inspect --raw"
-      docker buildx imagetools inspect --raw debian:11 || true
+      sudo apt-get install jq -y -qq > /dev/null
+      docker buildx imagetools inspect --raw debian:11 | jq || true
 
       
 
