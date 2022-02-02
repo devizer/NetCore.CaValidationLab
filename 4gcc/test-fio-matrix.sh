@@ -110,7 +110,7 @@ function Run-Multiarch-Tests() {
     local digest="$(cat "$manifest" | Find-Docker-Image-Digest-for-Architecture "$arch")"
     if [[ -n "$digest" ]]; then
       Say "Multiarch [$image] image. Arch is supported: [$arch]. Digest: [$digest]"
-      Run-4-Tests --force-name "fio-on-$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@{digest}"
+      Run-4-Tests --force-name "fio-on-$(Get-Container-Name-by-Image "$image")-${arch}" "${image}@${digest}"
     fi
   done
 }
