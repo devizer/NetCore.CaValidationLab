@@ -19,6 +19,25 @@ jobs:
         GCC: "9.4"
         IMAGE: "debian:7"
 
+      # Missed ARM on cent os build
+      '8.5-CentOS-7-arm':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/centos:7'
+        QEMU: armhf
+      '8.5-CentOS-7-arm64':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/centos:7'
+        QEMU: arm64
+
+      '8.5-Fedora-24-arm':
+        GCC: "8.5"
+        IMAGE: 'arm32v7/fedora:24'
+        QEMU: armhf
+      '8.5-Fedora-24-arm64':
+        GCC: "8.5"
+        IMAGE: 'arm64v8/fedora:24'
+        QEMU: arm64
+
 
       '8.5-Jessie-arm':
         GCC: "8.5"
