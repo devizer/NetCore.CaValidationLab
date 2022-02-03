@@ -25,6 +25,23 @@ function Load-Fio-Ver-3-Distribution() {
   time sshpass -p "$PASSWORD" rsync -r --include='*.xz' --include='*.xz.sha256' --exclude='plain/' --include='*/' --exclude='*' "${LOGIN}@${SSH_HOST_AND_PATH}" .
   tree -h > "$SYSTEM_ARTIFACTSDIRECTORY/fio-ver3-distribution-tree.txt"
   Say "Successfully Loaded fio ver 3 distribution, FIO_VER3_DISTRIBUTION_HOME=$FIO_VER3_DISTRIBUTION_HOME"
+
+  Say "Convert ver2 to ver-3"
+  work=$HOME/fio-ver-2-to-3
+  mkdir -p "$work"; 
+  pushd $work
+  sshpass -p "$PASSWORD" rsync -r --include="*.xz" --exclude="*" --progress "${LOGIN}@frs.sourceforge.net:/home/frs/p/fio/ver2/" .
+  for xz in *.xz; do
+    filename="${xz%.*}"
+    to="$FIO_VER3_DISTRIBUTION_HOME/$filename"
+    mkdir -p "$to"
+    echo "[$xz] --> [$to/fio.xz]"
+    # cat "$xz" | xz -d > "$to/fio.xz"
+    cp -f "$xz" "$to/fio.xz"
+  done
+  popd
+  Say "Complete conversion ver2 to ver-3"
+
   popd
 }
 
@@ -135,7 +152,11 @@ function Run-Multiarch-Tests() {
 # Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
 # Run-4-Tests opensuse/tumbleweed opensuse/leap:15 
 
+Run-4-Tests arm32v7/debian:11 arm64v8/debian:8 arm64v8/debian:9 arm64v8/debian:10 arm64v8/debian:11
+
+
 # New Way
+echo 'SKIP
 Run-Multiarch-Tests opensuse/leap:15
 Run-Multiarch-Tests opensuse/tumbleweed
 Run-Multiarch-Tests centos:7
@@ -180,6 +201,7 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
+'
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
@@ -204,7 +226,14 @@ function Run-Fio-Tests() {
       fio_push_dir="/tmp/push-fio-to-container/$dir_name"
       if [[ ! -d "$fio_push_dir" ]]; then
         mkdir -p "$fio_push_dir"
-        tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C "$fio_push_dir"
+        if [[ -e "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" ]]; then
+          # ver 3
+          tar xJf "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.tar.xz" -C "$fio_push_dir"
+        else
+          # ver 2
+          cat "$FIO_VER3_DISTRIBUTION_HOME/$dir_name/fio.xz" | xz -d > "$fio_push_dir/fio"
+          chmod +x "$fio_push_dir/fio"
+        fi
       fi
       docker cp "${fio_push_dir}/." "$container":/fio
       for engine in sync libaio posixaio; do
