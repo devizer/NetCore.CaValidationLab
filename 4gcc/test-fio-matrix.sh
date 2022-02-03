@@ -236,6 +236,7 @@ function Run-Fio-Tests() {
           chmod +x "$fio_push_dir/fio"
         fi
       fi
+      docker exec -t "$container" rm -rf "/fio/*"
       docker cp "${fio_push_dir}/." "$container":/fio
       for engine in sync libaio posixaio; do
         local         benchmark_log_file="$FIO_LOG_DIR/${container}-${engine}/${dir_name}.txt"
