@@ -152,12 +152,13 @@ function Run-Multiarch-Tests() {
 # Run-4-Tests --force-name "fio-on-opensuse-tumbleweed-arm64v8" "opensuse/tumbleweed@sha256:0a9fbfefbb1d5a37a3edc316cb6387e8848d7b1855f7a1ec1913036deea3fb84"
 # Run-4-Tests opensuse/tumbleweed opensuse/leap:15 
 
+# New Way
+
+echo 'SKIP SHORT
 Run-4-Tests arm64v8/fedora:35 arm32v7/fedora:35 fedora:35 debian:11 arm64v8/debian:11
 Run-Multiarch-Tests centos:8
+'
 
-
-# New Way
-echo 'SKIP
 Run-Multiarch-Tests opensuse/leap:15
 Run-Multiarch-Tests opensuse/tumbleweed
 Run-Multiarch-Tests centos:7
@@ -202,7 +203,7 @@ Run-4-Tests fedora:34 fedora:35 fedora:36
 # Exotic
 Run-4-Tests gentoo/stage3-amd64-nomultilib gentoo/stage3-amd64-hardened-nomultilib
 Run-4-Tests amazonlinux:1 amazonlinux:2 manjarolinux/base archlinux:base
-'
+
 
 Say "Wait for 20 seconds before catch logs"
 sleep 20
