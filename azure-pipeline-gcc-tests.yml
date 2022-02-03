@@ -6,7 +6,7 @@ variables:
   FLAGS: "-O2"
 
 jobs:
-- job: TEST
+- job: BUILD_FIO
   pool:
     vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
@@ -281,7 +281,7 @@ jobs:
         Say "Check if [qemu-user-static] is installed"
         sudo apt-get install qemu-user-static -y -qq >/dev/null
         Say "Register qemu user static"
-        docker run --rm --privileged multiarch/qemu-user-static:register --reset
+        docker run --rm --privileged multiarch/qemu-user-static:register --reset >/dev/null
       fi
       
       Say "Start image $(IMAGE)"
