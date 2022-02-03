@@ -218,7 +218,9 @@ function Run-Fio-Tests() {
     local container_machine="$(docker exec -t "$container" uname -m)"
     container_machine="${container_machine//[$'\t\r\n ']}"
     local filter="$container_machine"
-    [[ "$filter" == "armv7"* ]] && filter=armv7
+    [[ "$container_machine" == "aarch64"* ]] && filter='aarch64\|arm64'
+    [[ "$container_machine" == "armv7"* ]] && filter="armv7\|armhf"
+    [[ "$container_machine" == "x86_64"* ]] && filter="x86_64\|amd64"
     Say "TEST $image, filter is [$filter]"
     # for each fio of the same arch
     Get-Sub-Directories-As-Names-Only "$FIO_VER3_DISTRIBUTION_HOME" | grep "$filter" | while IFS='' read dir_name; do
