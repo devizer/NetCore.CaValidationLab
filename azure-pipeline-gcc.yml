@@ -23,89 +23,89 @@ jobs:
   timeoutInMinutes: 360
   strategy:
     matrix:
-      '5.5-Wheezy-armhf':
-        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz'
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-5.5.0"
-        QEMU: "True"
-      '6.5-Wheezy-armhf':
-        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz'
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-6.5.0"
-        QEMU: "True"
-      '7.5-Wheezy-armhf':
-        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-7.5.0/gcc-7.5.0.tar.xz'
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-7.5.0"
-        QEMU: "True"
-      '8.5-Wheezy-armhf':
-        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-8.5.0"
-        QEMU: "True"
-      '9.4-Wheezy-armhf':
-        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-9.4.0"
-        QEMU: "True"
-      '10.2-Wheezy-armhf':
-        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-10.2.0"
-        QEMU: "True"
-      '10.3-Wheezy-armhf':
-        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz"
-        IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
-        ARTIFACT: "gcc-armhf-linux-10.3.0"
-        QEMU: "True"
+      # '5.5-Wheezy-armhf':
+      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz'
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-5.5.0"
+      #   QEMU: "True"
+      # '6.5-Wheezy-armhf':
+      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz'
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-6.5.0"
+      #   QEMU: "True"
+      # '7.5-Wheezy-armhf':
+      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-7.5.0/gcc-7.5.0.tar.xz'
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-7.5.0"
+      #   QEMU: "True"
+      # '8.5-Wheezy-armhf':
+      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-8.5.0"
+      #   QEMU: "True"
+      # '9.4-Wheezy-armhf':
+      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-9.4.0"
+      #   QEMU: "True"
+      # '10.2-Wheezy-armhf':
+      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-10.2.0"
+      #   QEMU: "True"
+      # '10.3-Wheezy-armhf':
+      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz"
+      #   IMAGE: "multiarch/debian-debootstrap:armhf-wheezy"
+      #   ARTIFACT: "gcc-armhf-linux-10.3.0"
+      #   QEMU: "True"
 
       # '4.7-Wheezy':
       #   NEED: "locales, does not work"
       #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2
       #   IMAGE: "debian:7"
       #   ARTIFACT: "gcc-x86_64-linux-4.7.0"
-      # '5.5-Wheezy':
-      #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-5.5.0"
-      # '4.8.5-Wheezy':
-      #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.8.5/gcc-4.8.5.tar.bz2
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-4.8.5"
-      # '4.9.4-Wheezy':
-      #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-4.9.4"
-      # '6.5-Wheezy':
-      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz'
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-6.5.0"
-      # '7.5-Wheezy':
-      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-7.5.0/gcc-7.5.0.tar.xz'
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-7.5.0"
-      # '11.1-Wheezy':
-      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-11.1.0/gcc-11.1.0.tar.xz"
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-11.1.0"
-      #   USEGCC: '10'
-      # '11.2-Wheezy':
-      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz"
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-11.2.0"
-      #   USEGCC: '10'
-      # '9.4-Wheezy':
-      #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-9.4.0"
-      # '10.2-Wheezy':
-      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-10.2.0"
-      # '10.3-Wheezy':
-      #   GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz"
-      #   IMAGE: "debian:7"
-      #   ARTIFACT: "gcc-x86_64-linux-10.3.0"
+      '5.5-Wheezy':
+        GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-5.5.0"
+      '4.8.5-Wheezy':
+        GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.8.5/gcc-4.8.5.tar.bz2
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-4.8.5"
+      '4.9.4-Wheezy':
+        GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-4.9.4"
+      '6.5-Wheezy':
+        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-6.5.0/gcc-6.5.0.tar.xz'
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-6.5.0"
+      '7.5-Wheezy':
+        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-7.5.0/gcc-7.5.0.tar.xz'
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-7.5.0"
+      '11.1-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-11.1.0/gcc-11.1.0.tar.xz"
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-11.1.0"
+        USEGCC: '10'
+      '11.2-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz"
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-11.2.0"
+        USEGCC: '10'
+      '9.4-Wheezy':
+        GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-9.4.0/gcc-9.4.0.tar.xz'
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-9.4.0"
+      '10.2-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.2.0/gcc-10.2.0.tar.xz"
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-10.2.0"
+      '10.3-Wheezy':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-10.3.0/gcc-10.3.0.tar.xz"
+        IMAGE: "debian:7"
+        ARTIFACT: "gcc-x86_64-linux-10.3.0"
       '8.5-Wheezy':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
         IMAGE: "debian:7"
@@ -121,7 +121,6 @@ jobs:
       cd 4gcc
 
       source build-gcc-utilities.sh 
-
 
       Say "Check CPU"
       cpu="$(get_cpu_name)"

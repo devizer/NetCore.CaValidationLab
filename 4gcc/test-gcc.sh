@@ -158,6 +158,8 @@ function build_open_ssl() {
   wrap_cmd "openssl-version" eval "LD_LIBRARY_PATH=\"$OPENSSL_HOME/lib\" $OPENSSL_HOME/bin/openssl version"
 }
 
+# FIO_CONFIGURE_OPTIONS="" FIO_VER="2.21" FIO_NAME="fio-default" build_fio
+
 Say "gcc version [$(gcc --version | head -1)]"
 Say "LDD VERSION"
 wrap_cmd "ldd-version" eval "ldd --version | head -1 | awk '{print \$NF}' || true"
