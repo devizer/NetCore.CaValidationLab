@@ -333,7 +333,7 @@ function prepare_os() {
     apt-get install g++ gawk m4 -y -q >/dev/null
   fi
 
-  if [[ "$(command -v apt-get)" != "" ]]; then
+  if [[ "$(command -v zypper)" != "" ]]; then
     Say "Refresh zypper metadata"
     time zypper -n refresh >/dev/null
     Say "Install curl sudo mc nano htop"
