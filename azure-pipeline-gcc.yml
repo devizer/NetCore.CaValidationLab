@@ -18,11 +18,11 @@ variables:
 
 jobs:
 - job: GCC
-  maxParallel: 5
   pool:
     vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
   strategy:
+    maxParallel: 5
     matrix:
       # '5.5-Wheezy-armhf':
       #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz'
