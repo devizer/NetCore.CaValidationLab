@@ -18,6 +18,7 @@ variables:
 
 jobs:
 - job: GCC
+  maxParallel: 5
   pool:
     vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
