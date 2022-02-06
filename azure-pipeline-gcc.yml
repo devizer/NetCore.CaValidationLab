@@ -22,7 +22,7 @@ jobs:
     vmImage: 'ubuntu-20.04'
   timeoutInMinutes: 360
   strategy:
-    maxParallel: 5
+    maxParallel: 3
     matrix:
       # '5.5-Wheezy-armhf':
       #   GCCURL: 'https://ftp.gnu.org/gnu/gcc/gcc-5.5.0/gcc-5.5.0.tar.xz'
