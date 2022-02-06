@@ -279,11 +279,11 @@ CENTOS6_REPO
 function configure_os_locale() {
   
   # LANG & LC_ALL
-  if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
+  if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]] || [[ "$(command -v zypper)" != "" ]]; then
     if [[ -n "$(command -v locale)" ]]; then
       local l="$(locale -a | grep -i 'en_us\.utf8')"
       if [[ -n "${l:-}" ]]; then
-        Say "[centos/redhat/fedora] Configure LC_ALL and LANG as [$l] for centos/redhat/fedora"
+        Say "[suse/centos/redhat/fedora] Configure LC_ALL and LANG as [$l]"
         export LC_ALL="$l" LANG="$l"
         Say "LANG=$LANG LC_ALL=$LC_ALL"
       fi
@@ -333,11 +333,18 @@ function prepare_os() {
     apt-get install g++ gawk m4 -y -q >/dev/null
   fi
 
+  if [[ "$(command -v apt-get)" != "" ]]; then
+    Say "Refresh zypper metadata"
+    time zypper -n refresh >/dev/null
+    Say "Install curl sudo mc nano htop"
+    time zypper -n install -y curl sudo mc nano ncdu htop coreutils git pv jq gcc gettext-runtime autoconf automake bison flex help2man m4 pv jq sudo less nano ncdu tree >/dev/null
+  fi
+
   configure_os_locale
   Say "Completed system prerequisites"
 
   echo '
-  export PS1="\[\033[01;35m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] "
+  export NCURSES_NO_UTF8_ACS=1 PS1="\[\033[01;35m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] "
 ' | tee -a ~/.bashrc >/dev/null
 
 }
