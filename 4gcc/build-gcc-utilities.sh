@@ -335,9 +335,9 @@ function prepare_os() {
 
   if [[ "$(command -v zypper)" != "" ]]; then
     Say "Refresh zypper metadata"
-    time zypper -n refresh >/dev/null
+    zypper -n refresh >/dev/null
     Say "Install curl sudo mc nano htop"
-    time zypper -n install -y curl sudo mc nano ncdu htop coreutils git pv jq gcc gettext-runtime autoconf automake bison flex help2man m4 pv jq sudo less nano ncdu tree >/dev/null
+    zypper -n install -y curl sudo mc nano ncdu htop coreutils git pv jq gcc gettext-runtime autoconf automake bison flex help2man m4 pv jq sudo less nano ncdu tree >/dev/null
   fi
 
   configure_os_locale
