@@ -335,6 +335,11 @@ function prepare_os() {
 
   configure_os_locale
   Say "Completed system prerequisites"
+
+  echo '
+  export PS1="\[\033[01;35m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] "
+' | tee -a ~/.bashrc >/dev/null
+
 }
 
 function install_precompiled_gcc() {
