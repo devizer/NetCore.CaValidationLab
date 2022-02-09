@@ -255,23 +255,23 @@ CENTOS6_REPO
   if [[ "$(command -v dnf)" != "" ]] || [[ "$(command -v yum)" != "" ]]; then
     # centos/redhat/fedora
     if [[ -d /etc/yum.repos.d ]]; then
-      Say "Switch off gpgcheck for /etc/yum.repos.d/*.repo for [$(uname -m) $(get_linux_os_id)]"
+      Say "Switch off gpgcheck for /etc/yum.repos.d/*.repo for [$(get_linux_os_id) $(uname -m)]"
       sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/yum.repos.d/*.repo
     fi
 
     if [[ -e /etc/dnf/dnf.conf ]]; then
-      Say "Switch off gpgcheck for /etc/dnf/dnf.conf for [$(uname -m) $(get_linux_os_id)]"
+      Say "Switch off gpgcheck for /etc/dnf/dnf.conf for [$(get_linux_os_id) $(uname -m)]"
       sed -i "s/gpgcheck=1/gpgcheck=0/g" /etc/dnf/dnf.conf
     fi
   fi
 
   if [[ "$(get_linux_os_id)" == "centos"* ]]; then
-    Say "Update yum cache for [$(uname -m) $(get_linux_os_id)]"
+    Say "Update yum cache for [$(get_linux_os_id) $(uname -m)]"
     try-and-retry yum makecache -q
   fi
 
   if [[ -n "$(command -v apt-get)" ]]; then
-    Say "Update apt cache for [$(uname -m) $(get_linux_os_id)]"
+    Say "Update apt cache for [$(get_linux_os_id) $(uname -m)]"
     try-and-retry apt-get update -qq
   fi
 
@@ -288,7 +288,7 @@ function configure_os_locale() {
     if [[ -n "$(command -v locale)" ]]; then
       local l="$(locale -a | grep -i 'en_us\.utf8')"
       if [[ -n "${l:-}" ]]; then
-        Say "[suse/centos/redhat/fedora] Configure LC_ALL and LANG as [$l]"
+        Say "[suse/centos/redhat/fedora] Configure LC_ALL and LANG as [$l] for [$(get_linux_os_id) $(uname -m)]"
         export LC_ALL="$l" LANG="$l"
         Say "LANG=$LANG LC_ALL=$LC_ALL"
       fi
@@ -301,7 +301,7 @@ en_US.UTF-8 UTF-8
 ru_RU.UTF-8 UTF-8
 ' > /etc/locale.gen 
 
-    Say "[debian/ubuntu] Configure LANG and LC_ALL and install **libicu**"
+    Say "[debian/ubuntu] Configure LANG and LC_ALL and install **libicu** for [$(get_linux_os_id) $(uname -m)]"
     apt-get install locales mc -y -q >/dev/null
 
     # DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales
@@ -313,7 +313,7 @@ ru_RU.UTF-8 UTF-8
 
 function prepare_os() {
   adjust_os_repo
-  Say "Provisioning container, arch is [$(uname -m)]..."
+  Say "Provisioning container for [$(get_linux_os_id) $(uname -m)]"
 
   if [[ "$(command -v dnf)" != "" ]]; then
     try-and-retry dnf install gcc make autoconf libtool curl wget mc nano less -y -q >/dev/null
@@ -329,7 +329,7 @@ function prepare_os() {
     # gcc-multilib is optional
     local multilib="$(apt-cache search gcc-multilib | grep -E "gcc-multilib\ " | awk '{print $1}')"
     if [[ -n "${multilib:-}" ]]; then
-      Say "Installing the gcc-multilib package"
+      # Say "Installing the gcc-multilib package"
       try-and-retry apt-get install gcc-multilib -y -q >/dev/null
     fi
     try-and-retry apt-get install pkg-config -y -q >/dev/null
@@ -339,14 +339,14 @@ function prepare_os() {
   fi
 
   if [[ "$(command -v zypper)" != "" ]]; then
-    Say "Refresh zypper metadata"
+    Say "Refresh zypper metadata for [$(get_linux_os_id) $(uname -m)]"
     zypper -n refresh >/dev/null
-    Say "Install curl sudo mc nano htop"
+    Say "Install curl sudo mc nano htop for [$(get_linux_os_id) $(uname -m)]"
     zypper -n install -y curl sudo mc nano ncdu htop coreutils git pv jq gcc gettext-runtime autoconf automake bison flex help2man m4 pv jq sudo less nano ncdu tree >/dev/null
   fi
 
   configure_os_locale
-  Say "Completed system prerequisites"
+  Say "Completed system prerequisites for [$(get_linux_os_id) $(uname -m)]"
 
 }
 
