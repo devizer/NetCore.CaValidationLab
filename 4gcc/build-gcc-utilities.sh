@@ -323,7 +323,7 @@ function prepare_os() {
 
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
-    try-and-retry apt-get install build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q >/dev/null
+    try-and-retry apt-get install lsb-release build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q >/dev/null
     try-and-retry apt-get install libc6-dev -y -q >/dev/null #* 
 
     # gcc-multilib is optional
