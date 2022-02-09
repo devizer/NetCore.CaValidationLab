@@ -274,6 +274,11 @@ CENTOS6_REPO
     Say "Update apt cache for [$(uname -m) $(get_linux_os_id)]"
     try-and-retry apt-get update -qq
   fi
+
+  echo '
+  export NCURSES_NO_UTF8_ACS=1 PS1="\[\033[01;35m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] "
+' | tee -a ~/.bashrc >/dev/null
+
 }
 
 function configure_os_locale() {
@@ -342,10 +347,6 @@ function prepare_os() {
 
   configure_os_locale
   Say "Completed system prerequisites"
-
-  echo '
-  export NCURSES_NO_UTF8_ACS=1 PS1="\[\033[01;35m\]\u@\h\[\033[00m\] \[\033[01;34m\]\w \$\[\033[00m\] "
-' | tee -a ~/.bashrc >/dev/null
 
 }
 
