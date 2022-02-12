@@ -9,7 +9,7 @@ Say --Reset-Stopwatch
 export DEPLOY_DIR="/transient-builds/gcc-deploy"; 
 mkdir -p $DEPLOY_DIR
 
-for ver in 10.3.0 11.2.0; do
+for ver in 5.5.0; do
   export VER=$ver
   USEGCC=""
   if [[ "$VER" == "11"* ]]; then USEGCC="8.5"; fi
@@ -33,7 +33,7 @@ for ver in 10.3.0 11.2.0; do
     # HARDCODED
     rm -rf /transient-builds/gcc-src/*
 
-    tmparch="/tmp/gcc-armv7-linux-$VER.tar.gz"
+    tmparch="/tmp/gcc-$(uname -m)-linux-$VER.tar.gz"
     Say "Pack /usr/local to [$tmparch] for $VER"
     pushd /usr/local
     tar cf - . | gzip -9 > $tmparch

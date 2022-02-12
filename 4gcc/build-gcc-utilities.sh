@@ -91,8 +91,8 @@ function Get-Sub-Directories-As-Full-Names() {
 }
 
 function get_cpu_name() {
-  # onbly x86_64. TODO: add arm
-  local cpu="$(cat /proc/cpuinfo | grep -E '^model name' | awk -F':' 'NR==1 {print $2}')"
+  # only x86_64 and arm
+  local cpu="$(cat /proc/cpuinfo | grep -E '^(model name|Hardware)' | awk -F':' 'NR==1 {print $2}')"
   cpu="$(echo -e "${cpu:-}" | sed -e 's/^[[:space:]]*//')"
   echo "${cpu:-}"
 }
@@ -323,7 +323,12 @@ function prepare_os() {
 
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
-    try-and-retry apt-get install ca-certificates curl aria2 gnupg2 software-properties-common htop mc lsof unzip net-tools bsdutils lsb-release build-essential gettext autoconf automake bison flex help2man wget curl m4 pv sudo less nano ncdu tree -y -q >/dev/null
+    try-and-retry apt-get install \
+       ca-certificates curl aria2 gnupg2 software-properties-common htop mc lsof unzip \
+       net-tools bsdutils lsb-release wget curl pv sudo less nano ncdu tree \
+       procps dialog \
+       build-essential libtool gettext autoconf automake bison flex help2man m4 \
+       -y -q >/dev/null
     try-and-retry apt-get install libc6-dev -y -q >/dev/null #* 
 
     # gcc-multilib is optional

@@ -2,8 +2,8 @@
 
 # for ver in 7.5.0 9.4.0; do
 # export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
-export IMAGE="arm64v8/debian:8"
-export VER=9.4.0
+export IMAGE="debian:8"
+export VER=5.5.0
 export USEGCC="" # 10
 # export VER=$ver
 export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
@@ -13,7 +13,7 @@ mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
 script=https://raw.githubusercontent.com/devizer/test-and-build/master/install-build-tools-bundle.sh; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash 
 Say --Reset-Stopwatch
 
-if [[ "$IMAGE" == *"arm"* ]]; then
+if [[ "$IMAGE" == *"arm"* ]] && [[ "$(uname -m)" == *"x86_64"* ]]; then
   Say "Register qemu static"
   docker run --rm --privileged multiarch/qemu-user-static:register --reset
 fi
