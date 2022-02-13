@@ -334,7 +334,7 @@ function prepare_os() {
 
     [[ "${PREPARE_OS_MODE:-}" == "MICRO" ]] && try-and-retry apt-get install \
        curl aria2 htop mc lsof \
-       bsdutils lsb-release pv sudo less nano ncdu tree \
+       bsdutils lsb-release xz-utils pv sudo less nano ncdu tree \
        procps dialog \
        -y -q >/dev/null
     # try-and-retry apt-get install -y -q >/dev/null #* 
