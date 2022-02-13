@@ -313,7 +313,7 @@ ru_RU.UTF-8 UTF-8
 
 function prepare_os() {
   adjust_os_repo
-  Say "Provisioning container for [$(get_linux_os_id) $(uname -m)]"
+  Say "Provisioning container for [$(get_linux_os_id) $(uname -m)], PREPARE_OS_MODE is ${PREPARE_OS_MODE:-}"
 
   if [[ "$(command -v dnf)" != "" ]]; then
     try-and-retry dnf install gcc make autoconf libtool curl wget mc nano less -y -q >/dev/null
@@ -323,24 +323,31 @@ function prepare_os() {
 
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
-    try-and-retry apt-get install \
+    
+    [[ "${PREPARE_OS_MODE:-}" == "BIG" ]] && try-and-retry apt-get install \
        ca-certificates curl aria2 gnupg software-properties-common htop mc lsof unzip \
        net-tools bsdutils lsb-release wget curl pv sudo less nano ncdu tree \
        procps dialog \
-       build-essential libtool gettext autoconf automake bison flex help2man m4 \
+       build-essential libc6-dev libtool gettext autoconf automake bison flex help2man m4 \
+       pkg-config g++ gawk \
        -y -q >/dev/null
-    try-and-retry apt-get install libc6-dev -y -q >/dev/null #* 
+
+    [[ "${PREPARE_OS_MODE:-}" == "MICRO" ]] && try-and-retry apt-get install \
+       curl aria2 htop mc lsof \
+       bsdutils lsb-release pv sudo less nano ncdu tree \
+       procps dialog \
+       -y -q >/dev/null
+    # try-and-retry apt-get install -y -q >/dev/null #* 
 
     # gcc-multilib is optional
-    local multilib="$(apt-cache search gcc-multilib | grep -E "gcc-multilib\ " | awk '{print $1}')"
-    if [[ -n "${multilib:-}" ]]; then
-      # Say "Installing the gcc-multilib package"
-      try-and-retry apt-get install gcc-multilib -y -q >/dev/null
+    if [[ "${PREPARE_OS_MODE:-}" == "BIG" ]]; then
+        local multilib="$(apt-cache search gcc-multilib | grep -E "gcc-multilib\ " | awk '{print $1}')"
+        if [[ -n "${multilib:-}" ]]; then
+          # Say "Installing the gcc-multilib package"
+          try-and-retry apt-get install gcc-multilib -y -q >/dev/null
+        fi
     fi
-    try-and-retry apt-get install pkg-config -y -q >/dev/null
 
-    # old gcc 4.7 needs LANG and LC_ALL
-    apt-get install g++ gawk m4 -y -q >/dev/null
   fi
 
   if [[ "$(command -v zypper)" != "" ]]; then
