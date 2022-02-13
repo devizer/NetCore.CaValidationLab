@@ -312,6 +312,7 @@ ru_RU.UTF-8 UTF-8
 }
 
 function prepare_os() {
+  PREPARE_OS_MODE="${PREPARE_OS_MODE:-BIG}"
   adjust_os_repo
   Say "Provisioning container for [$(get_linux_os_id) $(uname -m)], PREPARE_OS_MODE is ${PREPARE_OS_MODE:-}"
 
