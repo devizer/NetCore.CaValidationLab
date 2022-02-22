@@ -46,6 +46,33 @@ function Find-Docker-Image-Digest-for-Architecture() {
   Docker-Image-Manifest-As-Table | awk -F'|' '$1 ~ /^'$filter'/ {print $2}'
 }
 
+QEMU_USER_STATIC_DIR="${QEMU_USER_STATIC_DIR:-$HOME/bin/qemu-user-static}"
+function Get-Docker-Volumes-For-MultiArch() {
+  local qemu_ver="${1:-latest}"
+  local container="qemu-user-static-${qemu_ver}"
+  local image="multiarch/qemu-user-static:${qemu_ver}"
+  local dir="$QEMU_USER_STATIC_DIR/${qemu_ver}"
+  if [[ ! -s "${dir}.ok" ]]; then
+    Say "Pull $image" 1>&2
+    docker pull -q $image
+    mkdir -p "$dir"
+    Say "Grab qe-user-static ${qemu_ver}" 1>&2
+    docker run --name "$container" multiarch/qemu-user-static >/dev/null 2>&1
+    docker cp "$container":/usr/bin/. "$dir" >/dev/null 2>&1
+    echo "ok" > "${dir}.ok"
+  fi
+  local ret="";
+  pushd "$dir" >/dev/null
+  for file in qemu-*-static; do
+    [[ -n "$ret" ]] && ret="$ret "
+    ret="$ret -v $dir/$file:/usr/bin/$file"
+  done
+  popd >/dev/null
+  echo $ret
+}
+
+# Say "[[$(Get-Docker-Volumes-For-MultiArch 5.1.0-2)]]"
+
 function Help-Docker-Image-Manifest() {
   set -e 
   set -u
@@ -476,18 +503,16 @@ function build_all_known_hash_sums() {
   done
 }
 
-function build_all_known_hash_sums_as_single_file() {
+function build_all_known_hash_sums_for_list_of_files() {
   # centos: yum install fipscheck isomd5sum -y
-  local file="$1"
-  local output="$file.${alg}"
-  rm -f "$output"; printf "" > "$output"
-  for alg in md5 sha1 sha224 sha256 sha384 sha512; do
-    if [[ "$(command -v ${alg}sum)" != "" ]]; then
-      local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
-      printf "$sum" > "$file.${alg}"
-      echo "$alg $sum" > "$output"
-    else
-      echo "warning! ${alg}sum missing"
-    fi
+  while IFS='' read file; do
+    for alg in md5 sha1 sha224 sha256 sha384 sha512; do
+      if [[ "$(command -v ${alg}sum)" != "" ]]; then
+        local sum=$(eval ${alg}sum "'"$file"'" | awk '{print $1}')
+        echo "$(basename "${file}") ${alg} ${sum}"
+      else
+        echo "warning! ${alg}sum missing"
+      fi
+    done
   done
 }
