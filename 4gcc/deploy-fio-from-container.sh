@@ -54,7 +54,7 @@ function Deploy-Set-of-Files() {
     # lzma
     cp -f "$file" "$tmp_archive_lzma_files/$file"
     xz --format=lzma -f -z -e "$tmp_archive_lzma_files/$file"
-    build_all_known_hash_sums "$tmp_archive_files/$file.lzma"
+    build_all_known_hash_sums "$tmp_archive_lzma_files/$file.lzma"
   done
   
   cd "$tmp_archive"
