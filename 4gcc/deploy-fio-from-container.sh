@@ -29,7 +29,8 @@ function Deploy-Set-of-Files() {
   local tmp="$(mktemp -d -t "fio-content-XXXXXXXXXX")"
   local tmp_archive="$(mktemp -d -t "fio-archive-XXXXXXXXXX")"
   local tmp_archive_files="$tmp_archive/$name/plain"
-  mkdir -p "$tmp_archive/$name" "$tmp_archive_files"
+  local tmp_archive_lzma_files="$tmp_archive/$name/lzma"
+  mkdir -p "$tmp_archive/$name" "$tmp_archive_files" "$tmp_archive_lzma_files"
   local file;
   echo file list: [$*]
   for file in $*; do
@@ -47,8 +48,12 @@ function Deploy-Set-of-Files() {
   build_all_known_hash_sums  "$tmp_archive/$name/fio.file.7z"
 
   for file in *; do
+    # plain
     cp -f "$file" "$tmp_archive_files/$file"
     build_all_known_hash_sums "$tmp_archive_files/$file"
+    # lzma
+    cp -f "$file" "$tmp_archive_lzma_files/$file"
+    xz --format=lzma -f -z -e "$tmp_archive_lzma_files/$file"
   done
   
   cd "$tmp_archive"
