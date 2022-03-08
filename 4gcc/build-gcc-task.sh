@@ -48,8 +48,10 @@ args="--disable-multilib"
 # next is for armv7 only
 if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm"* ]]; then
   # https://wiki.segger.com/GCC_floating-point_options
-  if [[ "$(getconf LONG_BIT)" == "32" ]]; then args="${args:-} --with-fpu=vfpv3 --with-float=hard"; fi
-  # if [[ "$(getconf LONG_BIT)" == "64" ]]; then args="${args:-} --with-fpu=vfpv4 --with-float=hard"; fi
+  # armv7
+  if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == armv7* ]]; then args="${args:-} --with-fpu=vfpv3 --with-float=hard"; fi
+  # armv5
+  if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == armv5* ]]; then args="${args:-} --with-arch=armv4t --with-float=soft  --build=arm-linux-gnueabi --host=arm-linux-gnueabi --target=arm-linux-gnueabi"; fi
 fi
 if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
 echo "ARGS: ${langs_arg:-} ${args:-}" > "$SYSTEM_ARTIFACTSDIRECTORY/configure-args.txt"

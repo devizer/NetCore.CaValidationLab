@@ -9,7 +9,7 @@ Say --Reset-Stopwatch
 export DEPLOY_DIR="/transient-builds/gcc-deploy"; 
 mkdir -p $DEPLOY_DIR
 
-for ver in 5.5.0; do
+for ver in 8.5.0; do
   export VER=$ver
   USEGCC=""
   if [[ "$VER" == "11"* ]]; then USEGCC="8.5"; fi
