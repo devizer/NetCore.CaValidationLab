@@ -9,7 +9,8 @@
 set -e
 set -u
 # export ENABLE_LANGUAGES="c,c++" # without docker aka on termux
-DEFAULT_GCC_VER=10.3.0
+export DEFAULT_GCC_VER=11.2.0
+export GCC_INSTALL_ARCH=armv5 USEGCC=8
 export GCCURL="${GCCURL:-https://ftp.gnu.org/gnu/gcc/gcc-${DEFAULT_GCC_VER}/gcc-${DEFAULT_GCC_VER}.tar.xz}"
 Say "TARGET GCC: [$GCCURL], Using GCC: [${USEGCC:-}]"
 Say "Flags: [${FLAGS:-}]"
@@ -17,7 +18,7 @@ Say "Flags: [${FLAGS:-}]"
 if [[ "${USEGCC:-}" != "" ]]; then
   export GCC_INSTALL_VER="${USEGCC}" GCC_INSTALL_DIR=/usr/local; 
   Say "Installing GCC ${USEGCC} into $GCC_INSTALL_DIR"
-  script=https://sourceforge.net/projects/gcc-precompiled/files/install-gcc.sh/download; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
+  script="https://master.dl.sourceforge.net/project/gcc-precompiled/install-gcc.sh?viasf=1"; (wget -q -nv --no-check-certificate -O - $script 2>/dev/null || curl -ksSL $script) | bash
   Say "GCC VERSION: [$(gcc --version | head -1)]"
 fi
 
@@ -52,9 +53,6 @@ if [[ "$(uname -m)" == "aarch64" ]] || [[ "$(uname -m)" == "arm"* ]]; then
   if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == armv7* ]]; then args="${args:-} --with-fpu=vfpv3 --with-float=hard"; fi
   # armv5
   if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == armv5* ]]; then args="${args:-} --with-arch=armv4t --with-float=soft  --build=arm-linux-gnueabi --host=arm-linux-gnueabi --target=arm-linux-gnueabi"; fi
-fi
-if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == x86_64 ]]; then
-  args="${args:-} --with-arch-32=i586 --with-tune=generic --enable-checking=release --build=i486-linux-gnu --host=i486-linux-gnu --target=i486-linux-gnu"
 fi
 if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
 echo "ARGS: ${langs_arg:-} ${args:-}" > "$SYSTEM_ARTIFACTSDIRECTORY/configure-args.txt"
