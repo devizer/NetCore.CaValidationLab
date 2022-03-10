@@ -65,6 +65,12 @@ jobs:
       #   GCCURL: https://ftp.gnu.org/gnu/gcc/gcc-4.7.0/gcc-4.7.0.tar.bz2
       #   IMAGE: "debian:7"
       #   ARTIFACT: "gcc-x86_64-linux-4.7.0"
+      '11.2-Wheezy-i386':
+        GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz"
+        IMAGE: "i386/debian:7"
+        ARTIFACT: "gcc-i386-linux-11.2.0"
+        QEMU: "True"
+        USEGCC: '8'
       '8.5-Wheezy-i386':
         GCCURL: "https://ftp.gnu.org/gnu/gcc/gcc-8.5.0/gcc-8.5.0.tar.xz"
         IMAGE: "i386/debian:7"
