@@ -56,6 +56,11 @@ fi
 if [[ "$(getconf LONG_BIT)" == "32" ]] && [[ "$(uname -m)" == x86_64 ]]; then
   args="${args:-} --with-arch-32=i586 --with-tune=generic --enable-checking=release --build=i486-linux-gnu --host=i486-linux-gnu --target=i486-linux-gnu"
 fi
+if [[ -n "${FORCE_GCC_CONFIGURE_ARGS:-}" ]]; then
+  # armv6: "--target=arm-linux-gnueabihf --with-arch=armv6 --with-fpu=vfp --with-float=hard --disable-multilib"
+  # TARGET=arm-linux-gnueabihf FPU=vfp ARCH=armv6
+  args="${FORCE_GCC_CONFIGURE_ARGS:-}"
+fi
 if [[ -n "${ENABLE_LANGUAGES:-}" ]]; then langs_arg="--enable-languages=${ENABLE_LANGUAGES:-}"; fi
 echo "ARGS: ${langs_arg:-} ${args:-}" > "$SYSTEM_ARTIFACTSDIRECTORY/configure-args.txt"
 Say "ARGS: ${langs_arg:-} ${args:-}"

@@ -3,10 +3,10 @@
 # for ver in 7.5.0 9.4.0; do
 # export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
 export IMAGE="debian:8"
-export VER=5.5.0
+export VER=8.3.0
 export USEGCC="" # 10
 # export VER=$ver
-export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.gz
+export GCCURL=https://ftp.gnu.org/gnu/gcc/gcc-$VER/gcc-$VER.tar.xz
 export SYSTEM_ARTIFACTSDIRECTORY=$HOME/GCC-ARTIFACTS-$VER
 mkdir -p $SYSTEM_ARTIFACTSDIRECTORY
 
@@ -34,8 +34,9 @@ for f in build-gcc-utilities.sh build-gcc-task.sh; do
   docker cp /tmp/$f $container:/$f
 done
 
+# armv6: export FORCE_GCC_CONFIGURE_ARGS="--target=arm-linux-gnueabihf --with-arch=armv6 --with-fpu=vfp --with-float=hard --disable-multilib"
 Say "Build"
-docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" $container bash -c "
+docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ARTIFACTSDIRECTORY="$SYSTEM_ARTIFACTSDIRECTORY" -e GCCURL="${GCCURL}" -e FLAGS="-O2" -e FORCE_GCC_CONFIGURE_ARGS="${FORCE_GCC_CONFIGURE_ARGS:-}" $container bash -c "
     Say --Reset-Stopwatch
     Say \"ENABLE_LANGUAGES: \$ENABLE_LANGUAGES\"
     cd /
