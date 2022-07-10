@@ -188,6 +188,7 @@ APT::Compressor::lzma::CompressArg:: "-1";
   fi
 
   if [[ "${os_ver}" == "raspbian:7" ]] || [[ "${os_ver}" == "raspbian:8" ]]; then
+  Say "Applying sources.list patch for legacy raspbian [${os_ver}]"
   local key=wheezy; if [[ "${os_ver}" == "raspbian:8" ]]; then key=jessie; fi
 echo '
 deb http://archive.raspberrypi.org/debian/ '$key' main
