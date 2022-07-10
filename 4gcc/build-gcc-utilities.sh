@@ -170,8 +170,9 @@ function adjust_os_repo() {
   Say "Adjust os repo for [$(get_linux_os_id) $(uname -m)]"
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
-  if [[ "${ID:-}" == "debian" ]]; then
+  if [[ "${ID:-}" == "debian" ]] || [[ "${ID:-}" == "raspbian" ]]; then
 echo '
+Acquire::AllowReleaseInfoChange::Suite "true";
 Acquire::Check-Valid-Until "0";
 APT::Get::Assume-Yes "true";
 APT::Get::AllowUnauthenticated "true";
@@ -184,6 +185,14 @@ APT::Compressor::xz::CompressArg:: "-1";
 APT::Compressor::bzip2::CompressArg:: "-1";
 APT::Compressor::lzma::CompressArg:: "-1";
 ' > /etc/apt/apt.conf.d/99Z_Custom
+  fi
+
+  if [[ "${os_ver}" == "raspbian:7" ]] || [[ "${os_ver}" == "raspbian:8" ]]; then
+  local key=wheezy; if [[ "${os_ver}" == "raspbian:8" ]]; then key=jessie; fi
+echo '
+deb http://archive.raspberrypi.org/debian/ '$key' main
+' > /etc/apt/sources.list
+  rm -rf /etc/apt/sources.list.d/*
   fi
 
   if [[ "${os_ver}" == "debian:7" ]]; then
