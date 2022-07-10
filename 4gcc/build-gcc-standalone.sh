@@ -3,6 +3,7 @@
 # for ver in 7.5.0 9.4.0; do
 # export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
 export IMAGE="debian:8"
+export IMAGE="devizervlad/raspbian:raspberry-wheezy"
 export VER=8.3.0
 export USEGCC="" # 10
 # export VER=$ver

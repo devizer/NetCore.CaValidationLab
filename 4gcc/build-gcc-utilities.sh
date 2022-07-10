@@ -191,7 +191,8 @@ APT::Compressor::lzma::CompressArg:: "-1";
   Say "Applying sources.list patch for legacy raspbian [${os_ver}]"
   local key=wheezy; if [[ "${os_ver}" == "raspbian:8" ]]; then key=jessie; fi
 echo '
-deb http://archive.raspberrypi.org/debian/ '$key' main
+# deb http://archive.raspberrypi.org/debian/ '$key' main
+deb http://legacy.raspbian.org/raspbian/ '$key' main contrib non-free rpi
 ' > /etc/apt/sources.list
   rm -rf /etc/apt/sources.list.d/*
   fi
