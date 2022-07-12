@@ -4,8 +4,9 @@
 # export IMAGE="multiarch/debian-debootstrap:armhf-wheezy"
 export IMAGE="debian:8"
 export IMAGE="devizervlad/raspbian:raspberry-wheezy"
+export IMAGE="balenalib/raspberry-pi-debian:jessie"
 export FORCE_UNAME_M=armv6l
-export FORCE_GCC_CONFIGURE_ARGS="--with-arch=armv6 --with-fpu=vfp --with-float=hard --disable-multilib"
+export FORCE_GCC_CONFIGURE_ARGS="--target=arm-linux-gnueabihf --with-arch=armv6 --with-fpu=vfp --with-float=hard --disable-multilib"
 export VER=8.3.0
 export USEGCC="" # 10
 # export VER=$ver
@@ -27,7 +28,7 @@ done
 
 
 Say "Start container $IMAGE"
-container="gcc-$VER-container"
+container="gcc-$VER-container-v2"
 docker rm -f $container
 docker run --privileged -t --rm -d --hostname $container --name $container "$IMAGE" sh -c "while true; do sleep 42; done"
 for cmd in Say try-and-retry; do
@@ -62,7 +63,7 @@ docker exec -t -e ENABLE_LANGUAGES="c,c++" -e USEGCC="${USEGCC:-}" -e SYSTEM_ART
 
     Say 'Pack usr local'
     pushd /usr/local
-    tar cf - . | gzip -9 > /gcc.tar.gz
+    tar cf - . | gzip -1 > /gcc.tar.gz
     popd
     Say '/gcc.tar.gz completed'
 "
