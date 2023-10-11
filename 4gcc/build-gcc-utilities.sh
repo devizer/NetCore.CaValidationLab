@@ -238,6 +238,14 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
+  if [[ "${os_ver}" == "debian:8" ]]; then
+echo '
+deb http://archive.debian.org/debian/ jessie main non-free contrib
+deb http://archive.debian.org/debian-security jessie/updates main non-free contrib
+deb http://archive.debian.org/debian jessie-backports main non-free contrib
+' > /etc/apt/sources.list
+  fi
+
   if [[ "$(get_linux_os_id)" == "centos:8" ]]; then
     Say "Resetting CentOS 8 Repo"
     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
