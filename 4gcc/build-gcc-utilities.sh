@@ -254,6 +254,14 @@ deb http://archive.debian.org/debian stretch-backports main non-free contrib
 ' > /etc/apt/sources.list
   fi
 
+  if [[ "${os_ver}" == "debian:9" ]] && [[ "$(uname -m)" == aarch64 ]] && [[ "$(getconf LONG_BIT)" == 64 ]]; then
+echo '
+deb http://archive.debian.org/debian/ stretch main non-free contrib
+# deb http://archive.debian.org/debian-security stretch/updates main non-free contrib
+deb http://archive.debian.org/debian stretch-backports main non-free contrib
+' > /etc/apt/sources.list
+  fi
+
   if [[ "$(get_linux_os_id)" == "centos:8" ]]; then
     Say "Resetting CentOS 8 Repo"
     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
