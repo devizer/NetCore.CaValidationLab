@@ -387,13 +387,15 @@ function prepare_os() {
   if [[ "$(command -v apt-get)" != "" ]]; then
     try-and-retry apt-get update -qq >/dev/null
     
-    [[ "${PREPARE_OS_MODE:-}" == "BIG" ]] && try-and-retry apt-get install \
-       ca-certificates curl aria2 gnupg software-properties-common htop mc lsof unzip \
+    # Does not work on legacy debian 9
+    [[ "${PREPARE_OS_MODE:-}" == "BIG" ]] && \
+       for p in ca-certificates curl aria2 gnupg software-properties-common htop mc lsof unzip \
        net-tools bsdutils lsb-release wget curl pv sudo less nano ncdu tree \
        procps dialog \
        build-essential libc6-dev libtool gettext autoconf automake bison flex help2man m4 \
-       pkg-config g++ gawk \
-       -y -q >/dev/null
+       pkg-config g++ gawk; do
+         try-and-retry apt-get install -y -q $p;
+       done
 
     [[ "${PREPARE_OS_MODE:-}" == "MICRO" ]] && try-and-retry apt-get install \
        curl aria2 htop mc lsof gawk gnupg openssh-client openssl \
