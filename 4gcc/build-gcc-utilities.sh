@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# file="$(mktemp)"; script=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/4gcc/build-gcc-utilities.sh; curl -kfSL -o "$file" "$script" || curl -kfSL -o "$file" "$script"; source "$file"
+# file="$(mktemp)"; script=https://raw.githubusercontent.com/devizer/NetCore.CaValidationLab/master/4gcc/build-gcc-utilities.sh; curl -ksfSL -o "$file" "$script" || curl -ksfSL -o "$file" "$script"; source "$file"
 export DEBIAN_FRONTEND=noninteractive
 
 # Return temp json file name or epty string
