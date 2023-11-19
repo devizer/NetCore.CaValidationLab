@@ -5,7 +5,7 @@ export DEBIAN_FRONTEND=noninteractive
 # Return temp json file name or epty string
 function Get-Docker-Image-Manifest() {
   local image="${1}"
-  local json_file="$(mktemp || echo "${TMPDIR:-/tmp/a-docker-image-manifest}")"
+  local json_file="$(mktemp 2>/dev/null || echo "${TMPDIR:-/tmp/a-docker-image-manifest-$RANDOM}")"
   local err=0;
   docker buildx imagetools inspect --raw "$image" >"$json_file" ||
   docker manifest inspect "$image" >"$json_file" || err=$?
