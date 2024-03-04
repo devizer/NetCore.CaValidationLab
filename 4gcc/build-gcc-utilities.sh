@@ -335,7 +335,11 @@ CENTOS6_REPO
 
   if [[ -n "$(command -v apt-get)" ]]; then
     Say "Update apt cache for [$(get_linux_os_id) $(uname -m)]"
-    try-and-retry apt-get update -qq
+    if [[ "${os_ver}" == "debian:8" ]]; then
+      apt-get update -qq || true
+    else
+      try-and-retry apt-get update -qq
+    fi
   fi
 
   echo '
