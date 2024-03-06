@@ -167,7 +167,7 @@ EOF_SHOW_GLIBC_VERSION
 # glibc_version=$(get_glibc_version) && echo "GLIBC_VERSION: [${GLIBC_VERSION:-}]; GLIBC_VERSION_STRING: [${GLIBC_VERSION_STRING:-}]"
 
 function adjust_os_repo() {
-  Say "Adjust os repo for [$(get_linux_os_id) $(uname -m)]"
+  Say "Adjust os repo for [$(get_linux_os_id) $(uname -m) $(getconf LONG_BIT) bit]"
   test -f /etc/os-release && source /etc/os-release
   local os_ver="${ID:-}:${VERSION_ID:-}"
   if [[ "${ID:-}" == "debian" ]] || [[ "${ID:-}" == "raspbian" ]]; then
@@ -224,6 +224,7 @@ deb http://deb.debian.org/debian jessie-updates main
 
   if [[ "${os_ver}" == "debian:8" ]] && [[ "$(getconf LONG_BIT)" == "64" ]] && [[ "$(uname -m)" != x86_64 ]]; then
 echo '
+# sources.list customized at '"$(date)"'
 deb http://archive.debian.org/debian/ jessie main non-free contrib
 # deb http://archive.debian.org/debian-security jessie/updates main non-free contrib
 deb http://archive.debian.org/debian jessie-backports main non-free contrib
@@ -232,6 +233,7 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
 
   if [[ "${os_ver}" == "debian:8" ]] && [[ "$(getconf LONG_BIT)" == "32" ]]; then
 echo '
+# sources.list customized at '"$(date)"'
 deb http://archive.debian.org/debian/ jessie main non-free contrib
 # deb http://security.debian.org/ jessie/updates main contrib non-free
 deb http://archive.debian.org/debian-security jessie/updates main contrib non-free
@@ -241,6 +243,7 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
 
   if [[ "${os_ver}" == "debian:8" ]]; then
 echo '
+# sources.list customized at '"$(date)"'
 deb http://archive.debian.org/debian/ jessie main non-free contrib
 deb http://archive.debian.org/debian-security jessie/updates main non-free contrib
 deb http://archive.debian.org/debian jessie-backports main non-free contrib
@@ -249,6 +252,7 @@ deb http://archive.debian.org/debian jessie-backports main non-free contrib
 
   if [[ "${os_ver}" == "debian:9" ]]; then
 echo '
+# sources.list customized at '"$(date)"'
 deb http://archive.debian.org/debian/ stretch main non-free contrib
 deb http://archive.debian.org/debian-security stretch/updates main non-free contrib
 deb http://archive.debian.org/debian stretch-backports main non-free contrib
@@ -257,6 +261,7 @@ deb http://archive.debian.org/debian stretch-backports main non-free contrib
 
   if [[ "${os_ver}" == "debian:9" ]] && [[ "$(uname -m)" == aarch64 ]] && [[ "$(getconf LONG_BIT)" == 64 ]]; then
 echo '
+# sources.list customized at '"$(date)"'
 deb http://archive.debian.org/debian/ stretch main non-free contrib
 deb http://archive.debian.org/debian-security stretch/updates main non-free contrib
 deb http://archive.debian.org/debian stretch-backports main non-free contrib
@@ -328,17 +333,19 @@ CENTOS6_REPO
     fi
   fi
 
-  if [[ "$(get_linux_os_id)" == "centos"* ]]; then
-    Say "Update yum cache for [$(get_linux_os_id) $(uname -m)]"
-    try-and-retry yum makecache -q
-  fi
+  if [[ "${SKIP_REPO_UPDATE:-}" != true ]]; then
+    if [[ "$(get_linux_os_id)" == "centos"* ]]; then
+      Say "Update yum cache for [$(get_linux_os_id) $(uname -m) $(getconf LONG_BIT) bit]"
+      try-and-retry yum makecache -q
+    fi
 
-  if [[ -n "$(command -v apt-get)" ]]; then
-    Say "Update apt cache for [$(get_linux_os_id) $(uname -m)]"
-    if [[ "${os_ver}" == "debian:8" ]]; then
-      apt-get update -qq || true
-    else
-      try-and-retry apt-get update -qq
+    if [[ -n "$(command -v apt-get)" ]]; then
+      Say "Update apt cache for [$(get_linux_os_id) $(uname -m) $(getconf LONG_BIT) bit]"
+      if [[ "${os_ver}" == "debian:8" ]]; then
+        apt-get update -qq || true
+      else
+        try-and-retry apt-get update -qq
+      fi
     fi
   fi
 
