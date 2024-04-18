@@ -178,6 +178,10 @@ APT::Get::Assume-Yes "true";
 APT::Get::AllowUnauthenticated "true";
 Acquire::AllowInsecureRepositories "1";
 Acquire::AllowDowngradeToInsecureRepositories "1";
+
+APT::Get::AutomaticRemove "0";
+APT::Get::HideAutoRemove "1";
+
 APT::Periodic::Update-Package-Lists "0";
 APT::Periodic::Unattended-Upgrade "0";
 Acquire::CompressionTypes::Order { "gz"; };
