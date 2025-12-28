@@ -295,6 +295,7 @@ fi
 
 # 2025
 if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
+echo "DEBIAN 10 ARCHIVE REPO: Done"
 echo '
 deb http://archive.debian.org/debian/ buster main contrib non-free
 deb http://archive.debian.org/debian-security buster/updates main contrib non-free
