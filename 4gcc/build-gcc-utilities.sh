@@ -293,6 +293,16 @@ deb http://snapshot.debian.org/archive/debian/20220801T000000Z buster-updates ma
 echo "Fixed sources.list on [debian:10 armel]"
 fi
 
+# 2025
+if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
+echo '
+deb http://archive.debian.org/debian/ buster main contrib non-free
+deb http://archive.debian.org/debian-security buster/updates main contrib non-free
+deb http://archive.debian.org/debian/ buster-updates main contrib non-free
+' >/etc/apt/sources.list
+fi
+
+
   if [[ "$(get_linux_os_id)" == "centos:8" ]]; then
     Say "Resetting CentOS 8 Repo"
     sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-Linux-*
