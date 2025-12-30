@@ -303,9 +303,9 @@ deb http://archive.debian.org/debian/ buster-updates main contrib non-free
 ' >/etc/apt/sources.list
 fi
 
-# 2025: debian 11
+# 2025: debian 11 arm64
 if [[ "$(dpkg --print-architecture)" == "arm64" ]] && [[ "${os_ver}" == "debian:11" ]]; then 
-echo "DEBIAN 11 ARCHIVE REPO: Done"
+echo "DEBIAN 11 ARM64 ARCHIVE REPO: Done"
 echo '
 deb http://deb.debian.org/debian bullseye main
 # deb-src http://deb.debian.org/debian bullseye main
@@ -315,6 +315,13 @@ deb http://deb.debian.org/debian bullseye-updates main
 # deb-src http://deb.debian.org/debian bullseye-updates main
 # deb http://deb.debian.org/debian bullseye-backports main: 404 NOT FOUND
 # deb-src http://deb.debian.org/debian bullseye-backports main
+' >/etc/apt/sources.list
+fi
+# 2025: debian 11 armel
+if [[ "$(dpkg --print-architecture)" == "armel" ]] && [[ "${os_ver}" == "debian:11" ]]; then 
+echo "DEBIAN 11 ARM v5 ARCHIVE REPO: Done"
+echo '
+deb http://ftp.fi.debian.org/debian/ bullseye main contrib non-free
 ' >/etc/apt/sources.list
 fi
 
