@@ -321,7 +321,8 @@ fi
 if [[ "$(dpkg --print-architecture)" == "armel" ]] && [[ "${os_ver}" == "debian:11" ]]; then 
 echo "DEBIAN 11 ARM v5 ARCHIVE REPO: Done"
 echo '
-deb http://ftp.fi.debian.org/debian/ bullseye main contrib non-free
+# deb http://ftp.fi.debian.org/debian/ bullseye main contrib non-free
+deb http://archive.debian.org/debian/ bullseye main contrib non-free
 ' >/etc/apt/sources.list
 fi
 
