@@ -293,7 +293,7 @@ deb http://snapshot.debian.org/archive/debian/20220801T000000Z buster-updates ma
 echo "Fixed sources.list on [debian:10 arm64]"
 fi
 
-# 2025
+# 2025: debian 10
 if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" || "$(dpkg --print-architecture)" == "armhf" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
 echo "DEBIAN 10 ARCHIVE REPO: Done"
 echo '
@@ -303,6 +303,20 @@ deb http://archive.debian.org/debian/ buster-updates main contrib non-free
 ' >/etc/apt/sources.list
 fi
 
+# 2025: debian 11
+if [[ "$(dpkg --print-architecture)" == "arm64" ]] && [[ "${os_ver}" == "debian:11" ]]; then 
+echo "DEBIAN 11 ARCHIVE REPO: Done"
+echo '
+deb http://deb.debian.org/debian bullseye main
+# deb-src http://deb.debian.org/debian bullseye main
+deb http://security.debian.org/debian-security bullseye-security main
+# deb-src http://security.debian.org/debian-security bullseye-security main
+deb http://deb.debian.org/debian bullseye-updates main
+# deb-src http://deb.debian.org/debian bullseye-updates main
+# deb http://deb.debian.org/debian bullseye-backports main: 404 NOT FOUND
+# deb-src http://deb.debian.org/debian bullseye-backports main
+' >/etc/apt/sources.list
+fi
 
   if [[ "$(get_linux_os_id)" == "centos:8" ]]; then
     Say "Resetting CentOS 8 Repo"
