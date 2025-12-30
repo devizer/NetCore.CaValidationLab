@@ -290,11 +290,11 @@ deb http://snapshot.debian.org/archive/debian/20220801T000000Z buster main
 deb http://snapshot.debian.org/archive/debian-security/20220801T000000Z buster/updates main
 deb http://snapshot.debian.org/archive/debian/20220801T000000Z buster-updates main
 ' >/etc/apt/sources.list
-echo "Fixed sources.list on [debian:10 armel]"
+echo "Fixed sources.list on [debian:10 arm64]"
 fi
 
 # 2025
-if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
+if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" || "$(dpkg --print-architecture)" == "armhf" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
 echo "DEBIAN 10 ARCHIVE REPO: Done"
 echo '
 deb http://archive.debian.org/debian/ buster main contrib non-free
