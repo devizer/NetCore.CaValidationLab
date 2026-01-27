@@ -294,12 +294,16 @@ echo "Fixed sources.list on [debian:10 arm64]"
 fi
 
 # 2025: debian 10
-if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" || "$(dpkg --print-architecture)" == "armhf" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
+if [[ "$(dpkg --print-architecture)" == "amd64" || "$(dpkg --print-architecture)" == "i386" || "$(dpkg --print-architecture)" == "armhf" || "$(dpkg --print-architecture)" == "arm64" ]] && [[ "${os_ver}" == "debian:10" ]]; then 
 echo "DEBIAN 10 ARCHIVE REPO: Done"
 echo '
 deb http://archive.debian.org/debian/ buster main contrib non-free
 deb http://archive.debian.org/debian-security buster/updates main contrib non-free
 deb http://archive.debian.org/debian/ buster-updates main contrib non-free
+
+#deb-src http://archive.debian.org/debian/ buster main contrib non-free
+#deb-src http://archive.debian.org/debian-security buster/updates main contrib non-free
+#deb-src http://archive.debian.org/debian/ buster-updates main contrib non-free
 ' >/etc/apt/sources.list
 fi
 
